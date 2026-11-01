@@ -34,6 +34,10 @@ yokai-harness 自身のコードと文書は MIT ([LICENSE](LICENSE)) で配布�
 
 `assets/architecture.svg` と `assets/references.svg` には Noto Sans JP のサブセットを埋め込んでいる。SIL Open Font License 1.1 ([assets/fonts/OFL.txt](assets/fonts/OFL.txt))。
 
+## アイコン
+
+図 (`assets/src/*.svg`) のエージェントと Git のアイコンは [Simple Icons](https://github.com/simple-icons/simple-icons) の SVG データを使っている。データは CC0 1.0。Git のロゴだけは Jason Long の作品で CC BY 3.0。
+
 ## 商標
 
-README・図解に出てくる製品名 (Claude Code、Codex、Gemini CLI、OpenCode、Cursor など) は各社の商標である。ロゴは使っていない。
+README・図に出てくる製品名とロゴ (Claude Code、Codex、OpenAI、Gemini CLI、OpenCode、Cursor、Git など) は各社の商標である。対応する製品を示すためだけに使っており、各社がこのリポジトリを推奨・提携しているわけではない。

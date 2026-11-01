@@ -60,8 +60,15 @@ def main() -> None:
             f'src: url(data:font/woff;base64,{woff_subset(sys.argv[1], w, chars)}) format("woff"); }}'
             for w in WEIGHTS
         )
+        svg = svg.replace("/*@FONTS@*/", faces.lstrip())
+        # <img> で表示した SVG は外部の画像を読まないので、@EMBED:<assets からのパス>@ を data URI にする
+        svg = re.sub(
+            r"@EMBED:([\w./-]+\.png)@",
+            lambda m: "data:image/png;base64," + base64.b64encode((HERE / m.group(1)).read_bytes()).decode(),
+            svg,
+        )
         out = HERE / src.name
-        out.write_text(svg.replace("/*@FONTS@*/", faces.lstrip()), encoding="utf-8")
+        out.write_text(svg, encoding="utf-8")
         print(f"{out.relative_to(HERE.parent)}: {len(chars)} 字, {out.stat().st_size // 1024} KB")
 
 
