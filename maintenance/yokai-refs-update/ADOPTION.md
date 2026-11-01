@@ -27,6 +27,13 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-02
+
+### 再蒸留 (claude-code-best-practice / smarthr-design-system) から
+
+今回は取り込み候補なし。claude-code-best-practice の `490cf5a` までの 12 commit は commands 表の `/ultrareview` 無料枠への Ultra 追記 1 件と、skills・subagents・concepts の drift ログ (ON HOLD 継続、新規所見ゼロ)、ワークフロー / コレクション表の定時更新だけ。smarthr-design-system の 2 commit は puppeteer の依存更新でライティングガイドラインの MDX に変更なし。
+
+---
 ## 2026-11-01
 
 ### 再蒸留 (claude-code-best-practice) から
