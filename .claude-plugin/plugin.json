@@ -1,0 +1,19 @@
+{
+  "name": "yokai",
+  "description": "ハーネス設計・UI デザイン・日本語文章の参照資料 (蒸留版 + 原典 clone の 2 層) と、AI 臭のレビュー手順をまとめたスキル集",
+  "author": {
+    "name": "ystk-kai",
+    "url": "https://github.com/ystk-kai"
+  },
+  "homepage": "https://github.com/ystk-kai/yokai-harness",
+  "repository": "https://github.com/ystk-kai/yokai-harness",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "harness",
+    "prompt",
+    "ui-design",
+    "japanese"
+  ],
+  "icon": "./.claude-plugin/icon.png"
+}

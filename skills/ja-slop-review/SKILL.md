@@ -1,11 +1,11 @@
 ---
-name: avoid-ai-slop-ja
+name: ja-slop-review
 description: Review and rewrite Japanese (and JP-EN mixed) prose to remove "AI slop" — over-smooth uniform tone, generic buzzwords, weak agency, ritual hedging, false contrasts, propositional headings, and other generated-text tells. Use when writing, editing, reviewing, or scoring Japanese articles, memos, briefings, docs, release notes, social posts, or public-facing copy, or when asked to make text "less AI-ish / 人間が書いたように".
 ---
 
-# Avoid AI slop (Japanese prose)
+# ja-slop-review: AI slop review for Japanese prose
 
-AI-slop prose is surface-polished but hollow and uniform. Detectors are unreliable (human raters do no better than chance), so this skill is a manual review/rewrite method, not a detector. The knowledge base is self-contained in `references/`. Method adapted from `iKora128/stop-ai-slop-jp`. For visual artifacts (web UI, slides, diagrams, images), use the sibling skill `avoid-ai-slop-design`; this skill covers the prose. To trace a rule back to its source (stop-ai-slop-jp, natural-japanese, yomiyasu, textlint rule sets, style guides), use the reference skill `ja-writing`; this skill stays the review/rewrite method.
+AI-slop prose is surface-polished but hollow and uniform. Detectors are unreliable (human raters do no better than chance), so this skill is a manual review/rewrite method, not a detector. The knowledge base is self-contained in `references/`. Method adapted from `iKora128/stop-ai-slop-jp`. For visual artifacts (web UI, slides, diagrams, images), use the sibling skill `visual-slop-review`; this skill covers the prose. To trace a rule back to its source (stop-ai-slop-jp, natural-japanese, yomiyasu, textlint rule sets, style guides), use the reference skill `ja-writing`; this skill stays the review/rewrite method.
 
 The cardinal rule: **edge (variation, bluntness, a stance) is a means to break uniformity, not a goal.** Don't trade AI-uniform for an "anti-AI template". And always filter techniques by document type (a security briefing is not a personal blog).
 
@@ -71,6 +71,6 @@ text worse. Skip when:
 
 ## 鮮度
 
-この知識ベースは出所リポジトリの clone を持たない自作の調査資料なので、SHA ではなく日付で棚卸しする。各 `references/*.md` の frontmatter が `tracking: review` + `reviewed_at` + `review_interval_days` (180 日) を持ち、`/claude-harness-refs-update` が期限切れを `REVIEW` として報告する。棚卸しでは出典 URL の生存と、記述が前提にしている流行・モデル世代の変化を確認する。
+この知識ベースは出所リポジトリの clone を持たない自作の調査資料なので、SHA ではなく日付で棚卸しする。各 `references/*.md` の frontmatter が `tracking: review` + `reviewed_at` + `review_interval_days` (180 日) を持ち、`/yokai-refs-update` が期限切れを `REVIEW` として報告する。棚卸しでは出典 URL の生存と、記述が前提にしている流行・モデル世代の変化を確認する。
 
 手法の出所 `iKora128/stop-ai-slop-jp` は `ja-writing` の蒸留版として SHA で追従しており、原典の規則とこのスキルの対応は `ja-writing/MAPPING.md` にある。このスキルを直したら MAPPING.md も合わせて直す。

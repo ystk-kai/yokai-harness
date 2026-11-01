@@ -9,6 +9,8 @@ distilled_at: 2026-07-12
 HumanLayer の Dex Horthy による「信頼性の高い LLM アプリケーションを作る 12 原則」(12 Factor Apps のオマージュ)。
 原典は `12-factor-agents` の clone (原典ルートは SKILL.md 参照)。以下のパスはリポジトリルートからの相対パス。
 
+このファイルは原典の文章 (CC BY-SA 4.0) を要約したもので、CC BY-SA 4.0 で配布する。原著作者は HumanLayer と貢献者。ほかのファイルの扱いは yokai-harness の `THIRD_PARTY_NOTICES.md` を見る。
+
 ## Contents
 
 - まず押さえる

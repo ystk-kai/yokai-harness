@@ -11,7 +11,7 @@
 | 形式 | キー | 用途 | 判定 |
 |---|---|---|---|
 | 1. 蒸留版 | `source` + `distilled_commit` + `distilled_at` | 原典 clone を SHA で追従する | clone の HEAD と `distilled_commit` を比較 |
-| 2. 知識ベース | `tracking: review` + `reviewed_at` + `review_interval_days` | 出所 clone を持たない自作の調査資料 (例: `avoid-ai-slop-*`) | `reviewed_at` からの経過日数が interval を超えたら `REVIEW` |
+| 2. 知識ベース | `tracking: review` + `reviewed_at` + `review_interval_days` | 出所 clone を持たない自作の調査資料 (例: `*-slop-review`) | `reviewed_at` からの経過日数が interval を超えたら `REVIEW` |
 | 3. 対象外 | `tracking: none` | 鮮度管理しないと明示するもの | 何も報告しない |
 
 形式 2 の `review_interval_days` は腐る速さで決める。モデル世代や流行に依存する記述 (生成画像の tell、
@@ -32,14 +32,14 @@
 - **250 行以内**に収める。超えたら分割ではなく圧縮を先に試す (分割は棚卸しクロックを増やし、
   どのファイルを読むかのルーティング指示を SKILL.md 側に増やす)
 - 原典を持たないので索引テーブルは作らない。代わりに**各主張へ確度ラベルと出典 URL** を付ける
-  (`avoid-ai-slop-*` の `[計測]` / `[批評]` / `[通説]` の型)
+  (`*-slop-review` の `[計測]` / `[批評]` / `[通説]` の型)
 - `## 棚卸しの当たり先` を置き、「腐りやすい主張 → 再検証する URL」の対応を書く。これが無いと
   REVIEW 発火時に全出典を漫然と見直すことになり、確認漏れが出る
 - `## Contents` / `## まず押さえる` / `## 範囲外` は **100 行を超えるものだけ**に課す。
   50 行程度の資料に見出し階層を足しても索引にならない
 
 **現状**: `## 棚卸しの当たり先` を持つのは `ui-design` の `japanese-web-typography.md` /
-`japanese-diagram-rendering.md` / `color-chroma.md`、`avoid-ai-slop-design` の `images.md` / `web-ui.md` の 5 本で、`avoid-ai-slop-*` の残り 8 本は未対応。新規に書くものには最初から課し、既存は次の棚卸し (REVIEW 発火時) で足す。
+`japanese-diagram-rendering.md` / `color-chroma.md`、`visual-slop-review` の `images.md` / `web-ui.md` の 5 本で、`*-slop-review` の残り 8 本は未対応。新規に書くものには最初から課し、既存は次の棚卸し (REVIEW 発火時) で足す。
 構造を機械検査する仕組みは無いので、この移行状態はここに書いておくことでのみ追跡される。
 
 ## 更新手順 (STALE のとき)
@@ -93,7 +93,7 @@
 手順:
 1. git -C <clone> rev-parse HEAD で SHA を取得する
 2. README と目次で構造を把握し、重点ファイルを実際に Read して要点を確認する (推測で書かない)
-3. skills/claude-harness-refs-update/DISTILLING.md の構成規約に従って書く
+3. maintenance/yokai-refs-update/DISTILLING.md の構成規約に従って書く
    (frontmatter 3 キー / Contents / まず押さえる / 索引 / 蒸留の範囲外 / 250 行以内)
 
 重点領域: <このリポジトリで何を索引したいか>

@@ -10,7 +10,7 @@ Mermaid / Graphviz / PlantUML / D2 / 手書き SVG で日本語ラベルを出�
 既定フォント・既定レンダラがすべて欧文前提なので、英語で通る図解コードがそのまま日本語で壊れる。
 
 図の**構造**の質 (関係性を 1 つ選ぶ / 要素過多 / 矢印の文法エラー / 一枚 raster を生成しない) は
-`avoid-ai-slop-design/references/slides-diagrams.md` が担当する。ここでは繰り返さない。
+`visual-slop-review/references/slides-diagrams.md` が担当する。ここでは繰り返さない。
 本文テキストの組版は姉妹ファイル [japanese-web-typography.md](japanese-web-typography.md)。
 
 確度: **[仕様]** 構文仕様・SVG/CSS/Unicode 標準 / **[Issue]** 上流の未解決 Issue・実装バグ (最も腐りやすい) /
@@ -166,7 +166,7 @@ T2I が CJK を出せないこと) は据え置いてよい。腐りやすい半
 ## この文書の範囲外
 
 - **図の構造・内容の質** (関係性の選択、要素過多、矢印の意味、一枚 raster の禁止) —
-  `avoid-ai-slop-design/references/slides-diagrams.md`
+  `visual-slop-review/references/slides-diagrams.md`
 - **本文テキストの組版** (明朝化・合成斜体・折り返し・行高・Web フォント配信) —
   [japanese-web-typography.md](japanese-web-typography.md)
 - **チャートの配色・軸・凡例の設計** — built-in の `dataviz` スキル

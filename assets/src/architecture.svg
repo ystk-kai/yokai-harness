@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" role="img" aria-labelledby="title desc">
+  <title id="title">yokai-harness の配り方</title>
+  <desc id="desc">このリポジトリを正本に、plugin か install.sh で Claude Code・Codex・Gemini CLI へ配る。OpenCode と Cursor は skills ディレクトリを自動で読む。原典 clone は ~/.local/share/yokai-harness/references に置く。</desc>
+  <style>
+    /*@FONTS@*/
+    text { font-family: "YokaiJP", "Hiragino Sans", "Noto Sans CJK JP", "Yu Gothic", sans-serif; fill: #2b2622; }
+    .m { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace; }
+    .h { font-size: 15px; font-weight: 700; }
+    .b { font-size: 14px; font-weight: 700; }
+    .s { font-size: 13px; }
+    .mute { fill: #6b625a; }
+    .card { fill: #fffcf5; stroke: #d8cfc0; stroke-width: 1.5; }
+  </style>
+  <defs>
+    <marker id="ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#2b2622"/></marker>
+    <marker id="shu" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#c8442c"/></marker>
+    <marker id="ai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#2f4b7c"/></marker>
+  </defs>
+
+  <rect x="0.75" y="0.75" width="958.5" height="598.5" rx="14" fill="#f7f3ea" stroke="#d8cfc0" stroke-width="1.5"/>
+
+  <!-- 列見出し -->
+  <text x="24" y="42" class="h">正本 — このリポジトリ</text>
+  <text x="344" y="42" class="h">配り方 (どちらか、または併用)</text>
+  <text x="656" y="42" class="h">エージェント</text>
+
+  <!-- 正本 -->
+  <rect x="24" y="60" width="280" height="424" rx="10" class="card"/>
+  <g transform="translate(44 96)">
+    <text class="m b">skills/</text>
+    <text y="22" class="s">配るスキル 5 本</text>
+    <text y="44" class="m s mute">harness-design / ui-design</text>
+    <text y="62" class="m s mute">ja-writing / ja-slop-review</text>
+    <text y="80" class="m s mute">visual-slop-review</text>
+  </g>
+  <line x1="44" y1="194" x2="284" y2="194" stroke="#e6ddcd"/>
+  <g transform="translate(44 222)">
+    <text class="m b">instructions/</text>
+    <text y="22" class="s">グローバル指示の正本</text>
+  </g>
+  <line x1="44" y1="260" x2="284" y2="260" stroke="#e6ddcd"/>
+  <g transform="translate(44 288)">
+    <text class="m b">maintenance/</text>
+    <text y="22" class="s">保守スキル <tspan class="m">yokai-refs-update</tspan></text>
+    <text y="42" class="s mute">plugin には入れない (Claude のみ)</text>
+  </g>
+  <line x1="44" y1="346" x2="284" y2="346" stroke="#e6ddcd"/>
+  <g transform="translate(44 374)">
+    <text class="m b">.claude-plugin/ plugin.json</text>
+    <text y="20" class="m b">.agents/plugins/</text>
+    <text y="42" class="s">plugin と marketplace の定義</text>
+  </g>
+  <line x1="44" y1="432" x2="284" y2="432" stroke="#e6ddcd"/>
+  <g transform="translate(44 460)">
+    <text class="m b">install.sh / scripts/</text>
+  </g>
+
+  <!-- ① plugin -->
+  <rect x="344" y="60" width="272" height="176" rx="10" class="card"/>
+  <rect x="344" y="60" width="6" height="176" rx="3" fill="#c8442c"/>
+  <g transform="translate(366 92)">
+    <text class="b" fill="#c8442c" style="fill:#c8442c">① plugin で入れる</text>
+    <text y="28" class="s">Claude Code</text>
+    <text y="47" class="m" font-size="11">/plugin install yokai@yokai-harness</text>
+    <text y="74" class="s">Codex</text>
+    <text y="93" class="m" font-size="11">codex plugin add yokai@yokai-harness</text>
+    <text y="122" class="s mute">スキル名に <tspan class="m">yokai:</tspan> が付く</text>
+  </g>
+
+  <!-- ② install.sh -->
+  <rect x="344" y="264" width="272" height="220" rx="10" class="card"/>
+  <rect x="344" y="264" width="6" height="220" rx="3" fill="#2f4b7c"/>
+  <g transform="translate(366 296)">
+    <text class="b" style="fill:#2f4b7c">② install.sh で展開する</text>
+    <text y="26" class="m" font-size="11.5">install.sh --targets claude,codex</text>
+    <text y="52" class="s">・skills を symlink する</text>
+    <text x="14" y="72" class="s mute">plugin 併用時は <tspan class="m">--skills none</tspan></text>
+    <text y="96" class="s">・指示ファイルへ managed ブロック</text>
+    <text y="120" class="s">・原典を clone する</text>
+    <text x="14" y="140" class="s mute"><tspan class="m">--with-references</tspan> のときだけ</text>
+    <text y="166" class="s mute">既定は claude だけ。前回の選択を覚える</text>
+  </g>
+
+  <!-- エージェント -->
+  <g transform="translate(656 60)">
+    <rect width="280" height="80" rx="10" class="card"/>
+    <text x="20" y="28" class="b">Claude Code</text>
+    <text x="20" y="50" class="m s mute">~/.claude/skills/</text>
+    <text x="20" y="68" class="m s mute">~/.claude/CLAUDE.md</text>
+  </g>
+  <g transform="translate(656 156)">
+    <rect width="280" height="80" rx="10" class="card"/>
+    <text x="20" y="28" class="b">Codex</text>
+    <text x="20" y="50" class="m s mute">~/.agents/skills/</text>
+    <text x="20" y="68" class="m s mute">~/.codex/AGENTS.md</text>
+  </g>
+  <g transform="translate(656 252)">
+    <rect width="280" height="80" rx="10" class="card"/>
+    <text x="20" y="28" class="b">Gemini CLI</text>
+    <text x="20" y="50" class="m s mute">~/.agents/skills/</text>
+    <text x="20" y="68" class="m s mute">~/.gemini/GEMINI.md</text>
+  </g>
+  <g transform="translate(656 364)">
+    <rect width="280" height="120" rx="10" fill="none" stroke="#a89e8f" stroke-width="1.5" stroke-dasharray="6 5"/>
+    <text x="20" y="28" class="b">OpenCode / Cursor</text>
+    <text x="20" y="52" class="s">上の 2 つの skills ディレクトリを</text>
+    <text x="20" y="72" class="s">自分で読みに行く</text>
+    <text x="20" y="98" class="s mute">対象に指定しなくてよい</text>
+  </g>
+
+  <!-- 正本 → 配り方 -->
+  <path d="M304 148 H 336" stroke="#2b2622" stroke-width="2" fill="none" marker-end="url(#ink)"/>
+  <path d="M304 374 H 336" stroke="#2b2622" stroke-width="2" fill="none" marker-end="url(#ink)"/>
+
+  <!-- plugin → Claude / Codex (朱) -->
+  <path d="M616 100 H 648" stroke="#c8442c" stroke-width="2" fill="none" marker-end="url(#shu)"/>
+  <path d="M616 176 H 628 V 186 H 648" stroke="#c8442c" stroke-width="2" fill="none" marker-end="url(#shu)"/>
+
+  <!-- install.sh → Claude / Codex / Gemini (藍) -->
+  <path d="M616 300 H 638 V 116 H 648" stroke="#2f4b7c" stroke-width="2" fill="none" marker-end="url(#ai)"/>
+  <path d="M638 212 H 648" stroke="#2f4b7c" stroke-width="2" fill="none" marker-end="url(#ai)"/>
+  <path d="M638 292 H 648" stroke="#2f4b7c" stroke-width="2" fill="none" marker-end="url(#ai)"/>
+  <circle cx="638" cy="212" r="3" fill="#2f4b7c"/>
+  <circle cx="638" cy="292" r="3" fill="#2f4b7c"/>
+
+  <!-- 原典 clone -->
+  <path d="M480 484 V 516" stroke="#2f4b7c" stroke-width="2" fill="none" marker-end="url(#ai)"/>
+  <rect x="24" y="524" width="912" height="52" rx="10" fill="#efe7d8" stroke="#d8cfc0" stroke-width="1.5"/>
+  <text x="44" y="556" class="m b">~/.local/share/yokai-harness/references/</text>
+  <text x="408" y="556" class="s">原典 clone (約 1GB)。スキルは蒸留版 → 原典の順に読む</text>
+</svg>

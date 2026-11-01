@@ -1,7 +1,7 @@
 ---
 name: ui-design
-description: UI 生成のためのデザイン参照資料を 2 層 (このスキル内の蒸留版 references/*.md と、~/.claude/references/ の原典 clone) で使うためのスキル。Web UI・LP・アプリ画面を生成または改修するとき、デザイン言語の雛形 (DESIGN.md) を選ぶとき、デザイントークン (色・タイポ・spacing・shadow 等) を定義または命名するとき、配色の地色・彩度やコントラスト (a11y) を決める・直すとき、生成した UI が AI っぽい既定値 (テンプレ再利用・紫青グラデ・均質なカード列) に落ちていないか点検するとき、日本語を含む UI や図解コード (Mermaid / SVG 等) で書体・組版・描出 (明朝化・斜体化・折り返し・行高・Web フォント量・フォント解決・ラベル寸法) を決めるときに、まず蒸留版を読み、索引が指す原典ファイルだけを深掘りする。
-compatibility: Requires git and network access to clone/update the reference repos at ~/.claude/references/ (external to the skill directory; run install.sh --with-references)
+description: UI 生成のためのデザイン参照資料を 2 層 (このスキル内の蒸留版 references/*.md と、~/.local/share/yokai-harness/references/ の原典 clone) で使うためのスキル。Web UI・LP・アプリ画面を生成または改修するとき、デザイン言語の雛形 (DESIGN.md) を選ぶとき、デザイントークン (色・タイポ・spacing・shadow 等) を定義または命名するとき、配色の地色・彩度やコントラスト (a11y) を決める・直すとき、生成した UI が AI っぽい既定値 (テンプレ再利用・紫青グラデ・均質なカード列) に落ちていないか点検するとき、日本語を含む UI や図解コード (Mermaid / SVG 等) で書体・組版・描出 (明朝化・斜体化・折り返し・行高・Web フォント量・フォント解決・ラベル寸法) を決めるときに、まず蒸留版を読み、索引が指す原典ファイルだけを深掘りする。
+compatibility: Requires git and network access to clone/update the reference repos at ~/.local/share/yokai-harness/references/ (external to the skill directory; run install.sh --with-references)
 ---
 
 # ui-design: UI デザイン参照資料集の使い方
@@ -21,7 +21,7 @@ UI の見た目を決める判断は、Web 検索より先にこの資料集を�
 
 ## 参照リポジトリ
 
-原典ルート: `~/.claude/references/` (`CLAUDE_CONFIG_DIR` 設定時は `$CLAUDE_CONFIG_DIR/references/`)。
+原典ルート: `$YOKAI_HARNESS_REFS` (未設定なら `${XDG_DATA_HOME:-~/.local/share}/yokai-harness/references/`。以下 `<原典ルート>`)。
 原典 clone がないときは、このリポジトリの `install.sh --with-references` で一括取得する。
 各リポジトリの出所 URL は、蒸留版 frontmatter の `source` を唯一の正とする。
 
@@ -58,7 +58,7 @@ UI の見た目を決める判断は、Web 検索より先にこの資料集を�
 - DESIGN.md を**書く**とき (既存のものを引くのではなく新規に起こすとき) は `design.md/` の `PHILOSOPHY.md` を先に読む。曖昧な形容詞の列挙に落ちると生成結果が既定値の中心に寄る。長い don't リストは、参照物の記述が曖昧すぎる兆候として扱う
 - 雛形はあくまで出発点。`awesome-design-md/` の DESIGN.md をそのまま使うと元サイトの模倣になるので、ブランド固有の制約 (色数・書体・角丸・密度) を必ず上書きする
 - 抽出元はマーケティングサイト / LP が中心。ダッシュボードや業務 UI にそのまま適用しない
-- **別スキルとの分担**: `avoid-ai-slop-design` は AI 臭の検出カタログと処方 (計測研究・学術ソース付き) を担当する。こちらは原典リポジトリの索引。診断・改善の手順が要るときは `avoid-ai-slop-design`、原典の規則や雛形を引くときはこのスキル
+- **別スキルとの分担**: `visual-slop-review` は AI 臭の検出カタログと処方 (計測研究・学術ソース付き) を担当する。こちらは原典リポジトリの索引。診断・改善の手順が要るときは `visual-slop-review`、原典の規則や雛形を引くときはこのスキル
 - 図表・チャートの**配色・チャート種別・軸・凡例の設計**は built-in の `dataviz` スキルが担当する。
   ここで扱うのは日本語ラベルが**描出される段階**で壊れる問題だけ (上記の `japanese-diagram-rendering.md`)。
   グリフが出るかどうかは配色の話ではなく、`dataviz` も英語圏前提で扱っていない
@@ -74,11 +74,11 @@ UI の見た目を決める判断は、Web 検索より先にこの資料集を�
   レンダラのバージョン別挙動、配色は hallmark のテーマ構成と配色の流行が動くので、どれも棚卸し間隔は短め
   (値は各 frontmatter の `review_interval_days` が正)。`color-chroma.md` は hallmark の再蒸留時にも見直す。
   再検証する項目は各ファイルの「棚卸しの当たり先」に列挙してある
-- 鮮度チェックと更新の機構は `claude-harness-refs-update` スキルが一元所有する。
-  `skills/claude-harness-refs-update/scripts/check-freshness.sh` が全スキルの `references/*.md` を
+- 鮮度チェックと更新の機構は `yokai-refs-update` スキルが一元所有する。
+  `scripts/check-freshness.sh` が全スキルの `references/*.md` を
   走査するので、このスキルの蒸留版も同じコマンドで検出される
-- 一連の更新 (チェック → `git pull` → STALE の再蒸留) は `/claude-harness-refs-update` で起動する
-- 蒸留版の構成規約は [../claude-harness-refs-update/DISTILLING.md](../claude-harness-refs-update/DISTILLING.md) を唯一のレシピとする
+- 一連の更新 (チェック → `git pull` → STALE の再蒸留) は `/yokai-refs-update` で起動する
+- 蒸留版の構成規約は yokai-harness の作業コピーの `maintenance/yokai-refs-update/DISTILLING.md` を唯一のレシピとする
 
 ## 原典 clone の衛生
 

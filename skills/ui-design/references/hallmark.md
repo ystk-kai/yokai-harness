@@ -16,7 +16,7 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 
 ## まず押さえる
 
-1. **役割分担: hallmark は「生成時の手続きと機械検査」、`avoid-ai-slop-design` は「検出カタログと処方」**。同じ tell の一覧を学術ソース付きで引きたいなら `avoid-ai-slop-design`。hallmark からは「どの順で何を決め、何を stamp し、どの gate をどの tier で回すか」を借りる。v1 の `slop-test.md` / `anti-patterns.md` は消え、tell の一覧は **`references/gates.md` 1 本**に統合された (skills/hallmark/references/gates.md 冒頭 "The one list of what Hallmark refuses")。
+1. **役割分担: hallmark は「生成時の手続きと機械検査」、`visual-slop-review` は「検出カタログと処方」**。同じ tell の一覧を学術ソース付きで引きたいなら `visual-slop-review`。hallmark からは「どの順で何を決め、何を stamp し、どの gate をどの tier で回すか」を借りる。v1 の `slop-test.md` / `anti-patterns.md` は消え、tell の一覧は **`references/gates.md` 1 本**に統合された (skills/hallmark/references/gates.md 冒頭 "The one list of what Hallmark refuses")。
 
 2. **The Floor = 16 項目の非交渉ルール**で、他のファイルを何も読まなくても全出力を縛り、waive 不可。主なもの: 色と `font-family` は `:root` の token 経由のみ (48)、`transition: all` 禁止と width/height/top/left のアニメ禁止 (10a)、見出し内の 1 語だけ italic 禁止 (38i)、`html`/`body` に `overflow-x: clip` (`hidden`・`100vw` 禁止) (34)、画像を持つ grid track は `minmax(0, 1fr)` (50)、全 interactive 要素に即時の `:focus-visible` (26a, 15)、reduced-motion fallback と JS 無しでも内容が見える (27, 62)、数値・証言・ロゴウォールの捏造禁止 (46a)、**eyebrow と tracked caps / small caps のラベル禁止** (54, 67)、中黒連結の meta 文字列・リンク文字に貼り付いた矢印・装飾ステータスドット禁止 (63)、紫→青グラデ・card in card・emoji アイコン・手描きのブラウザ/OS 窓禁止 (2a, 4, 30a, 47a)、hero の見出し・1 文・主アクションが 1280×800 で全部見える (44b)、1 画面約 80 語 (58)、container は上限付き中央寄せ (44d)、CSS 先頭行は Hallmark stamp (20)、Node があれば `sloplint --render` を回す (skills/hallmark/SKILL.md § The Floor)。
 

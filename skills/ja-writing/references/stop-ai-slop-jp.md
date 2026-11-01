@@ -6,7 +6,7 @@ distilled_at: 2026-10-16
 
 # stop-ai-slop-jp 蒸留版
 
-AI で書いた日本語を「人間が書いた文章に戻す」ための Claude Skill (作者 Daichi Nagashima、MIT、v0.1.1)。SKILL.md 1 本 (大原則・コアルール 14 項・クイックチェック・5 軸採点・修正の優先順位) と references 3 本 (構造 6 系統 / 語彙 8 系統 / 対比例 17 本) から成る。**この蒸留版の役割は、姉妹スキル `avoid-ai-slop-ja` の出所を辿れるようにすること**。ここでは原典の分類と各パターンの理由を索引する。`avoid-ai-slop-ja` のどこが原典由来でどこが独自かの対応表は、原典ではなく `avoid-ai-slop-ja` 側の変更で古くなるので `../MAPPING.md` に分けてある。
+AI で書いた日本語を「人間が書いた文章に戻す」ための Claude Skill (作者 Daichi Nagashima、MIT、v0.1.1)。SKILL.md 1 本 (大原則・コアルール 14 項・クイックチェック・5 軸採点・修正の優先順位) と references 3 本 (構造 6 系統 / 語彙 8 系統 / 対比例 17 本) から成る。**この蒸留版の役割は、姉妹スキル `ja-slop-review` の出所を辿れるようにすること**。ここでは原典の分類と各パターンの理由を索引する。`ja-slop-review` のどこが原典由来でどこが独自かの対応表は、原典ではなく `ja-slop-review` 側の変更で古くなるので `../MAPPING.md` に分けてある。
 
 ## Contents
 

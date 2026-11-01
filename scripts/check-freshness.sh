@@ -17,9 +17,10 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILLS_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
-REFS_ROOT="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/references"
+SKILLS_ROOT="$(dirname "$SCRIPT_DIR")/skills"
+. "$SCRIPT_DIR/paths.sh"
 . "$SCRIPT_DIR/frontmatter.sh"
+REFS_ROOT="$YOKAI_REFS_ROOT"
 
 offline=0
 if [ "${1:-}" = "--offline" ]; then offline=1; fi

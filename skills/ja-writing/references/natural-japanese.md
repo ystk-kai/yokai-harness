@@ -6,7 +6,7 @@ distilled_at: 2026-10-29
 
 # natural-japanese 蒸留版
 
-仕事の日本語文書 (議事録・調査レポート・社内ガイド・リサーチメモ・スライド構成・技術記事・PR 説明・エッセイ) を書く・直すための Agent Skill。設計の芯は「検出は機械 (`lint.py`、sudachipy の形態素解析)、直すかどうかの判断はエージェントが文脈で」(README.md「仕組み」、skills/natural-japanese/SKILL.md 冒頭)。**この蒸留版は「規則の根拠と原典の当たり先」の索引**であり、診断・書き直しの手順そのものは姉妹スキル `avoid-ai-slop-ja` が持つ。閾値の数字は主に原典の lint.py コメントと corpus/reports/ の実測から取り、ほかは semantic.py・references/diagnose.md・doctypes の各ファイルから取っている。
+仕事の日本語文書 (議事録・調査レポート・社内ガイド・リサーチメモ・スライド構成・技術記事・PR 説明・エッセイ) を書く・直すための Agent Skill。設計の芯は「検出は機械 (`lint.py`、sudachipy の形態素解析)、直すかどうかの判断はエージェントが文脈で」(README.md「仕組み」、skills/natural-japanese/SKILL.md 冒頭)。**この蒸留版は「規則の根拠と原典の当たり先」の索引**であり、診断・書き直しの手順そのものは姉妹スキル `ja-slop-review` が持つ。閾値の数字は主に原典の lint.py コメントと corpus/reports/ の実測から取り、ほかは semantic.py・references/diagnose.md・doctypes の各ファイルから取っている。
 
 ## Contents
 

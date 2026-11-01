@@ -46,7 +46,7 @@ AI 生成 Web UI を「AI っぽい」と感じさせるパターン。単独で
 - **意味のない motion** — 一律の scroll fade、button の bounce、icon の wiggle、hover での画像 scale/rotate。状態・連続性・注意誘導のどれも説明しない [批評]。各セクションの fade-and-slide-up 入場と全カードの hover transition は Anthropic も「AI 生成に見える既定値」と名指しする
 - **業界別ステレオタイプの複製** — SaaS は Inter + floating dashboard、fintech は紫青グラデ、wellness は muted earth tones、security は navy + shield [批評]
 
-## UI コピー (文章の slop は avoid-ai-slop-ja に委譲。ここは UI 固有分のみ)
+## UI コピー (文章の slop は ja-slop-review に委譲。ここは UI 固有分のみ)
 
 - 汎用 SaaS 動詞: streamline / empower / supercharge / world-class / enterprise-grade
 - 曖昧な野心系見出し: "Build the future of work" / "Your all-in-one platform" / "Scale without limits"

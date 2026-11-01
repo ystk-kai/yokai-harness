@@ -1,0 +1,15 @@
+{
+  "name": "yokai-harness",
+  "description": "yokai-harness のスキル集を配る marketplace",
+  "owner": {
+    "name": "ystk-kai",
+    "url": "https://github.com/ystk-kai"
+  },
+  "plugins": [
+    {
+      "name": "yokai",
+      "source": "./",
+      "description": "ハーネス設計・UI デザイン・日本語文章の参照資料と、AI 臭のレビュー手順"
+    }
+  ]
+}

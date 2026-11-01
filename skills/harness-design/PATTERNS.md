@@ -16,7 +16,7 @@
 3. **転用可能** — 特定製品の使い方でなく、他のハーネスに持ち込める手法として書けること
 4. **出所が 1 行で書ける** — URL + 確認したファイルパス。数値を引くなら撤回の有無まで確認する
 5. **原典 clone を足すほどではない** — 資料全体に継続参照の価値があるなら、ここではなく蒸留版を作る
-   (手順は [../claude-harness-refs-update/DISTILLING.md](../claude-harness-refs-update/DISTILLING.md) の「新規リポジトリの追加」)
+   (手順は yokai-harness の作業コピーの `maintenance/yokai-refs-update/DISTILLING.md` の「新規リポジトリの追加」)
 
 ### 研究論文を出所にするときの追加条件
 

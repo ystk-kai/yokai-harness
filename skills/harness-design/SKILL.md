@@ -1,7 +1,7 @@
 ---
 name: harness-design
-description: LLM ハーネス・プロンプト設計の参照資料を 2 層 (このスキル内の蒸留版 references/*.md と、~/.claude/references/ の原典 clone) で使うためのスキル。プロジェクトのハーネス (CLAUDE.md / AGENTS.md / skills / slash commands / subagents / hooks / MCP 設定) を設計・作成・レビュー・監査するとき、プロンプトエンジニアリング (プロンプトの設計・改善・テクニック選定) を行うとき、エージェントのオーケストレーション構成 (chaining / routing / orchestrator-workers / evaluator-optimizer) や信頼性設計を検討するとき、agent loop・context 圧縮・承認ゲートの実装を設計するときに、まず蒸留版を読み、索引が指す原典ファイルだけを深掘りする。
-compatibility: Requires git and network access to clone/update the reference repos at ~/.claude/references/ (external to the skill directory; run install.sh --with-references)
+description: LLM ハーネス・プロンプト設計の参照資料を 2 層 (このスキル内の蒸留版 references/*.md と、~/.local/share/yokai-harness/references/ の原典 clone) で使うためのスキル。プロジェクトのハーネス (CLAUDE.md / AGENTS.md / skills / slash commands / subagents / hooks / MCP 設定) を設計・作成・レビュー・監査するとき、プロンプトエンジニアリング (プロンプトの設計・改善・テクニック選定) を行うとき、エージェントのオーケストレーション構成 (chaining / routing / orchestrator-workers / evaluator-optimizer) や信頼性設計を検討するとき、agent loop・context 圧縮・承認ゲートの実装を設計するときに、まず蒸留版を読み、索引が指す原典ファイルだけを深掘りする。
+compatibility: Requires git and network access to clone/update the reference repos at ~/.local/share/yokai-harness/references/ (external to the skill directory; run install.sh --with-references)
 ---
 
 # harness-design: ローカル参照資料集の使い方
@@ -21,7 +21,7 @@ compatibility: Requires git and network access to clone/update the reference rep
 
 ## 参照リポジトリ
 
-原典ルート: `~/.claude/references/` (`CLAUDE_CONFIG_DIR` 設定時は `$CLAUDE_CONFIG_DIR/references/`)。
+原典ルート: `$YOKAI_HARNESS_REFS` (未設定なら `${XDG_DATA_HOME:-~/.local/share}/yokai-harness/references/`。以下 `<原典ルート>`)。
 原典 clone がないときは、このリポジトリの `install.sh --with-references` で一括取得する (入手方法は README)。
 各リポジトリの出所 URL は、蒸留版 frontmatter の `source` を唯一の正とする。
 
@@ -63,9 +63,9 @@ UI 生成のデザイン参照 (DESIGN.md 雛形・デザイントークン・�
 ## 鮮度と更新
 
 - 蒸留版 frontmatter の `distilled_commit` が、どのコミット時点の原典に基づくかを示す
-- 鮮度チェックと再蒸留の機構は `claude-harness-refs-update` スキルが一元所有する。このスキルは蒸留版を持つだけで、判定ロジックも更新レシピも持たない
-- チェックのみなら `/claude-harness-refs-update --check` (直接叩くなら `bash skills/claude-harness-refs-update/scripts/check-freshness.sh`。origin を fetch し、1 ファイル 1 行で BEHIND = clone が upstream より古い / STALE = 蒸留版が clone より古い を差分コミット付きで表示。要対応があれば exit 1。`--offline` で fetch 省略)
-- 一連の更新 (チェック → 原典 clone の `git pull` → STALE の再蒸留) は `/claude-harness-refs-update`。構成規約は [../claude-harness-refs-update/DISTILLING.md](../claude-harness-refs-update/DISTILLING.md) が唯一のレシピ (SHA だけの無言 bump をしない)
+- 鮮度チェックと再蒸留の機構は保守スキル `yokai-refs-update` が一元所有する。このスキルは蒸留版を持つだけで、判定ロジックも更新レシピも持たない。保守スキルは yokai-harness の作業コピーを `install.sh` で展開した Claude Code にだけ入る (plugin には入らない)
+- チェックのみなら `/yokai-refs-update --check` (直接叩くなら作業コピーで `bash scripts/check-freshness.sh`。origin を fetch し、1 ファイル 1 行で BEHIND = clone が upstream より古い / STALE = 蒸留版が clone より古い を差分コミット付きで表示。要対応があれば exit 1。`--offline` で fetch 省略)
+- 一連の更新 (チェック → 原典 clone の `git pull` → STALE の再蒸留) は `/yokai-refs-update`。構成規約は yokai-harness の作業コピーの `maintenance/yokai-refs-update/DISTILLING.md` が唯一のレシピ (SHA だけの無言 bump をしない)
 - 監査・レビューの基準として使うときは、使った版の commit SHA を成果物に記録する。ブランチ名は版の識別子にしない
 
 ## 判断の優先順位

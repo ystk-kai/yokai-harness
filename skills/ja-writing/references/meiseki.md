@@ -6,7 +6,7 @@ distilled_at: 2026-10-21
 
 # meiseki 蒸留版
 
-日本語文章の Agent Skill / Claude Code・Codex プラグイン (bamboo-nova 製、package.json 上は v0.10.0)。狙いは「明晰さ (clarity) = 内容を知らない読者が一度読んで正しく理解できること」だけ (.agents/skills/meiseki/SKILL.md §1)。**この蒸留版は「読解負荷を生む構文」と「やさしい日本語」の検出・書き換え規則の索引**として読む。AI 臭の診断と声の回復は姉妹スキル `avoid-ai-slop-ja` の領域で、meiseki は原典自身が「声を足さない」逆方向だと宣言している (README.md 冒頭)。
+日本語文章の Agent Skill / Claude Code・Codex プラグイン (bamboo-nova 製、package.json 上は v0.10.0)。狙いは「明晰さ (clarity) = 内容を知らない読者が一度読んで正しく理解できること」だけ (.agents/skills/meiseki/SKILL.md §1)。**この蒸留版は「読解負荷を生む構文」と「やさしい日本語」の検出・書き換え規則の索引**として読む。AI 臭の診断と声の回復は姉妹スキル `ja-slop-review` の領域で、meiseki は原典自身が「声を足さない」逆方向だと宣言している (README.md 冒頭)。
 
 ## Contents
 

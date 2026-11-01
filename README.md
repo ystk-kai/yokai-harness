@@ -1,126 +1,208 @@
-# claude-harness
+<p align="center">
+  <img src="assets/logo.svg" alt="yokai-harness のロゴ。舌を出した一つ目の提灯お化け" width="132">
+</p>
 
-Claude Code の個人グローバル設定 — スキルと CLAUDE.md の常時ルール — をここで一元管理する。`install.sh` を叩けば、どのマシンの `~/.claude` にも同じ状態が組み上がる。
+<h1 align="center">yokai-harness</h1>
 
-<img src="assets/architecture.svg" alt="claude-harness の全体像" width="100%">
+<p align="center">
+  コーディングエージェントに持たせる個人ハーネス。<br>
+  参照資料のスキルとグローバル指示を 1 つのリポジトリで管理し、Claude Code・Codex・Gemini CLI へ配る。
+</p>
+
+<img src="assets/architecture.svg" alt="yokai-harness の配り方。リポジトリを正本に、plugin か install.sh で Claude Code・Codex・Gemini CLI へ配る。OpenCode と Cursor は skills ディレクトリを自分で読む" width="100%">
 
 ## 収録スキル
 
-| スキル | 用途 | 起動 |
-|---|---|---|
-| `harness-design` | LLM ハーネス・プロンプト設計の参照資料集 (原典 8 本)。蒸留版 → 原典 clone の 2 層で読む。追従しない資料から採った手法は `PATTERNS.md` | 自動 |
-| `ui-design` | UI 生成のデザイン参照資料集 (原典 4 本: DESIGN.md 雛形 / アンチスロップ規律 / デザイントークン仕様 / DESIGN.md 形式仕様)。同じ 2 層 | 自動 |
-| `ja-writing` | 日本語文章の参照資料集 (原典 7 本: AI 臭除去スキル / 構文・読解負荷 / textlint 規則 / 表記・文書種別ガイド)。同じ 2 層 | 自動 |
-| `avoid-ai-slop-ja` | 日本語文章から AI 臭 (slop) を除くレビュー・リライトの手法 | 自動 |
-| `avoid-ai-slop-design` | Web UI・スライド・図解・生成画像の AI 臭検出カタログと処方 (計測研究・学術ソースの出典付き) | 自動 |
-| `claude-harness-refs-update` | 参照資料 (蒸留版と原典 clone) の鮮度チェックと再蒸留。更新機構の所有者 | `/claude-harness-refs-update` |
+配るスキルは [Agent Skills](https://agentskills.io/specification) の形式で書いてあり、仕様にあるフィールドしか使っていない。どのエージェントでも同じものが動く。
 
-「自動」はスキルの `description` に合致した作業で Claude Code が自分で読み込む。更新スキルだけは明示起動専用 (`disable-model-invocation`)。
+| スキル | 種類 | 用途 |
+|---|---|---|
+| `harness-design` | 参照資料 | ハーネス (CLAUDE.md / AGENTS.md / skills / hooks など) とプロンプト、エージェント構成の設計。原典 8 本。採録した単発の手法は `PATTERNS.md` |
+| `ui-design` | 参照資料 | UI のデザイン言語・DESIGN.md 雛形・デザイントークン・日本語の組版と図解。原典 4 本 + 自作の知識ベース |
+| `ja-writing` | 参照資料 | 日本語文書の表記規約・文書種別ごとの構成・textlint 規則・AI 臭の規則の出所。原典 7 本 |
+| `ja-slop-review` | レビュー手順 | 日本語の文章から AI 臭を除くレビューと書き直し |
+| `visual-slop-review` | レビュー手順 | Web UI・スライド・図解・生成画像の AI 臭の検出と処方 |
+
+保守用に `yokai-refs-update` (参照資料の鮮度チェックと再蒸留) がある。このリポジトリの作業コピーを書き換えるスキルなので、`skills/` の外の `maintenance/` に置いている。plugin のキャッシュにはリポジトリごとコピーされるが、スキルとしては読み込まれない。`install.sh` で Claude Code にだけ入り、`/yokai-refs-update` で呼ぶ。
 
 ## 導入
 
-前提は git・bash・Claude Code。
+入れ方は 2 つある。スキルだけ欲しいなら plugin、原典 clone やグローバル指示まで揃えるなら `install.sh`。両方を使うときは、スキルの二重登録を避けるために `install.sh --skills none` にする。
 
-```bash
-git clone https://github.com/ystk-kai/claude-harness.git ~/claude-harness
-~/claude-harness/install.sh --with-references
-```
+### plugin で入れる
 
-`--with-references` を外すと原典 clone (合計 1GB 超。最大は `smarthr-design-system` の約 750MB) を取らない。蒸留版だけでも参照スキルは動くが、索引から原典の該当ファイルを読む経路が使えなくなる。`~/.claude` 以外に展開する環境は `CLAUDE_CONFIG_DIR` を設定して実行する。
-
-### Claude Code に任せる
-
-新しい環境の Claude Code に次を貼ると、clone から検証まで実行してくれる。
+Claude Code:
 
 ```text
-https://github.com/ystk-kai/claude-harness を ~/claude-harness に clone し、
-~/claude-harness/install.sh --with-references を実行してください。
-完了後に次の 3 点を検証して結果を報告してください:
-1. ~/claude-harness/skills/ の各ディレクトリに対応する symlink が ~/.claude/skills/ にあること
-2. ~/.claude/CLAUDE.md に claude-md/ の各ファイルに対応する managed ブロックがあること
-3. bash ~/claude-harness/skills/claude-harness-refs-update/scripts/check-freshness.sh --offline
-   が exit 0 を返すこと (exit 1 なら行頭タグごとに何が要対応か報告する)
+/plugin marketplace add ystk-kai/yokai-harness
+/plugin install yokai@yokai-harness
 ```
 
-## 仕組み
+Codex:
 
-管理対象は 3 種類 + 任意の 1 種。
+```bash
+codex plugin marketplace add ystk-kai/yokai-harness
+codex plugin add yokai@yokai-harness
+```
 
-- `skills/<name>/` — スキル本体 (SKILL.md + 必要に応じて references/・scripts/、スキル固有の補助文書。実例: `harness-design/PATTERNS.md`、`claude-harness-refs-update/DISTILLING.md`)
-- `claude-md/<name>.md` — グローバル CLAUDE.md に常時挿入するルール
-- `settings/global.json` (任意) — `~/.claude/settings.json` にキー単位でマージする設定。**この repo は payload を同梱しない** (有効プラグインや marketplace の一覧は個人環境の情報なので公開しない)。必要な環境でローカルに置くと機構が働く
-- `install.sh` — 冪等な展開スクリプト。何度実行しても同じ状態に収束する
+plugin で入れたスキルは名前空間に入り、`yokai:harness-design` のように呼ばれる。Codex は `install.sh` の symlink 経由でも、リポジトリ直下の `plugin.json` を見て同じ名前で並べる。plugin はスキルしか運ばない。原典 clone とグローバル指示が要るなら、続けて `install.sh --skills none --with-references` を実行する。
 
-`install.sh` は 4 つのことをする (3 は `settings/global.json` を置いた環境だけ)。
+### install.sh で展開する
 
-1. **skills を symlink する** — `skills/*/` を `~/.claude/skills/<name>` へ張る。symlink でない実体が既にある場合は上書きせず、警告してスキップする (手動で退避してから再実行)
-2. **CLAUDE.md にルールを差し込む** — `claude-md/*.md` を `<!-- BEGIN managed:<name> -->` 〜 `<!-- END managed:<name> -->` で囲んで `~/.claude/CLAUDE.md` へ。既存の同名ブロックは位置を問わず取り除き、ファイル末尾に貼り直す。手書き部分は触らない
-3. **settings.json にキーをマージする** — `settings/global.json` に書いたキーだけを `~/.claude/settings.json` へ入れる。`extraKnownMarketplaces` と `enabledPlugins` はキー単位のマージ (既存の他キーは残る)、`hooks` はこの repo の `hooks/` を指す handler だけを剥がしてから貼り直す (再実行しても重複しない。現在この repo は hook を収録していないので、過去に入れた分の掃除だけが働く)。`{{REPO_DIR}}` は絶対パスへ置換される。内容が変わるときだけ書き、直前の内容を `settings.json.pre-claude-harness.bak` に残す (ユーザー自身の `.bak` を潰さないため専用の接尾辞を使う)。`jq` が無い環境ではこの手順だけスキップする。壊れた JSON やトップレベルが object でない `settings.json` は、生の jq エラーになる前に中断する
-4. **原典を clone する (`--with-references` 指定時のみ)** — 各スキルの `references/*.md` の frontmatter にある `source` URL を `~/.claude/references/<repo>/` へ `git clone --filter=blob:none` で取得する。blob は必要時取得だが履歴は完全なので、鮮度チェックの差分表示がそのまま動く
+前提は git と bash。
 
-`--with-references` は第 1 引数のときだけ効く (`install.sh --foo --with-references` は無視される)。clone 済みのディレクトリは再取得しない — 原典の更新は `/claude-harness-refs-update` の仕事。
+```bash
+git clone https://github.com/ystk-kai/yokai-harness.git ~/yokai-harness
+~/yokai-harness/install.sh --targets claude,codex --with-references
+```
 
-`--with-references` の実行ごとに、clone 済みのものも含めて `.claude/skills` を worktree から外す (sparse-checkout)。原典を置いただけで第三者のスキルがディレクトリスコープで自動登録されるのを防ぐため。中身が必要なら `git -C <clone> show HEAD:.claude/skills/...` で読める。`.claude/{agents,commands,hooks,settings.json,rules}` は入れ子では自動ロードされないので残してあり、実例として読める。
+| オプション | 意味 |
+|---|---|
+| `--targets <list>` | 展開先。`claude` / `codex` / `gemini` をカンマで並べる。`auto` は前回の値に PATH にある CLI を足す (減らさない)。省略すると前回の値。前回の記録が無ければ、指示ファイルに残ったブロックから推定し、それも無ければ `claude` だけ。減らすときは明示して指定する |
+| `--skills link` / `none` | `link` (既定) は skills を symlink する。plugin と併用するときは `none` |
+| `--with-references` | 原典を clone する (合計 1GB 超。最大は `smarthr-design-system` の約 750MB)。外しても蒸留版だけでスキルは動くが、索引から原典を開く経路が使えない |
 
-スキル本体は symlink なので、内容の変更は `git pull` だけで全環境に反映される。`install.sh` の再実行が要るのは、スキルを追加・改名したときと `claude-md/` を変えたときだけ。
+選んだ対象とスキルの入れ方は `~/.local/state/yokai-harness/install.conf` に残り、次の実行で引き継ぐ。Claude Code だけを使う環境では、オプションなしで実行すれば Claude 以外には何も書かない。
+
+エージェントごとの展開先:
+
+| 対象 | skills | グローバル指示 | ほかに入るもの |
+|---|---|---|---|
+| `claude` | `${CLAUDE_CONFIG_DIR:-~/.claude}/skills/` | `~/.claude/CLAUDE.md` | 保守スキル、`settings/global.json` のマージ |
+| `codex` | `~/.agents/skills/` | `${CODEX_HOME:-~/.codex}/AGENTS.md` | — |
+| `gemini` | `~/.agents/skills/` | `~/.gemini/GEMINI.md` | — |
+
+OpenCode と Cursor は対象に入れなくてよい。どちらも `~/.claude/skills/` と `~/.agents/skills/` を自分で読み、OpenCode は自前の AGENTS.md が無ければ `~/.claude/CLAUDE.md` も読む。そのため `claude` と `codex` (か `gemini`) を両方選ぶと、この 2 つには同じスキルが 2 か所から見える。OpenCode の公式ドキュメントは、スキル名をすべての置き場で一意にするよう求めている。OpenCode は `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` で `~/.claude/skills/` 側を止められる。Cursor での見え方は確かめていない。
+
+### エージェントに任せる
+
+新しい環境のエージェントに次を貼ると、clone から検証まで進めてくれる。
+
+```text
+https://github.com/ystk-kai/yokai-harness を ~/yokai-harness に clone し、
+~/yokai-harness/install.sh --targets auto --with-references を実行してください。
+完了後に次の 3 点を確かめて報告してください:
+1. 選ばれた対象の skills ディレクトリに、~/yokai-harness/skills/ の各スキルへの symlink があること
+2. 選ばれた対象の指示ファイルに <!-- BEGIN yokai-harness:reference-routing --> のブロックがあること
+3. bash ~/yokai-harness/scripts/check-freshness.sh --offline の出力に MISS と ERR が無いこと
+   (clone した直後は原典が蒸留時より進んでいて STALE が出ることがある。それは更新待ちで、導入の失敗ではない)
+```
+
+## install.sh がすること
+
+何度実行しても同じ状態に収束する。手で書いた部分と、ほかのツールが置いたものには触らない。
+
+1. **skills を symlink する** — `skills/*/` を対象の skills ディレクトリへ張る。同じ名前で実体や、ほかの場所を指す symlink が置かれていたら、上書きせずにスキップする。刈るのは、このリポジトリ (か改名前の claude-harness) が張ったと分かる symlink のうち、消えたスキル・旧名・対象から外したエージェントの分だけ。リンク名とリンク先の名前が違うもの (自分で付けた別名など) には触らない
+2. **指示ファイルにブロックを貼る** — `instructions/<name>.md` を `<!-- BEGIN yokai-harness:<name> -->` 〜 `<!-- END yokai-harness:<name> -->` で囲み、対象の指示ファイルの末尾に貼る。先に yokai-harness のブロックを全部剥がしてから貼り直すので、消えた instructions のブロックも残らない。BEGIN と END の対応が崩れていたら、何も書かずに中断する
+3. **settings.json にキーをマージする (claude のみ)** — `settings/global.json` をローカルに置いた環境だけで動く。この repo は payload を同梱しない (有効プラグインや marketplace の一覧は個人環境の情報なので)。`jq` が要る
+4. **原典を clone する (`--with-references`)** — 蒸留版の frontmatter の `source` から `~/.local/share/yokai-harness/references/<repo>/` へ `git clone --filter=blob:none` する。原典に入っている `.claude/skills` は sparse-checkout で worktree から外す。原典を置いただけで第三者のスキルがディレクトリスコープで自動登録されるのを防ぐため
+
+書き換える前の指示ファイルと settings.json は、`<元の名前>.pre-yokai-harness.<日時>.bak` に残す。前の世代は上書きしない。
+
+書き込む前に、全部の指示ファイルの marker を検査する。対象の指示ファイルで BEGIN と END の対応が崩れていたら、どのファイルも書き換えずに止まる。コードフェンスの中に書いた marker の行は、手書きの説明として扱って触らない。選んだ対象の記録は、全部を適用し終えてから保存する。
+
+旧版 (claude-harness) からの移行も同じ実行で済む。`~/.claude/references/` の実体を新しい置き場へ移し、旧パスには移行用の symlink を残す。旧名のスキルの symlink と旧形式の `managed:harness-design` ブロックは掃除する。
 
 ### 管理しないもの
 
-`~/.claude` を丸ごと再現するツールではない。意図的に対象外にしているもの:
+`~/.claude` や `~/.codex` を丸ごと再現するツールではない。次のものは意図して対象から外している。
 
-- **`permissions` と sandbox 系の settings** — 環境ごとに違ってよく、repo が上書きすると権限昇格の事故につながる。`permissions.defaultMode` のような user スコープ限定キーはとくに手で管理する
-- **`effortLevel` / `theme` / `tui` などの個人設定** — マシンごとに変えたいもの
-- **`~/.claude/agents/` `~/.claude/memory/` `~/.claude/tasks/`** — 個人状態、またはプロジェクト横断の調整に使うもの
-- **この repo が置いていないスキル** — `~/.claude/skills/` に実体で置いたスキルや、plugin marketplace 由来のスキルは触らない
-- **有効プラグインと marketplace の一覧** — 個人環境の情報なので公開 repo に載せない。`settings/global.json` をローカルに置けば機構は使えるが、この repo は同梱しない
-
-つまり新しいマシンで復元されるのは `skills/` と `claude-md/` だけ。それ以外は手で揃える。
+- **permissions と sandbox 系の設定** — 環境ごとに違ってよく、repo が上書きすると権限昇格の事故につながる
+- **effortLevel・theme・model などの個人設定** — マシンごとに変えたいもの
+- **agents・memory・tasks** — 個人の状態や、プロジェクトをまたぐ調整に使うもの
+- **この repo が置いていないスキル** — 実体で置いたスキルや、ほかの marketplace から入れたスキルには触らない
 
 ## 参照資料の 2 層構成
 
-原典リポジトリの実体はこのツリーに含めず、蒸留版 frontmatter の `source` URL から clone して復元する。
+<img src="assets/references.svg" alt="参照資料の 2 層と更新の流れ。スキルはまず蒸留版を読み、索引が指す原典だけを読む。yokai-refs-update が鮮度チェック、pull、再蒸留、取り込み候補の記録を順に行う" width="100%">
 
-- **蒸留版** — `skills/{harness-design,ui-design,ja-writing}/references/*.md`。要点と索引を 250 行以内にまとめたもの。`source` が repo リストの唯一の正、`distilled_commit` が蒸留時点の原典 SHA
-- **原典** — `~/.claude/references/<repo>/`。全文。蒸留版と食い違ったら原典が正
-- **更新機構** — `skills/claude-harness-refs-update/` が一元所有する。`scripts/check-freshness.sh` が検出、`DISTILLING.md` が構成規約と再蒸留の手順、`ADOPTION.md` が「原典の変更を自分のハーネスに取り込むか」の判断台帳、`scripts/frontmatter.sh` は `install.sh` と共用のパーサ
+- **蒸留版** — `skills/{harness-design,ui-design,ja-writing}/references/*.md`。要点と索引を 250 行以内にまとめたもの。frontmatter の `source` が原典の URL の唯一の正で、`distilled_commit` が蒸留した時点の SHA
+- **原典** — `$YOKAI_HARNESS_REFS` (既定 `~/.local/share/yokai-harness/references/<repo>/`)。全文。蒸留版と食い違ったら原典が正
 
-鮮度チェックは `bash skills/claude-harness-refs-update/scripts/check-freshness.sh`。1 ファイル 1 行で、行頭タグが次にやることを示す — `BEHIND` (clone を pull)、`STALE` (蒸留版を再蒸留)、`REVIEW` (出所 clone を持たない知識ベースの棚卸し期限切れ)、`DEAD` (蒸留版の索引が指す原典ファイルが clone の HEAD に無い。索引を直す)、`OK`、`MISS` / `ERR` / `NOTE`。要対応があれば exit 1。`--offline` で fetch を省略できる。BEHIND と STALE が同時に立つ repo は pull が先なので `BEHIND` 行だけが出る。
+鮮度チェックは `bash scripts/check-freshness.sh`。1 ファイル 1 行で、行頭のタグが次にやることを示す。
 
-`skills/*/references/*.md` の frontmatter は 3 形式のいずれかを取り、**どれでもないものは `ERR`** になる。frontmatter が無いだけで無言に対象外にはしない — 「意図的な非追従」と「壊れた蒸留版」が区別できなくなるため。
+| タグ | 状態 | やること |
+|---|---|---|
+| `BEHIND` | clone が upstream より古い | pull する |
+| `STALE` | 蒸留版が clone より古い | 再蒸留する |
+| `REVIEW` | 出所 clone を持たない知識ベースの棚卸し期限切れ | 中身を見直す |
+| `DEAD` | 蒸留版の索引が指す原典ファイルが clone の HEAD に無い | 索引を直す |
+| `OK` / `MISS` / `ERR` / `NOTE` | 最新 / clone が無い / frontmatter か SHA が解決できない / 判定できなかった | — |
+
+要対応があれば exit 1 を返す。`--offline` で fetch を省く。BEHIND と STALE が同時に立つ repo は pull が先なので、`BEHIND` 行だけが出る。
+
+`skills/*/references/*.md` の frontmatter は次の 3 形式のどれかを取る。どれでもないものは `ERR` にする。frontmatter が無いだけで黙って対象外にすると、意図した非追従と壊れた蒸留版の区別がつかなくなるため。
 
 | 形式 | キー | 用途 |
 |---|---|---|
 | 蒸留版 | `source` + `distilled_commit` + `distilled_at` | 原典 clone を SHA で追従する |
-| 知識ベース | `tracking: review` + `reviewed_at` + `review_interval_days` | 出所 clone を持たない自作の調査資料 (`avoid-ai-slop-*` の references) |
+| 知識ベース | `tracking: review` + `reviewed_at` + `review_interval_days` | 出所 clone を持たない自作の調査資料 (`*-slop-review` の references) |
 | 対象外 | `tracking: none` | 鮮度管理しないと明示するもの |
 
-チェックから更新まで一括で回すなら `/claude-harness-refs-update` — 鮮度チェック → BEHIND の `git pull` → STALE の再蒸留 → REVIEW の棚卸し → 取り込み候補の照合を順に実行する。`--check` でチェックのみ、repo 名を渡すとその repo だけを対象にする。更新の入口はこのコマンド 1 つに集約してある。
+チェックから更新まで一括で回すなら、作業コピーを展開した Claude Code で `/yokai-refs-update` を実行する。鮮度チェック → BEHIND の pull → STALE の再蒸留 → REVIEW の棚卸し → 取り込み候補の照合の順に進む。`--check` でチェックだけ、repo 名を渡すとその repo だけを対象にする。
 
-蒸留版の SHA を進めても、このハーネス自身は自動では直らない。その落差を埋めるのが最後の段で、再蒸留した各サブエージェントが `BREAKING` (今の書き方が壊れている) / `RECOMMENDED` / `FYI` の 3 段で取り込み候補を返し、**実ハーネスに grep で当ててから** [ADOPTION.md](skills/claude-harness-refs-update/ADOPTION.md) に記録する。当たらなかったものは `FYI` に落として却下理由付きで残す — 消すと同じ候補が毎回上がってくる。未対応項目は次回の run でも提示される。
+蒸留版の SHA を進めても、このハーネス自体は自動では直らない。そこで再蒸留した各サブエージェントが、取り込み候補を `BREAKING` (今の書き方が壊れている) / `RECOMMENDED` / `FYI` の 3 段で返す。候補は実際のハーネスに grep で当ててから [ADOPTION.md](maintenance/yokai-refs-update/ADOPTION.md) に記録する。当たらなかったものも、却下の理由を付けて `FYI` で残す。消すと、同じ候補が毎回上がってくる。
 
-参照リポジトリを増やすときは、蒸留版を `skills/<skill>/references/<clone ディレクトリ名>.md` として 1 ファイル作り、そのスキルの SKILL.md の表に行を足す。`check-freshness.sh` と `install.sh` はどちらも `skills/*/references/*.md` をスキル横断で走査するので、置き場所が合っていれば自動で対象になる。詳しい規約は [DISTILLING.md](skills/claude-harness-refs-update/DISTILLING.md)。
+参照リポジトリを増やすときは、蒸留版を `skills/<skill>/references/<clone ディレクトリ名>.md` として 1 ファイル作り、そのスキルの SKILL.md の表に行を足す。`check-freshness.sh` と `install.sh` はどちらも `skills/*/references/*.md` をスキル横断で見るので、置き場所が合っていれば自動で対象になる。規約は [DISTILLING.md](maintenance/yokai-refs-update/DISTILLING.md)。
 
-### 追従しない資料から手法だけ採る
+継続して追うほどではない資料 (探索索引の先・記事・論文・製品リポジトリ) から単発の手法だけ採るときは、蒸留版を作らず [PATTERNS.md](skills/harness-design/PATTERNS.md) に 1 項目 = 1 手法 + 出所 1 行で足す。採録の条件と退出の規約は同ファイルが持つ。
 
-継続追従するほどではない資料 (探索索引の先・記事・製品リポジトリ) にも、単発で使える手法はある。この場合は蒸留版も原典 clone も作らず、[skills/harness-design/PATTERNS.md](skills/harness-design/PATTERNS.md) に 1 項目 = 1 手法 + 出所 1 行で足す。資料本体は追わない。
+## 命名規則
 
-採録ゲート 5 条件 (既存蒸留版と非重複 / 実読確認 / 転用可能 / 出所明記 / 蒸留版を作るほどではない) と退出規約 (公式資料や蒸留版に同等以上の記述が現れたら削除して蒸留版へ寄せる) は同ファイルが自己所有する。`references/` の外に置いてあるため `check-freshness.sh` と `install.sh` の走査対象外で、鮮度管理の対象にもならない。
+| 対象 | 規則 | 例 |
+|---|---|---|
+| リポジトリ・marketplace | `yokai-harness` | `yokai@yokai-harness` |
+| plugin | `yokai`。スキルの名前空間になる | `yokai:ui-design` |
+| 配るスキル | `<領域>-<役割>`。領域は `harness` / `ui` / `ja` / `visual`、役割は参照資料なら `design` / `writing`、レビュー手順なら `slop-review`。名前空間は plugin が付けるので、スキル名には `yokai` を入れない | `ja-writing`, `ja-slop-review` |
+| 保守スキル | `yokai-<動作>`。plugin の外で symlink され名前空間を持たないので、`yokai-` で始めて出所を示す | `yokai-refs-update` |
+| グローバル指示 | `instructions/<中身>.md`。ファイル名がブロック名になる | `reference-routing` → `yokai-harness:reference-routing` |
+| 環境変数・置き場 | `YOKAI_HARNESS_*`、XDG のディレクトリの下の `yokai-harness/` | `YOKAI_HARNESS_REFS`, `~/.local/state/yokai-harness/` |
+
+スキル名は Agent Skills 仕様に従い、英小文字・数字・ハイフンで 64 字まで、ディレクトリ名と一致させる。
 
 ## スキルを増やす・外す
 
 増やすとき:
 
-1. `skills/<name>/SKILL.md` を書く (Agent Skills 標準の構成: SKILL.md + 必要に応じて references/・scripts/)。memory などの外部状態に依存させず `references/` で自己完結させる。外部依存が避けられない場合は frontmatter の `compatibility` に書く
-2. 常時ルール化したいスキルだけ `claude-md/<name>.md` を足す
-3. `install.sh` を再実行する
+1. `skills/<name>/SKILL.md` を書く。frontmatter は Agent Skills 仕様の 6 フィールド (`name` / `description` / `license` / `compatibility` / `metadata` / `allowed-tools`) に限る。Claude Code だけのフィールドはほかのエージェントでは効かず、claude.ai への upload では弾かれる
+2. 外部の状態に頼らず、`references/` で自己完結させる。避けられない外部依存は `compatibility` に書く
+3. 常時ルールにしたいものだけ `instructions/<name>.md` を足す
+4. `install.sh` を再実行する。plugin の利用者に届けるには、`plugin.json` の `version` も上げる。Codex の利用者は `codex plugin add yokai@yokai-harness` を実行し直すと新しい内容を受け取る
 
-外すとき・改名するときは手動の掃除が要る。`install.sh` は消えたスキルの symlink も、消えた `claude-md/` の managed ブロックも刈らない。`rm ~/.claude/skills/<旧名>` と CLAUDE.md の該当ブロック削除を自分でやってから再実行する (改名後の残骸は dangling symlink になる)。
+外すとき・改名するときは、ディレクトリを消すか `git mv` してから `install.sh` を再実行する。古い symlink とブロックは `install.sh` が刈る。改名したら、命名規則の表と、スキル名を書いている箇所 (`instructions/`・各 SKILL.md の相互参照) も直す。
 
-## 設計メモ: 原典 clone をスキルディレクトリ内に置かない理由
+## 設計メモ
 
-[Agent Skills 標準](https://agentskills.io/specification) の `references/` は、そのスキルのために書かれた focused な文書を置く場所と定義されている。一方ここで扱う原典は外部リポジトリの丸ごと clone (合計 1GB 超・第三者ライセンス・`git pull` で独立に更新) で、性質が違う。そのため:
+### 原典 clone をスキルの外に置く
 
-- 外部 clone (生データ) は共有コーパスとして `~/.claude/references/` に外出しする。スキル配布時に第三者リポジトリを同梱せずに済み、CLAUDE.md ルールや他スキルからも共有できる
-- スキル外パスへの依存は SKILL.md の `compatibility` フィールド (標準仕様の宣言用フィールド) で明示する
-- 自作の蒸留資料は標準どおり `skills/<skill>/references/` に置き、SKILL.md から 1 階層でリンクする。通常の参照は蒸留版で完結させ、原典の全文走査による入力トークンの肥大化を避ける
-- 原典と 1:1 対応しない自作文書 (`PATTERNS.md` 等) は `references/` に入れずスキル直下に置く。`harness-design/references/` を蒸留版だけの場所に保ち、「frontmatter の `source` が repo リストの唯一の正」という規約を崩さないため。走査スクリプトは `source` 無しのファイルを無言で飛ばすので技術的には同居できるが、置くと人間側の読み分けが曖昧になる
+Agent Skills 仕様の `references/` は、そのスキルのために書いた文書を置く場所になっている。ここで扱う原典は外部リポジトリの丸ごとの clone (合計 1GB 超・第三者のライセンス・`git pull` で独立に更新) で、性質が違う。
+
+- 外部 clone は共有コーパスとして `~/.local/share/yokai-harness/references/` に置く。スキルや plugin に第三者のリポジトリを同梱せずに済み、どのエージェントからも同じ場所を読める。特定のエージェントの設定ディレクトリに置かないのは、そのエージェントを使わない環境にまで設定ディレクトリを作らないため
+- スキルの外への依存は、SKILL.md の `compatibility` に書く
+- 自作の蒸留資料は `skills/<skill>/references/` に置き、SKILL.md から 1 階層でリンクする。ふだんは蒸留版で足り、原典の全文を読みにいく入力トークンを抑えられる
+- 原典と 1 対 1 に対応しない自作文書 (`PATTERNS.md` など) は `references/` に入れず、スキルの直下に置く。`references/` を蒸留版だけの場所に保ち、「frontmatter の `source` が repo リストの唯一の正」という規約を崩さないため
+
+### グローバル指示は import でなく書き写す
+
+1 つの AGENTS.md を各エージェントから import する形も取れる。ただし Claude Code は Cowork のセッションでユーザー単位の指示ファイルから作業ディレクトリ外への import を飛ばし、Codex の公式ドキュメントには import の記述が無い。どのエージェントでも確実に効く形として、同じ中身を各指示ファイルへ managed ブロックで書き写している。
+
+### plugin に入れるものと入れないもの
+
+plugin はインストール時にキャッシュへコピーされ、更新のたびに置き場所が変わる。plugin 直下の CLAUDE.md も読まれない。そのため plugin で読み込ませるのはスキルだけにし、作業コピーを書き換える保守スキルと、原典 clone・グローバル指示は `install.sh` の担当にしている。plugin の source はリポジトリ直下 (`./`) なので、`maintenance/` や `install.sh` もキャッシュにコピーされる。読み込まれるのは `skills/` だけ。同じ理由で、Codex の marketplace を `--sparse` で追加すると plugin 本体が欠ける。
+
+Claude Code 用の `.claude-plugin/plugin.json` には `version` を書いていない。書くと利用者がその版に留まり、蒸留版の更新が届かなくなるため。Codex 用の `plugin.json` には `version` を書いている。codex-cli 0.165 は version ごとにキャッシュを分け、書かないと `1.0.0` 扱いになった。ただし同じ version のままでも、`codex plugin add` を実行し直せば中身は上書きされる。公式ドキュメントにはローカルの plugin の version は `local` とあり、手元の挙動と食い違っている。
+
+### 図とロゴ
+
+図は `assets/src/` の SVG が原稿で、`assets/build.py` が図に出てくる字だけを Noto Sans JP から切り出して埋め込む。GitHub の閲覧環境に日本語フォントがあるとは限らないため。フォントのライセンス (SIL OFL 1.1) は [assets/fonts/OFL.txt](assets/fonts/OFL.txt)。図を直したら次で作り直す。
+
+```bash
+curl -L -o NotoSansJP.ttf 'https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf'
+python3 assets/build.py NotoSansJP.ttf
+```
+
+各社のロゴは商標なので図に使わず、名前で示している。
+
+## ライセンス
+
+MIT ([LICENSE](LICENSE))。蒸留版は第三者の原典を要約したもので、原典ごとのライセンスと扱い (`12-factor-agents` の蒸留版は CC BY-SA 4.0) は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) にまとめた。図に埋め込んだ Noto Sans JP は SIL OFL 1.1。

@@ -225,7 +225,7 @@ pre, code { text-autospace: no-autospace; }  /* 和欧間アキは既定で入�
   必要になったら CSS Writing Modes と JLREQ (W3C 日本語組版処理の要件) を直接当たる
 - **IME 変換確定の Enter による誤送信**。組版ではなく入力処理だが、「Enter で送信」する日本語 UI では
   必ず `KeyboardEvent.isComposing` でガードする
-- 日本語の**文章そのもの**の品質 (AI っぽい文体・語彙) は姉妹スキル `avoid-ai-slop-ja` が担当する
+- 日本語の**文章そのもの**の品質 (AI っぽい文体・語彙) は姉妹スキル `ja-slop-review` が担当する
 - 中国語・韓国語の組版。CJK と一括りにせず対応言語を個別に確認する (`auto-phrase` は現状 日本語のみ)
 
 ## 棚卸しの当たり先

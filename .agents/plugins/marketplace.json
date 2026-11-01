@@ -1,0 +1,12 @@
+{
+  "name": "yokai-harness",
+  "interface": { "displayName": "yokai-harness" },
+  "plugins": [
+    {
+      "name": "yokai",
+      "source": { "source": "local", "path": "./" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}

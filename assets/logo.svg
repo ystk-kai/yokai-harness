@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -33 512 512" role="img" aria-labelledby="t">
+  <title id="t">yokai-harness のロゴ (一つ目の提灯お化け)</title>
+  <!-- 墨・和紙・朱の 3 色だけで描く。輪郭は太め、塗りは平らに -->
+  <g fill="none" stroke="#2b2622" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 吊り手 -->
+    <path d="M256 34 v38" stroke-width="12"/>
+    <circle cx="256" cy="30" r="14" stroke-width="10"/>
+  </g>
+  <!-- 胴 (和紙) -->
+  <path d="M150 112 C 98 186, 98 330, 150 404 L 362 404 C 414 330, 414 186, 362 112 Z"
+        fill="#f4e6c8" stroke="#2b2622" stroke-width="12" stroke-linejoin="round"/>
+  <!-- 竹ひご: 胴のふくらみに沿って弧を描く -->
+  <g fill="none" stroke="#2b2622" stroke-width="5" stroke-linecap="round" opacity="0.45">
+    <path d="M128 160 Q 256 176 384 160"/>
+    <path d="M114 206 Q 256 224 398 206"/>
+  </g>
+  <!-- 上下の口金 -->
+  <rect x="168" y="88" width="176" height="34" rx="8" fill="#2b2622"/>
+  <rect x="168" y="394" width="176" height="34" rx="8" fill="#2b2622"/>
+  <!-- 一つ目 -->
+  <ellipse cx="226" cy="250" rx="46" ry="40" fill="#fffaf0" stroke="#2b2622" stroke-width="10"/>
+  <circle cx="240" cy="254" r="17" fill="#2b2622"/>
+  <circle cx="246" cy="247" r="5" fill="#fffaf0"/>
+  <!-- 裂けた口と舌: 胴の紙が横に裂けて口になる -->
+  <path d="M152 300 L 184 292 L 206 306 L 232 292 L 258 306 L 284 292 L 310 306 L 334 292 L 360 300
+           C 352 352, 300 376, 256 376 C 212 376, 160 352, 152 300 Z"
+        fill="#2b2622" stroke="#2b2622" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M236 340 C 228 384, 248 430, 282 428 C 312 426, 318 392, 300 352 Z" fill="#c8442c" stroke="#2b2622" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M268 362 C 268 386, 276 404, 288 408" fill="none" stroke="#8f2a1a" stroke-width="5" stroke-linecap="round"/>
+</svg>

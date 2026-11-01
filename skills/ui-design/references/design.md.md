@@ -129,7 +129,7 @@ Google Labs が 2026-04 に Apache-2.0 で公開した **DESIGN.md 形式の規�
 | DESIGN.md の**形式**が正しいか (キー名・セクション順・component プロパティ) | この仕様 (`docs/spec.md`)。機械検査は `npx @google/design.md lint` |
 | **トークンの型・命名**の可否 | DTCG (`community-group/`) が正。DESIGN.md はその写像 (`export --format dtcg` で変換できる) |
 | どんな**雰囲気**を作るか (既存ブランドの言語) | `awesome-design-md/` の DESIGN.md 集 |
-| 生成物が**既定値に落ちていないか** | `hallmark/` の生成規律 + `avoid-ai-slop-design` スキル。加えて本仕様の `PHILOSOPHY.md` (具体的参照物・negative constraints) と lint の warning 群 |
+| 生成物が**既定値に落ちていないか** | `hallmark/` の生成規律 + `visual-slop-review` スキル。加えて本仕様の `PHILOSOPHY.md` (具体的参照物・negative constraints) と lint の warning 群 |
 
 ## 蒸留の範囲外
 

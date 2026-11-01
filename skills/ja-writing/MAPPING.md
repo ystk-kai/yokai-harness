@@ -1,16 +1,16 @@
-# MAPPING: 原典の規則と avoid-ai-slop-ja の対応表
+# MAPPING: 原典の規則と ja-slop-review の対応表
 
 自作の対応表。蒸留版 (`references/*.md`) は「原典に何が書いてあるか」の地図に限り、こちらは「原典の規則が
-`avoid-ai-slop-ja` のどこに入っているか / 入っていないか」を持つ。蒸留版と違い、**原典の SHA ではなく
-`avoid-ai-slop-ja` 側の変更で古くなる**ので鮮度チェックには乗らない。
+`ja-slop-review` のどこに入っているか / 入っていないか」を持つ。蒸留版と違い、**原典の SHA ではなく
+`ja-slop-review` 側の変更で古くなる**ので鮮度チェックには乗らない。
 
 見直すタイミング:
 
-- `avoid-ai-slop-ja` の SKILL.md / references を直したとき (取り込み候補を反映したときを含む)
+- `ja-slop-review` の SKILL.md / references を直したとき (取り込み候補を反映したときを含む)
 - 対応表を持つ原典 (`stop-ai-slop-jp` / `textlint-rule-preset-ja-technical-writing`) を再蒸留したとき
 
 作成時点: 2026-10-16 (`stop-ai-slop-jp` `e09d327` / `textlint-rule-preset-ja-technical-writing` `5e73caa` と照合)。
-2026-10-17: `avoid-ai-slop-ja` に修正モード・意味検算・修正の優先順位・構造パターン §11〜13・banlist の頻度原則を反映し、各表を更新。
+2026-10-17: `ja-slop-review` に修正モード・意味検算・修正の優先順位・構造パターン §11〜13・banlist の頻度原則を反映し、各表を更新。
 2026-10-19: banlist に yomiyasu 由来の語彙 (チャット応答の名残・仮置きの残り・表示されない太字・大げさな役割名・英語直訳) と修正時の絵文字の扱い (natural-japanese) を、syntax-patterns §12・13 に間を作るだけの読点・数値の目安・成り立たない比喩を足し、banlist と syntax-patterns の行と textlint 表を更新。
 2026-10-21: yomiyasu v2.1.0 / 2.1.1 (`fbe02c9`) から、修正時の確度に許可・能力・義務・保証を含める規則 (SKILL.md 手順 0)、意味検算に概数の印・どれか一つと全部・相関から因果を足し (手順 7)、syntax-patterns §12 に目的語の抜け・主題の掛かる範囲・前置きのない「〜のは、A、B、C。」を足して、SKILL.md § Process と syntax-patterns の行を更新。
 2026-10-22: natural-japanese (`a708403`) から、分野の呼び名からずれた 1 語 (「入口」「要求」「効く」) を syntax-patterns §13 に、別コンテキストの読み手に A/B の 2 種だけ挙げさせる確認を SKILL.md 手順 6 に足し、§10 の例「この環境では効く」を差し替え、syntax-patterns の行を更新。
@@ -21,11 +21,11 @@
 2026-10-28: natural-japanese v1.6.3 (`c7dd502`) から、語の組み合わせのずれが和語に開きすぎる向きにも起きること (SKILL.md §3 の 5 と確認手順、`8c1e88e`) を syntax-patterns §13 に足して §12 の和語の連用形の項から参照を張り、ふだんの外来語を漢語に言い換えない歯止め (SKILL.md §5 読みやすさの点検 3、`86cca92`) を banlist Tier 2「意味の薄いカタカナ語」に足して、banlist と syntax-patterns の行を更新。
 2026-10-29: natural-japanese v1.6.4 (`25a8638`) から、中身を詰め込んだ括弧 (文・話の中身の列挙・呼び名の取り決めが入った括弧) の直し方 (まず前の文に入れる、入らないときだけ同じ主語の続きの一文にする、受け直すだけの文・関係を決める言葉を足さない、短い括弧・数値や出典の括弧・エッセイの余談の括弧は残す) と、新しく書くときに括弧に入れてよいもの (SKILL.md §3「いつでも直すもの」・§2 文の整え方、`56b8b53`・`8d5a5be`・`94f8d16`・`5e3fe13`) を syntax-patterns §12 に足し、banlist Tier 1「全角ダッシュ」の置き換え先の括弧を読点も句点もない短い補足に限って §12 へ参照を張り、banlist と syntax-patterns の行を更新。
 
-## stop-ai-slop-jp → avoid-ai-slop-ja
+## stop-ai-slop-jp → ja-slop-review
 
-`avoid-ai-slop-ja` は原典の大原則・5 軸採点・構造/語彙の大半を英語見出しの散文スキルに組み替え、**文書種別による抑制**と **over-fix (過剰修正) への歯止め**を独自に足したもの。対照は `avoid-ai-slop-ja` 側の各ファイル を本 clone と突き合わせた結果。
+`ja-slop-review` は原典の大原則・5 軸採点・構造/語彙の大半を英語見出しの散文スキルに組み替え、**文書種別による抑制**と **over-fix (過剰修正) への歯止め**を独自に足したもの。対照は `ja-slop-review` 側の各ファイル を本 clone と突き合わせた結果。
 
-| avoid-ai-slop-ja 側 | 原典の対応箇所 | 独自に足された・変えられた部分 |
+| ja-slop-review 側 | 原典の対応箇所 | 独自に足された・変えられた部分 |
 |---|---|---|
 | SKILL.md 冒頭〜§ When not to run | SKILL.md § 大原則 (3 問はほぼそのまま) | 3 問を 5 軸の前倒しと位置づけ衝突時は 5 軸優先 / formal 文書では「書き手 = 組織の立場」/ 体験の捏造禁止 (以上 § First principle) / 検出器が当てにならないという前提 (冒頭) / Quick path / When not to run / 1 文書 1 回まで (いずれも原典に無い) |
 | SKILL.md § Process | SKILL.md § 修正の優先順位 | 原典の「立場 → 主体 → 構造 → 語彙 → 記号」と「語彙・記号だけ直しても残る」を手順 3 に取り込み、構文チェックを banlist より前に置いた。独自: 手順 0 の新規 / 修正の分岐と修正時の不増補、手順 0 の好みの言い換えをしない規則 (natural-japanese v1.6.2 `9d3fd3b` の SKILL.md §3)、手順 0 の確度に許可・能力・義務・保証を含める規則と手順 7 の意味検算 (概数の印・どれか一つと全部・相関から因果、原文に無い人や担当の追加 (yomiyasu v2.4.0 `ae258d7` の review-points.md) を含む)、手順 6 の呼び名の確認 (候補の洗い出しと、書き手自身が当てる 2 つの問い。natural-japanese `45ef3a0` の SKILL.md §6 と yomiyasu calques.md § 2 由来で、原典 stop-ai-slop-jp には無い。2026-10-22 に入れた別コンテキストの読み手は、natural-japanese が `10bea80` で references/reader-check.md ごと外したので除いた) |
@@ -36,16 +36,16 @@
 | references/rewrite-examples.md | 対応なし (examples.md の 17 例は 1 本も移していない) | 5 例すべて独自 (ブリーフィング・セキュリティ題材)。D は新規執筆と修正時の 2 通りの fix、E は敬体を保つ fix に改めた。各例に over-fix 欄を持つのは原典に無い型 |
 | references/document-types.md | 対応なし | 全体が独自。原典は個人記事前提で文書種別の規定を持たない。毒・誤字・カジュアル一人称を formal 文書で除外し、「わざとの誤字運用は避ける」とする |
 
-原典にあって `avoid-ai-slop-ja` のどこにも無いもの (grep で確認): 形容詞・心情への「」(SKILL.md ルール 13)、中黒並列 (ルール 14)、過剰なカタカナ表と英語固有名詞の律儀さ (phrases.md § 3)、結論回避・三段ヘッジ・曖昧な断言・弱い否定の各リスト (§ 4。結論回避は例 D にのみ)、根拠なし副詞・「すぎる」・(笑) の頻度上限 (§ 6)、全角に紛れた半角スペース (§ 8)。翻訳調動詞と必殺技造語も一部の語が抜けている (例: 対比をなしている・捉える・論じる、虚飾・禁欲的・冷徹)。
+原典にあって `ja-slop-review` のどこにも無いもの (grep で確認): 形容詞・心情への「」(SKILL.md ルール 13)、中黒並列 (ルール 14)、過剰なカタカナ表と英語固有名詞の律儀さ (phrases.md § 3)、結論回避・三段ヘッジ・曖昧な断言・弱い否定の各リスト (§ 4。結論回避は例 D にのみ)、根拠なし副詞・「すぎる」・(笑) の頻度上限 (§ 6)、全角に紛れた半角スペース (§ 8)。翻訳調動詞と必殺技造語も一部の語が抜けている (例: 対比をなしている・捉える・論じる、虚飾・禁欲的・冷徹)。
 
-## textlint-rule-preset-ja-technical-writing → avoid-ai-slop-ja
+## textlint-rule-preset-ja-technical-writing → ja-slop-review
 
-**原典は LLM・生成文・AI に一切言及しない** (README.md / CHANGELOG.md を検索して確認)。以下は原典の規則を `avoid-ai-slop-ja` の項目に当てた対応で、原典の主張ではない。
+**原典は LLM・生成文・AI に一切言及しない** (README.md / CHANGELOG.md を検索して確認)。以下は原典の規則を `ja-slop-review` の項目に当てた対応で、原典の主張ではない。
 
-| preset ルール | avoid-ai-slop-ja 側 | 関係 |
+| preset ルール | ja-slop-review 側 | 関係 |
 |---|---|---|
-| `ja-no-redundant-expression` (することができる) | references/banlist.md Tier 2「冗長語尾」 | 同じ例。preset は機械検出できる。avoid-ai-slop-ja も AI らしさでなく冗長さとして扱う |
-| `ja-no-weak-phrase` | references/banlist.md Tier 3「Necessary hedges (1 まで)」・syntax-patterns.md §10 | preset は技術文書で全面禁止、avoid-ai-slop-ja は本物の不確実性なら 1 回まで許容 |
+| `ja-no-redundant-expression` (することができる) | references/banlist.md Tier 2「冗長語尾」 | 同じ例。preset は機械検出できる。ja-slop-review も AI らしさでなく冗長さとして扱う |
+| `ja-no-weak-phrase` | references/banlist.md Tier 3「Necessary hedges (1 まで)」・syntax-patterns.md §10 | preset は技術文書で全面禁止、ja-slop-review は本物の不確実性なら 1 回まで許容 |
 | `no-exclamation-question-mark` | syntax-patterns.md §8「技術文書では問いを入れない」 | 一致 (2026-10-17 に処方を反転) |
 | `no-mix-dearu-desumasu` | syntax-patterns.md §8「敬体か常体のどちらかで統一」 | 一致 (2026-10-17 に処方を反転。根拠としてこのルール名を引いている) |
 | `sentence-length` / `max-ten` / `max-kanji-continuous-len` | syntax-patterns.md §12「数値の目安」・§9「一文圧縮」・variance.md「文長のムラ」 | 一致。§12 が preset の既定値 (100 字・読点 3 個・漢字 6 字) を技術文書の目安として引く |

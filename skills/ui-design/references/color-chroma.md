@@ -11,7 +11,7 @@ a11y 検査で比が足りないときも、彩度を削って通す方向に流
 
 確度: **[原典]** hallmark clone (`distilled_commit` は `hallmark.md` の frontmatter) で確認 /
 **[計算]** OKLab→sRGB 変換 (Ottosson の式) と WCAG 2.x の相対輝度で算出。`scripts/chroma-check.py` で再現できる /
-**[批評]** `avoid-ai-slop-design` の web-ui.md が出典付きで挙げる tell。
+**[批評]** `visual-slop-review` の web-ui.md が出典付きで挙げる tell。
 
 ## 偏りの出どころ
 
@@ -20,7 +20,7 @@ a11y 検査で比が足りないときも、彩度を削って通す方向に流
 - **[原典] 3 点揃いは減ったが、地だけの偏りは残る**。gate 65 の 3 条件を数えると、地 (L 90 以上・H 55〜105) を満たすテーマは 24 個 (白に近い Refract `oklch(98.2% 0.006 95)` を含む)、加えて accent H 15〜55 と serif 系の display を持つのは Halftone・Newsprint (slab-serif) と Solstice (high-contrast-serif) の 3 個で、high-contrast serif に限れば Solstice の 1 個 (本文は自ら "not a terracotta-on-cream template" とする)。暖色クリーム 17 個のうち accent が H 15〜55 なのは 6 個。つまり「cream + serif + terracotta に寄る」は custom では hallmark 自身の規則で止まり、テーマ集でも 3 点揃いは少ない。残るのは**テーマから配ったときに地がクリームになりやすい**偏りで、こちらは旧集計 (17 個中 8 個) より強くなった
 - **[原典] accent の彩度は中彩度に寄らなくなった**。`craft.md` § 2 は accent を C 0.12〜0.22、focus を 0.18〜0.22 とする。テーマ 50 個の `--color-accent` の C は、0.16 を超えるのが 29 個、0.12 未満が 9 個 (48 個時点の中央値 0.1775。追加の Refract 0.12・Vantage 0.19 はその両側)、0.22 を超えるのが 5 個 (Sticker, Manifesto, Riso, Piste, Ultraviolet)。playful は "soft and low-chroma by default" で、Full palette / Drenched の posture なら 0.24 まで上げる (`genres/playful.md`)。地は L 92〜98・C 0.005〜0.015、ink は C 0.005〜0.014、5〜9 段の neutral は C 0.005〜0.018 で、どちらも anchor の色相へ寄せる (`craft.md` § 2)
 - **[原典] 純白の扱い**。gate 7a (Floor、waive 不可) は token block の外に書いた `#000`・`#fff`・`oklch(0% …)`・`oklch(100% …)` を落とし、7b (Reflex) は surface token が純白・純黒に解決されるものを落とす (guard は stamp の `surface: absolute` と gate 40・41 の通過)。modern-minimal は `#fff` の地 (7b) と彩度 0 の neutral (22) を緩め (`genres/modern-minimal.md`)、editorial は純黒・純白の地と ink を拒む (`genres/editorial.md` § Refused here)。`craft.md` § 2 は "Never a pure absolute as a surface or an improvised value" とし、グレーを anchor へ寄せる。anchor が暖色なら地はクリームになる
-- **[批評] 題材と無関係に同じ palette が選ばれることが tell**。cream/beige + serif + terracotta は「新世代の AI 既定値」として反復されている (`avoid-ai-slop-design/references/web-ui.md` § 色・グラデーション)。hallmark も gate 65 と Spent で同じ判断に立った
+- **[批評] 題材と無関係に同じ palette が選ばれることが tell**。cream/beige + serif + terracotta は「新世代の AI 既定値」として反復されている (`visual-slop-review/references/web-ui.md` § 色・グラデーション)。hallmark も gate 65 と Spent で同じ判断に立った
 
 ## 地色の決め方 (ライトテーマ)
 
@@ -63,7 +63,7 @@ a11y 検査で比が足りないときも、彩度を削って通す方向に流
 ## 使い方
 
 ```
-python3 ~/.claude/skills/ui-design/scripts/chroma-check.py "58 0.16 35" "#ffffff"
+python3 <ui-design スキルのディレクトリ>/scripts/chroma-check.py "58 0.16 35" "#ffffff"
 # ratio 4.61:1 ... fg C 0.160 / sRGB 最大 0.204
 # 同じ H で比を満たし C が最大の候補: oklch(59.0% 0.207 35) #dd3800
 # → C 0.16 のテラコッタは同じ比のまま C 0.207 まで上げられる
@@ -80,6 +80,6 @@ python3 ~/.claude/skills/ui-design/scripts/chroma-check.py "58 0.16 35" "#ffffff
 ## 棚卸しの当たり先
 
 - hallmark のテーマ集計と色の規則 → hallmark の再蒸留時に `skills/hallmark/references/themes/*.md` の `:root` の `--color-paper`・`--color-accent` (light / mid / dark の band は `themes/index.json`) を数え直し、`craft.md` § 2、`gates.md` の gate 7a・7b・22・23・65、`direction.md` § Spent、`genres/*.md` の Allowed here / Refused here、`ROADMAP.md` § Now の cream の扱いを見直す (テーマ追加や塗り替えで比率が変わる)。2026-10-29 の集計は `8f6969f` 時点 (Refract・Vantage の追加分だけ数え足した)
-- cream/beige が tell とされている状況 → `avoid-ai-slop-design/references/web-ui.md` の出典
+- cream/beige が tell とされている状況 → `visual-slop-review/references/web-ui.md` の出典
 - WCAG のコントラスト定義 → https://www.w3.org/TR/WCAG22/#contrast-minimum , https://www.w3.org/TR/WCAG22/#non-text-contrast
 - OKLab の変換式 → https://bottosson.github.io/posts/oklab/
