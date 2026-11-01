@@ -1,7 +1,7 @@
 # yokai-harness
 
 <p align="center">
-  <img src="assets/wordmark.png" alt="yokai harness のロゴ。翼を広げた青い一つ目の妖怪の紋章と yokai harness の文字" width="560">
+  <img src="assets/wordmark.png" alt="yokai harness のロゴ。翼を広げた青白い一つ目の妖怪の紋章と yokai harness の文字" width="560">
 </p>
 
 コーディングエージェントに持たせる、参照資料とレビュー手順のスキル集。Claude Code・Codex・Gemini CLI で同じスキルを使える。

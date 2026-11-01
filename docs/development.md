@@ -61,6 +61,6 @@ python3 assets/build.py NotoSansJP.ttf
 | ファイル | 役割 |
 |---|---|
 | `assets/src/wordmark.png` / `assets/src/emblem.png` | ロゴとエンブレムの原画 |
-| `assets/wordmark.png` | README の見出しのロゴ (原画を余白を詰めて 1600px に縮小) |
+| `assets/wordmark.png` | README のバナー (透過。原画の余白を詰めて 1600px に縮小) |
 | `assets/emblem.png` | 図に埋め込むエンブレム (400px) |
 | `.claude-plugin/icon.png` | plugin の一覧に出るアイコン (紺地にエンブレム、1024px) |
