@@ -1,13 +1,10 @@
-<h1 align="center">yokai-harness</h1>
+# yokai-harness
 
 <p align="center">
   <img src="assets/wordmark.png" alt="yokai harness のロゴ。翼を広げた青い一つ目の妖怪の紋章と yokai harness の文字" width="560">
 </p>
 
-<p align="center">
-  コーディングエージェントに持たせる、参照資料とレビュー手順のスキル集。<br>
-  Claude Code・Codex・Gemini CLI で同じスキルを使える。
-</p>
+コーディングエージェントに持たせる、参照資料とレビュー手順のスキル集。Claude Code・Codex・Gemini CLI で同じスキルを使える。
 
 <img src="assets/architecture.svg" alt="yokai-harness の配り方。リポジトリを正本に、plugin か install.sh で Claude Code・Codex・Gemini CLI へ配る。OpenCode と Cursor は skills ディレクトリを自分で読む。原典 clone は ~/.local/share/yokai-harness/references に置く" width="100%">
 
