@@ -18,6 +18,24 @@
 5. **原典 clone を足すほどではない** — 資料全体に継続参照の価値があるなら、ここではなく蒸留版を作る
    (手順は [../claude-harness-refs-update/DISTILLING.md](../claude-harness-refs-update/DISTILLING.md) の「新規リポジトリの追加」)
 
+### 研究論文を出所にするときの追加条件
+
+論文は公式資料より下に置く。Claude Code 自体の挙動や機能の判断は、Anthropic 公式の資料
+(`skills/`・`claude-cookbooks/`・公式 docs) を典拠にする。論文は、公式が扱っていない問いの判断材料に限って使う。
+たとえば、そもそも分割するか、効果をどう測るか、別ベンダーのエージェントやモデルを混ぜるか、といった問いである。
+上の 5 条件に加えて次の 4 つを満たすものだけ採る。
+
+- **証拠の種類を書く** — メタ分析 / 査読済み (会議名・年) / 単発のプレプリント のどれかを出所行に明記する。
+  掲載先を書くことは査読と同じではないので、査読の有無は掲載先のページで確かめる
+- **実験したモデルと時期を書く** — モデル名と実験時期を書く。閾値や効果量は、その世代の参考値として扱う
+- **否定的な結果も採る** — 効かなかった・劣化したという結果は、効いたという結果と同じ重みで採る。
+  効いた結果だけを集めると、宣伝文書になる
+- **書誌は取得して写す** — 題名・ID・版は arXiv などのページから取得して写し、記憶や検索スニペットから打たない。
+  数値は本文 (できれば HTML 版の該当行) で確かめ、要約経由の数値は使わない
+
+出所: 書き分けの考え方は `yzhao062/awesome-auditable-ai` の README (venue / Preprint 欄と arXiv 題名照合)、
+否定的な結果と書誌取得の規律は `blrain3/agent-papers` の README "Selection criteria" 節 (いずれも 2026-11-01 確認)
+
 ## 退出規約
 
 - 公式資料や蒸留版に同等以上の記述が現れたら、この項目を**削除して蒸留版側に寄せる** (ゲート 1 の裏返し)
@@ -53,7 +71,7 @@
 解除条件を書くことが要点。書かないと、ユーザーの何気ない一言が解除と解釈される余地が残る。
 
 **先に上位の機構を検討する**: 同じ drift に対して、指示ではなく**スクリプトの制御フローで強制する**方が強い
-(`references/claude-cookbooks.md` の「まず押さえる」16 — "Double-check your findings" は指示にすぎず
+(`references/claude-cookbooks.md` の「まず押さえる」18 — "Double-check your findings" は指示にすぎず
 context 圧のもとで飛ぶが、制御フローなら飛ばない)。コードで表現できる場面ではそちらを使う。
 この項目が効くのは、プロンプトや常時ルールしか手段が無い層 (skill 本文・CLAUDE.md・ホスト側の rule ファイル) に限る。
 
@@ -87,10 +105,141 @@ context 圧のもとで飛ぶが、制御フローなら飛ばない)。コー�
 - テストの追加は bloat ではなく**正の信号**として別扱いにする
 - 安全性の要求は**タスク文から意図的に省く** (実際のチケットと同じ条件にし、安全確認を忘れる介入を検出する)
 
+- **同じ構成の再実行で、ばらつきを先に測る** — 比べる差が再実行のばらつきより小さければ、効果とは言えない。
+  SWE-bench Verified の難しい 45 タスクでは、ハーネスを替えても同じハーネスを再実行しても、結果が変わったタスクはどちらも 13% だった。
+  ある実行でハーネスが勝ったタスクは、次の実行で勝つタスクと一致しなかった。
+  一方、タスクあたりの費用はハーネスで最大 3 倍違った。この差は、毎ステップ送り直す system prompt と tool schema の固定部分で決まっていた
+  (Claude Code 16,581 / OpenCode 7,025 / mini-SWE-agent 829 tokens)。
+  介入の効果は pass rate と cost per task の両方で見る
+  (出所: Liu & Han, "What Does a Harness Buy? Tokens, Mostly", arXiv:2610.04433、単発のプレプリント、2026-10。§Abstract・§1。
+  測ったのは Qwen・GLM・DeepSeek などの公開モデルで、Claude を Claude Code で動かした測定ではない。
+  ネイティブでないモデルでの結果として読む)
+
 報告作法として、自分の見出し数値が反駁されたら撤回して下げ、自分に不利な第三者測定も併記する。
 監査基準として数値を引くときは、出所が撤回済みでないか確認する (SKILL.md の「使った版の SHA を記録する」と同じ趣旨)。
 
 出所: `DietrichGebert/ponytail` の `benchmarks/README.md` (honesty note) と `benchmarks/agentic/README.md` (単発と実セッションの設計比較表)
+
+### 5. マルチエージェントに分ける前に、単一エージェントの baseline・逐次依存・tool の数を見る
+
+分割の可否は「タスクが複雑か」「エージェントを何体にするか」ではなく、次の 3 点で決まる。
+どれかに当たるなら単一エージェントのままにする。
+
+- **単一エージェントで既に解けている** — 単一エージェントの成功率が約 45% を超えるタスクでは、エージェントを足すと性能が下がる
+  (capability saturation)。論文はこれを最も頑健な効果としている (cluster-robust 推定と Holm–Bonferroni 補正の両方で残る)。
+  先に単一エージェントで測り、その数値を見てから分割を検討する
+- **手順が逐次依存している** — 前の手順の結果で次が決まるタスクは、どのトポロジーでも劣化した (PlanCraft で -39% 〜 -70%)。
+  複雑度の指標がほぼ同じ Finance Agent (D = 0.41、+80.8%) と PlanCraft (D = 0.42、-70%) を分けたのは、
+  並列に分解できるかどうかだった。逐次タスクを無理に分けると、調べる必要のない下調べ役や状態確認役が生まれ、調整メッセージが増えるだけになる
+- **tool が多い** — 調整コストと tool 数の交互作用は負に効く (16 tool の業務ワークフローで顕著)。
+  エージェントを分けると 1 体あたりのトークン予算が細切れになり、複雑な tool 操作に足りなくなるため
+
+コストも併せて見る。同じ計算予算のもとで、1K トークンあたりの成功数は単一 67.7 に対し、
+Independent 42.4 / Decentralized 23.9 / Centralized 21.5 / Hybrid 13.6 まで落ちる (Table 5)。
+分割で効いたのは、並列に分解できる構造化タスク (Finance、Centralized で +80.8%) と、
+広い探索空間を並行して当たるタスク (Web 探索、Decentralized で +9.2%) だった。
+
+製品に組み込まれた並列サブエージェントの実測も、同じ向きの結果を示した。Codex (GPT-5.4)、Claude Code (Claude Opus 5)、
+Kimi Code (Kimi K3) の動的並列化をオンとオフで比べている (354 タスク、2,124 実行)。
+効いたのは長いタスクで、範囲の限られたタスクでは改善がほぼ無いか負のことが多かった。
+トークンは逐次実行の 1.41〜3.31 倍に増えた。並列化が利いた条件として挙がったのは、
+互いに補い合う並列作業、別解の探索、独立した検証の 3 つである
+(出所: Li et al., "When Sub-Agents Work in Parallel", arXiv:2610.10263、単発のプレプリント、2026-07 の構成で実験。Abstract)。
+Claude Code での並列化の可否と機能の仕様は、Anthropic 公式 (`references/claude-cookbooks.md` の「まず押さえる」15) を先に見る。
+この実測は、公式の「迷ったら単一」を裏づける材料として使う。
+
+既存の蒸留版との関係: `references/claude-cookbooks.md` の「まず押さえる」3・4・6・15 は、パターンの選び方とエージェント数の目安を定性的に書いている。
+この項目はその前段にあたり、分割するかどうかを測ってから決めるための基準を足す。
+
+出所: Kim et al., "Towards a Science of Scaling Agent Systems", arXiv:2512.08296 v3 (2026-04-08)、単発のプレプリント (Google Research / DeepMind / MIT)、2025 年世代のモデルで実験。
+https://arxiv.org/html/2512.08296 の Abstract・§1・§4.3 Table 5・§4 の domain complexity 考察・§6 Conclusion
+
+### 6. 並列ワーカーの出力は、検証の関門を通さずに集約しない
+
+ワーカーの出力を突き合わせずにそのまま合成する構成 (論文の Independent: 合成のみの集約) は、
+トレース単位の誤りを単一エージェント比で 17.2 倍に増やした。
+orchestrator が集約前に検証する Centralized は 4.4 倍に抑えている。
+集約前に検証を挟む構成 (Centralized の検証、Decentralized の相互反論ラウンド) は、平均 22.7% の誤り削減を示した
+(構造化された数値出力で検証しやすい Finance では 31.4%)。
+
+並列に分けるなら、検証の段を 1 つ置く。
+検証の段は指示ではなく構造で強制する。具体的な組み方は `references/claude-cookbooks.md` の「まず押さえる」18
+(fan-out + adversarial verification) を正とし、この項目はそれを入れる定量的な理由として使う。
+
+出所: 項目 5 と同じ論文の §1 (error amplification)、§4.3 Table 5 (Error Amp 行)、§4 の error dynamics 考察
+
+### 7. 別ベンダーのエージェント (Codex など) を呼ぶなら、目的を独立した検証に絞り、レビューの向きと権限を決めておく
+
+Claude Code の中でサブエージェントを使うかどうかは、Anthropic 公式を先に見る
+(`references/claude-cookbooks.md` の「まず押さえる」15・18、`references/claude-code-best-practice.md` の 10)。
+この項目は、Claude から Codex CLI のような別ベンダーのエージェントを呼ぶ場合に限る。
+
+**呼ぶ理由は、同じモデルでは消えない偏りを外すこと。** 呼ぶ価値があるのは、主に検証やレビューの役である。
+
+- LLM の評価者は自分の出力を高く採点する。人間の評価者は同等と見ている場合でも、そうなる (self-preference)。
+  LLM の審査は、自分に似たモデルの出力も高く採点する。また、能力が上がるほどモデル同士の間違いが似てくる
+  (相関した失敗)。同系統のモデルどうしで確かめ合っても、同じ穴を見落としやすい
+- ただし「別モデルなら勝つ」とは限らない。会話を引き継がない新しいセッションで同じモデルにレビューさせる場合と、
+  上位の別モデルにレビューさせる場合とでは、F1 に有意差がなかった。見つけた欠陥は一部しか重ならない (Jaccard 41.2%)。
+  2 回レビューするなら「同じモデルの新セッション 1 回 + 別モデル 1 回」が、同じモデル 2 回より多く拾った (56.7% 対 42.7%)。
+  軽量な別モデルのレビューは、同じモデルのレビューを上回らなかった。足すなら上位の別モデルを足す
+- 会話を切るだけの効果は小さい。同じ論文の再分析では、新しいセッションでのレビューは、同じ会話の中での自己レビューを
+  F1 で 1.5pt しか上回らず、有意でもなかった。同じモデルで回すなら、会話を切るより、別モデルを 1 回足す方が効く
+
+**向きを決める。** 書き手とレビュー役の組み合わせで、効果の向きが逆になった。
+Claude Opus 4.7 が Codex GPT-5.5 の下書きをレビューすると、合格率は 71.6% から 89.7% に上がった。
+逆に Codex GPT-5.5 が Claude Opus 4.7 の下書きをレビューすると、91.4% から 82.8% に下がった。
+レビュー役はテストを実行できない条件である。強い側の下書きを、弱い側の判断でそのまま書き換えさせない。
+別エージェントの指摘は提案として受け、採否は書き手側がテストで確かめて決める。
+どちらが強いかはモデルの世代で入れ替わるので、組み合わせを変えたら測り直す。
+
+**呼び方は、各ベンダーの公式の入口を使う。**
+
+- モデルは、自分のハーネスに合わせて後学習されていることがある。
+  別ベンダーのモデルを Claude Code の中に差し込むより、そのベンダーの CLI ごと呼ぶ
+- `codex exec` は、既定では read-only の sandbox で動く。編集させるときだけ `--sandbox workspace-write` を付ける。
+  `danger-full-access` は、隔離した CI や container の中だけで使う (`--full-auto` は廃止)。
+  stdout には最終メッセージだけが出て、進捗は stderr に出る。
+  受け取りを機械処理するなら `--output-schema` (JSON Schema) と `-o` を使い、自由文をパースしない
+- OpenAI 公式の Claude Code プラグイン `openai/codex-plugin-cc` は、`/codex:review` (read-only のレビュー)・
+  `/codex:adversarial-review`・`/codex:rescue` (作業の委任) などを持つ。
+  環境にあるグローバルの `codex` と、その設定をそのまま使う。
+  Stop hook でレビューを強制する review gate は、Claude と Codex の往復が長く続き、利用枠を早く使い切ることがある。
+  README 自身が「監視するときだけ有効にする」と書いている。
+  プラグインを導入するときの評価は、skill / plugin 側の規約 (`references/skills.md`) に従う
+
+**費用を見積もる。** Anthropic の実測では、マルチエージェントは chat の約 15 倍のトークンを使う。
+coding タスクは本当に並列化できる部分が research より少ない、とも書いている。
+別ベンダーを呼ぶと、さらに別の利用枠と課金が加わる。
+まず項目 5 の判断 (そもそも分けるか) を通し、検証の段 (項目 6) を 1 つ足す用途から始める。
+
+出所 (証拠の種類と実験モデル):
+- 自己贔屓: Panickssery et al., "LLM Evaluators Recognize and Favor Their Own Generations", arXiv:2404.13076、査読済み (NeurIPS 2024)。§1
+- 相関した失敗: Goel et al., "Great Models Think Alike and this Undermines AI Oversight", arXiv:2502.04313、査読済み (ICML 2025)。Abstract
+- 別モデルのレビュー: Song, "When Does a Second Model Help? Cross-Model Review in LLM Verification", arXiv:2610.01471、
+  単発のプレプリント (単著、30 成果物・150 の埋め込み誤り・900 セッション)。Abstract・§1
+- レビューの向き: "Cross-Model LLM Code Review: Should you use Claude to review Codex or vice versa?", arXiv:2607.21656、
+  単発のプレプリント (LiveCodeBench 116 タスク、Claude Opus 4.7 と Codex GPT-5.5)。Abstract
+- ハーネスへの適応: 項目 5 の Li et al. (arXiv:2610.10263) §3.2
+- 公式文書 (2026-11-01 取得): OpenAI "Non-interactive mode" (https://developers.openai.com/codex/noninteractive)、
+  `openai/codex-plugin-cc` README (https://github.com/openai/codex-plugin-cc)、
+  Anthropic "How we built our multi-agent research system" (https://www.anthropic.com/engineering/multi-agent-research-system)
+
+## 出所メモ: arXiv:2512.08296 の扱い
+
+項目 5・6 の出所。論文は 1 本の静的な資料で、継続して追う原典ではないので、clone と蒸留版は作らない (ゲート 5)。
+数値を判断の典拠にするときは次の限界を併記する。
+
+- 実験に使ったモデルは 2025 年世代 (GPT-5・Claude Sonnet 4.5・Gemini-2.5 Pro など)。ベンチマークの一部は 20 件のサブセット。
+  エージェント数は最大 9 体で、プロンプトはモデル別に最適化していない (§5 Limitations)。45% などの閾値は参考値で、自分のタスクで測り直す
+- 回帰モデルの説明力は限定的 (交差検証 R² = 0.373)。強いのは「どのトポロジーが相対的に良いか」の予測 (held-out で 87%) で、
+  絶対性能の予測ではない
+- 付録 C.3 の complexity 閾値 (D ≈ 0.40) は本文の事例 (Finance D = 0.407 で +80.8%) と噛み合わない。引用しない
+- 異種モデル混在 (安価な orchestrator + 高性能 sub-agent) の結果はモデルファミリーで割れる。
+  Anthropic では有利 (0.42 対 0.32)、OpenAI と Gemini では劣化した。13 構成の追加調査でも、
+  混在で capability saturation を回避できる証拠は出ていない (§4、§5)。どちらの方向にも断定しない
+- 論文は「ハーネス」という語を使わない。システムを S = (A, E, C, Ω) (エージェント集合・共有環境・通信トポロジー・
+  orchestration policy) で定義している (§3.1)。ハーネス設計の語彙に置き換えると、C と Ω が「誰が計画を持ち、誰が検証するか」に当たる
 
 ## 出所メモ: ponytail を蒸留版にしなかった判断
 

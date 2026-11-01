@@ -37,7 +37,7 @@ compatibility: Requires git and network access to clone/update the reference rep
 | カテゴリ | 原典 | 蒸留版 | 使いどころ |
 |---|---|---|---|
 | コア原則 | `12-factor-agents/` | [references/12-factor-agents.md](references/12-factor-agents.md) | エージェントのアーキテクチャ判断 (状態管理、制御フロー、human-in-the-loop 等) の原則確認 |
-| 公式参照実装 | `claude-cookbooks/` | [references/claude-cookbooks.md](references/claude-cookbooks.md) | オーケストレーション構成を選ぶとき (chaining / parallelization / routing / orchestrator-workers / evaluator-optimizer)。context 圧縮・tool 設計・agent eval の公式実装 |
+| 公式参照実装 | `claude-cookbooks/` | [references/claude-cookbooks.md](references/claude-cookbooks.md) | オーケストレーション構成を選ぶとき (chaining / parallelization / routing / orchestrator-workers / evaluator-optimizer)。context 圧縮・tool 設計・agent eval の公式実装。マルチエージェントに分けるかの定量判断と、別ベンダーのエージェント (Codex など) を呼ぶときの考慮は [PATTERNS.md](PATTERNS.md) の 5〜7 も見る |
 | 実装断面 | `mini-coding-agent/` | [references/mini-coding-agent.md](references/mini-coding-agent.md) | agent loop・prompt 層構造・承認ゲート・履歴圧縮・委譲境界を実装として確認するとき (単一ファイル 1019 行) |
 | コア技法 | `Prompt-Engineering-Guide/` | [references/Prompt-Engineering-Guide.md](references/Prompt-Engineering-Guide.md) | プロンプト自体の設計・改善・テクニック選定 (few-shot, CoT 等) |
 | Claude Code 固有 | `claude-code-best-practice/` | [references/claude-code-best-practice.md](references/claude-code-best-practice.md) | Claude Code のハーネス (CLAUDE.md, skills, subagents, settings) を設計・監査するとき。「最も軽い機構を選ぶ」原則 |
@@ -76,6 +76,7 @@ UI 生成のデザイン参照 (DESIGN.md 雛形・デザイントークン・�
 - hooks の仕様は `claude-code-hooks` を起点にするが、発火条件・入力フィールド・ブロック手段の確定は公式 docs (code.claude.com/docs/en/hooks) で行う
 - 原則 (`12-factor-agents`) と公式実装 (`claude-cookbooks`) が食い違う箇所は、蒸留版の「12-factor-agents との食い違い」節に整理済み。どちらが正かではなく前提の違いとして扱う
 - `mini-coding-agent` は教育目的の実装であり規範ではない。「実装するとこうなる」の確認に使い、本番設計の典拠にはしない
+- 研究論文 (PATTERNS.md に採録したもの) は、公式資料と蒸留版より下に置く。Claude Code 自体の判断の典拠にはしない。公式が扱わない問いの判断材料に限って使う (分割するか、効果をどう測るか、別ベンダーのエージェントやモデルを混ぜるか)。採る条件は PATTERNS.md の「研究論文を出所にするときの追加条件」
 - バージョン依存の記述 (特定モデル・特定 CLI 版に固定された記述) は参考値として扱い、断定しない
 
 ## 原典 clone の衛生
