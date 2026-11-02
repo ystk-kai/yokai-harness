@@ -46,7 +46,7 @@ text worse. Skip when:
    - Don't add facts, numbers, examples, causes, or opinions that aren't in the material (the original, the request, provided documents, or facts stated in this conversation). Your own or another AI's earlier output and general knowledge are not material.
    - Don't change confidence in either direction (no hardening a hedge, no softening an assertion), and don't add a summary section. Permission (〜してよい), ability (〜できる), obligation (〜しなければならない), and guarantee (必ず〜する / 保証する) count as confidence too. Don't swap one for another or flatten it into a plain statement (「変更してよい」→「変更できる」, 「含めてよい」→「含める」), don't drop 「〜場合がある」 to assert, and don't add 「必ず」「保証する」 — in specs and design docs these differences are the spec. Rephrasing within the same kind (「〜することができる」→「〜できる」) is fine.
    - Don't reword what the reader already understands just to suit your taste (「気軽に試せます」→「簡単に試せます」, 「お知らせいたします」→「お知らせします」). Phrases the reader can't parse (syntax-patterns.md §13) do get fixed, even when no banlist entry covers them.
-   - Where a fix would need information the material lacks, leave it and ask (mark it 【要確認】) instead of inventing.
+   - Where a fix would need information the material lacks, leave the original wording and ask instead of inventing. Questions go in the reply after the revised text (「書き手に確かめたい点」), never inside it: the revised text must be usable as is. Ask at most 3, only those whose answer would change the wording of the text (a fact, number, or source behind a claim; who does what; what a term or 指示語 refers to). Don't ask for elaboration the original never promised, or whether to cut something you chose to keep. If more qualify, add 「ほかに N か所」.
 1. **Decide the document type** — it sets how much variation / bluntness is allowed. See `references/document-types.md`.
 2. **Score 5 axes** (立場・リズム・主体性・具体性・削減), 1–10 each. Below 35/50 → rewrite when writing new; when revising, fix the low axes locally. At 35+ still fix any critical syntax slop. See `references/scoring.md`.
 3. **Check syntax patterns**, fixing in this order: 立場 → false agency → 構造 → 語彙 → 記号. Vocabulary and symbol fixes alone leave the smell. Covers false agency, thesis headings, negation / false contrast, meta announcements, parallel shapes, sentence endings, template structures, reading-load syntax, and phrases readers can't parse. See `references/syntax-patterns.md`.
@@ -68,6 +68,7 @@ text worse. Skip when:
 - [ ] Every key claim is anchored to a name / number / example from the material; a stance is taken with a stated basis (≠ unfounded assertion).
 - [ ] 5-axis self-score ≥ 35/50 and no critical syntax slop remains.
 - [ ] If revising: meaning check passed on every changed sentence.
+- [ ] If revising: no questions or 【要確認】 marks inside the revised text; at most 3 questions after it.
 
 ## 鮮度
 
