@@ -1,6 +1,6 @@
 ---
 name: ja-writing
-description: 日本語文章の参照資料を 2 層 (このスキル内の蒸留版 references/*.md と、~/.local/share/yokai-harness/references/ の原典 clone) で使うためのスキル。日本語文書の表記規約 (用字用語・全角半角・日英混在のスペース・記号) を決めるとき、textlint / prh の規則やプリセットを選定・設定するとき、文書種別 (議事録・調査レポート・社内ガイド・UI 文言・エラーメッセージ・ヘルプ・リリースノート) ごとの必須要素と構成を確認するとき、構文の読解負荷 (二重否定・係り受け・名詞化) ややさしい日本語の規則を引くとき、日本語 AI 臭の個別規則の出所・閾値・線引きを原典で確かめるときに、まず蒸留版を読み、索引が指す原典ファイルだけを深掘りする。文章のレビュー・採点・書き直しそのものは ja-slop-review (または有効なら natural-japanese プラグイン) の担当で、このスキルは手順を持たない。
+description: 日本語文章の参照資料を 2 層 (このスキル内の蒸留版 references/*.md と、~/.local/share/yokai-harness/references/ の原典 clone) で使うためのスキル。日本語文書の表記規約 (用字用語・全角半角・日英混在のスペース・記号) を決めるとき、textlint / prh の規則やプリセットを選定・設定するとき、文書種別 (議事録・調査レポート・社内ガイド・UI 文言・エラーメッセージ・ヘルプ・リリースノート) ごとの必須要素と構成を確認するとき、構文の読解負荷 (二重否定・係り受け・名詞化) ややさしい日本語の規則を引くとき、日本語 AI 臭の個別規則の出所・閾値・線引きを原典で確かめるときに、まず蒸留版を読み、索引が指す原典ファイルだけを深掘りする。文章のレビュー・採点・書き直しそのものは ja-slop-review の担当で、このスキルは手順を持たない。
 compatibility: Requires git and network access to clone/update the reference repos at ~/.local/share/yokai-harness/references/ (external to the skill directory; run install.sh --with-references)
 ---
 
@@ -22,7 +22,7 @@ compatibility: Requires git and network access to clone/update the reference rep
 ## 使わない場面
 
 - 日常の日本語応答・コミットメッセージ・コードコメント — 規則を引く必要のない文章に蒸留版を読みに行かない
-- 「AI っぽくない文章に直して」「この記事を採点して」など手順を回すだけの依頼 — `ja-slop-review` (または有効なら `natural-japanese` プラグイン) を使う。規則の可否で迷った箇所だけここへ来る
+- 「AI っぽくない文章に直して」「この記事を採点して」など手順を回すだけの依頼 — `ja-slop-review` を使う。規則の可否で迷った箇所だけここへ来る
 - 表示のされ方 (書体・組版・図のラベル描出) — `ui-design`
 
 ## 参照リポジトリ
@@ -54,8 +54,13 @@ compatibility: Requires git and network access to clone/update the reference rep
   (見出し・絵文字・文末) を持つ。`ja-slop-review` も手順 0 で新規 / 修正を分け、修正時の不増補と意味検算を持つ (2026-10-17 反映)。
   手順を実行するのは `ja-slop-review` 側で、このスキルは規則の根拠を引くだけ。原典と `ja-slop-review` の対応と
   残っている差は [MAPPING.md](MAPPING.md)、採否の履歴は yokai-harness の作業コピーの `maintenance/yokai-refs-update/ADOPTION.md` にある
-- AI 臭の個別判定で原典が割れたら、**人間コーパスで閾値を校正した記録を持つ `natural-japanese` を優先**し、
-  `yomiyasu` で文脈ごとの残す / 直すの線引きを補う
+- AI 臭の個別判定で原典が割れたら、**新規執筆では人間コーパスで閾値を校正した記録を持つ `natural-japanese` を優先**し、
+  `yomiyasu` で文脈ごとの残す / 直すの線引きを補う。**既存文書の修正では、意味の保持と不増補を測っている `yomiyasu` と
+  `ja-slop-review` の手順 0・7 を優先**し、`natural-japanese` の規則は直す理由ではなく候補の洗い出しに使う。
+  `natural-japanese` の校正は人間の文に検出器が当たるか (誤検知) を測ったもので、直した結果が原文より良いかは測っていない。
+  人間コーパスでも `forbidden_phrase`・`translationese_morph` は 6 割超の文書に当たる (corpus/reports/business-fp-check.md)。
+  2026-11-02 の小さな試行 (人が書いた随筆の抜粋 7 本) では、`natural-japanese` の手順は 3 本で書き手の言い回しを変え、
+  うち 1 本で対比の節を削り「と言えます」を「です」に強めた。`ja-slop-review` は同じ 7 本の本文を変えなかった
 - 技術文書の数値の目安 (文長・読点・漢字連続) は `textlint-rule-preset-ja-technical-writing` を出典にする。ただし原典は
   LLM 生成文に触れていない。AI 臭との対応は [MAPPING.md](MAPPING.md) 側の当てはめである
 - UI 文言・エラー・ヘルプ・リリースノートは `smarthr-design-system` を当たる。原典自身が「絶対に守る規則ではなく指針」と
@@ -66,8 +71,9 @@ compatibility: Requires git and network access to clone/update the reference rep
 
 ## 別スキルとの分担
 
-- レビュー・書き直しの**手順**を回すのは、`natural-japanese` プラグインが有効ならプラグイン、無効なら `ja-slop-review`。
-  このスキルは規則の**出所と根拠の索引**で、どちらの代わりにも起動しない
+- レビュー・書き直しの**手順**を回すのは `ja-slop-review`。`natural-japanese` プラグインが有効でも、既存文書の修正には使わない
+  (上記の試行で、修正時に書き手の言い回しと言い切りの強さを変えた)。このスキルは規則の**出所と根拠の索引**で、
+  `ja-slop-review` の代わりには起動しない
 - `ja-slop-review` の各規則が原典のどこから来たか / 原典にあって欠けているものは [MAPPING.md](MAPPING.md) にある
   (自作の対応表。原典の SHA ではなく `ja-slop-review` 側の変更で古くなる)
 - 日本語を含む UI の書体・組版・図解の描出は `ui-design` (`japanese-web-typography.md` / `japanese-diagram-rendering.md`)。
