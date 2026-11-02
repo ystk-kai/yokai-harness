@@ -7,7 +7,7 @@
 見直すタイミング:
 
 - `ja-slop-review` の SKILL.md / references を直したとき (取り込み候補を反映したときを含む)
-- 対応表を持つ原典 (`stop-ai-slop-jp` / `textlint-rule-preset-ja-technical-writing`) を再蒸留したとき
+- 対応表を持つ原典 (`textlint-rule-preset-ja-technical-writing`) を再蒸留したとき
 
 作成時点: 2026-10-16 (`stop-ai-slop-jp` `e09d327` / `textlint-rule-preset-ja-technical-writing` `5e73caa` と照合)。
 2026-10-17: `ja-slop-review` に修正モード・意味検算・修正の優先順位・構造パターン §11〜13・banlist の頻度原則を反映し、各表を更新。
@@ -22,6 +22,8 @@
 2026-10-29: natural-japanese v1.6.4 (`25a8638`) から、中身を詰め込んだ括弧 (文・話の中身の列挙・呼び名の取り決めが入った括弧) の直し方 (まず前の文に入れる、入らないときだけ同じ主語の続きの一文にする、受け直すだけの文・関係を決める言葉を足さない、短い括弧・数値や出典の括弧・エッセイの余談の括弧は残す) と、新しく書くときに括弧に入れてよいもの (SKILL.md §3「いつでも直すもの」・§2 文の整え方、`56b8b53`・`8d5a5be`・`94f8d16`・`5e3fe13`) を syntax-patterns §12 に足し、banlist Tier 1「全角ダッシュ」の置き換え先の括弧を読点も句点もない短い補足に限って §12 へ参照を張り、banlist と syntax-patterns の行を更新。
 
 ## stop-ai-slop-jp → ja-slop-review
+
+原典は 0.1.1 (`e09d327`、2026-06) から更新が無く、規則は取り込み終えたので、2026-11-02 に蒸留版と clone を外した。この節は `e09d327` 時点の記録で、原典側の変更では古くならない。原典の箇所を確かめるときは GitHub の `e09d327` を見る。
 
 `ja-slop-review` は原典の大原則・5 軸採点・構造/語彙の大半を英語見出しの散文スキルに組み替え、**文書種別による抑制**と **over-fix (過剰修正) への歯止め**を独自に足したもの。対照は `ja-slop-review` 側の各ファイル を本 clone と突き合わせた結果。
 

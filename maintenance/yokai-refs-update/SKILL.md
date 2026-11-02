@@ -41,7 +41,7 @@ yokai-harness の参照資料は 2 層 — 蒸留版 (`skills/*/references/*.md`
 
    1 つのサブエージェントが失敗・中断した、または返却契約を満たさなかった場合も、他の repo の作業は止めない。その repo は「未カバー」として手順7の集約に列挙し (蒸留版は STALE のまま残る)、黙って成功扱いにしない。
 
-   再蒸留した repo が `ja-writing/MAPPING.md` の対応表に載っているもの (`stop-ai-slop-jp` 等) なら、MAPPING.md の該当節と、そこが指す `ja-slop-review` の references も見直す。自作スキルは原典の更新を自動では受け取らないので、ここで差分を取り込み候補 (手順6) に流す。
+   再蒸留した repo が `ja-writing/MAPPING.md` の対応表に載っているもの (`natural-japanese`・`yomiyasu`・`textlint-rule-preset-ja-technical-writing`) なら、MAPPING.md の該当節と、そこが指す `ja-slop-review` の references も見直す。自作スキルは原典の更新を自動では受け取らないので、ここで差分を取り込み候補 (手順6) に流す。
 
 5. **REVIEW を棚卸し** — `REVIEW` は出所 clone を持たない知識ベース (`*-slop-review` 等) の期限切れ。SHA 差分がないので機械的な更新はできない。該当ファイルの主張を読み、**出典 URL の生存と撤回、記述が前提にしているモデル世代・流行の変化**を確認して本文を直す。委譲するなら `general-purpose` サブエージェント (WebFetch/WebSearch が要る)。直したら `reviewed_at` を当日に更新する。中身を見ずに日付だけ進めるのは禁止 (SHA の無言 bump と同じ)。見直した結果「変更不要」なら、その判断理由を commit message に書いて日付を進める。棚卸しで出典の撤回や前提の陳腐化が見つかったら、それも手順6の取り込み候補として扱う (知識ベースは自作なので、影響先は蒸留版ではなく自分のハーネスや文書規約になりやすい)。
 

@@ -23,7 +23,7 @@ yokai-harness 自身のコードと文書は MIT ([LICENSE](LICENSE)) で配布�
 | [kufu/smarthr-design-system](https://github.com/kufu/smarthr-design-system) | 許諾本文なし | 要約と原典パスの索引のみ。規則本文・表は転載しない |
 | [bamboo-nova/meiseki](https://github.com/bamboo-nova/meiseki) | MIT, (c) 2026 bamboo-nova | 要約と索引 |
 | [coji/natural-japanese](https://github.com/coji/natural-japanese) | MIT, (c) 2026 coji | 要約と索引 |
-| [iKora128/stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp) | MIT, (c) 2026 Daichi Nagashima | 要約と索引。`ja-slop-review` の規則はこの手法を出所にしている (対応は `skills/ja-writing/MAPPING.md`) |
+| [iKora128/stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp) | MIT, (c) 2026 Daichi Nagashima | 蒸留版は持たない。`ja-slop-review` の規則はこの手法を出所にしている (対応は `skills/ja-writing/MAPPING.md`) |
 | [nanaism/yomiyasu](https://github.com/nanaism/yomiyasu) | MIT, (c) 2026 nanaism | 要約と索引 |
 | [textlint-ja/textlint-rule-preset-ja-spacing](https://github.com/textlint-ja/textlint-rule-preset-ja-spacing) | MIT, (c) 2024 azu | 要約と索引 |
 | [textlint-ja/textlint-rule-preset-ja-technical-writing](https://github.com/textlint-ja/textlint-rule-preset-ja-technical-writing) | MIT, (c) 2016 azu | 要約と索引 |

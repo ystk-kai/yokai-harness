@@ -73,4 +73,4 @@ text worse. Skip when:
 
 この知識ベースは出所リポジトリの clone を持たない自作の調査資料なので、SHA ではなく日付で棚卸しする。各 `references/*.md` の frontmatter が `tracking: review` + `reviewed_at` + `review_interval_days` (180 日) を持ち、`/yokai-refs-update` が期限切れを `REVIEW` として報告する。棚卸しでは出典 URL の生存と、記述が前提にしている流行・モデル世代の変化を確認する。
 
-手法の出所 `iKora128/stop-ai-slop-jp` は `ja-writing` の蒸留版として SHA で追従しており、原典の規則とこのスキルの対応は `ja-writing/MAPPING.md` にある。このスキルを直したら MAPPING.md も合わせて直す。
+手法の出所 `iKora128/stop-ai-slop-jp` は 0.1.1 (`e09d327`、2026-06) から更新が無く、規則は取り込み終えたので蒸留版と clone を持たない。原典の規則とこのスキルの対応は `ja-writing/MAPPING.md` に `e09d327` 時点の記録として残してある。このスキルを直したら MAPPING.md も合わせて直す。
