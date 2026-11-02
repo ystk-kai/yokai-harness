@@ -27,6 +27,25 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-03
+
+### 再蒸留 (awesome-harness-engineering) から
+
+Grep ツールが無い環境のため、照合は該当ファイルの Read による。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 却下 (このハーネスは自作の tool / MCP サーバを持たない (2026-10-25 の行と同じ)。`check-freshness.sh` は要対応ありを exit 1 で返すが、yokai-refs-update/SKILL.md 手順 1 が exit の意味を定めており、実行エラーと取り違えない。gist 本文は未読) | FYI | 運用 | CLI が有効な JSON を exit code 1 で返すとき、adapter で診断結果と実行エラーを分けて返す。対象の設定は model の引数でなく adapter 側で束縛し、skip した検査を落とさず、返すフィールドを絞る | ahe: `9a06a14`、`README.md` の `Tool Design` 先頭 |
+| 却下 (このハーネスは OpenAI Agents SDK を使わず、承認は Claude Code の permission と hook で行う。docs 本文は未読) | FYI | hook | OpenAI Agents SDK は承認待ちを run の中断として `RunState` に直列化し、crash をまたいで再開する。入れ子の agent の承認も外側の run に出る。hook 単位の permission gate とは別の型 | ahe: `c074ae4`、`README.md` の `Human-in-the-Loop` |
+| 却下 (セッション間の引き継ぎは auto-memory と CLAUDE.md で行っており、handoff note の仕組みを足す予定なし。README の注記ベースで中身は未読) | FYI | 運用 | Mercury CLI: 各セッションが終了時に handoff note を書き、次のセッションが起動時に project の固定ルールと一緒に 1 回だけ読む。並列の agent は file lease 付きの git worktree で動く | ahe: `5bc3f4c`、`README.md` の `Demo Harnesses` |
+
+Oh My Android (`33a24bf`、Android Emulator を stdio MCP で操作させる macOS アプリ) はモバイル開発を扱わないので候補なし。`verify_urls.py` の Windows cp1252 での UnicodeEncodeError 修正 (`c074ae4`) も候補なし。
+
+### 再蒸留 (claude-code-best-practice / smarthr-design-system) から
+
+今回は取り込み候補なし。claude-code-best-practice の `93dc855` までの 14 commit は 11-02 の v2.1.316 定期 run で、commands は no drift (`/autocompact` の ON HOLD 継続)、skills は no drift (削除候補 4 件の ON HOLD 継続)、subagents は既出の ON HOLD 4 件の継続、残りはバッジ・ワークフロー / コレクション表の数値更新だけ。smarthr-design-system の 1 commit は prettier-plugin-astro の依存更新でライティングガイドラインの MDX に変更なし。どちらも蒸留版は内容への影響なしとして SHA だけを進めた。
+
+---
 ## 2026-11-02
 
 ### 再蒸留 (claude-code-best-practice / smarthr-design-system) から
