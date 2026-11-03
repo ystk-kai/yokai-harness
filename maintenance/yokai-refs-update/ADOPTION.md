@@ -27,6 +27,37 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-04
+
+### 再蒸留 (claude-cookbooks) から
+
+Grep ツールが無く grep コマンドも使えない環境のため、照合は README と該当ファイルの Read による。このハーネスはスキルと参照資料の配布物で、Anthropic SDK・Claude Agent SDK を呼ぶコードを持たない。そのため SDK 2.0 の書き方変更は、原典の記述として BREAKING でも、このハーネスでは `FYI` に落とした。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | claude-agent-sdk 0.2 以降は `setting_sources` を書かないと全ソース (user / project / local の設定と CLAUDE.md) を読む。SDK で無人エージェントを組むときは `setting_sources=[]` などを明示する。このハーネスに SDK を使うコードは無い | cookbooks: `785d7a0`、`claude_agent_sdk/` |
+| 未対応 | FYI | skill | Anthropic SDK 2.0 で `tool_runner(..., compaction_control={...})` が廃止され、`betas=["compact-2026-09-04"]` と `runner.compact_before_next_turn()` に置き換わった。Skills / Files API は GA で `client.skills.*` / `client.files.*` に移り、`skills-2025-10-02` header は不要。旧書式のコード例を持つ skill を作るときは新書式で書く。蒸留版の記述は今回直した | cookbooks: `785d7a0`、`tool_use/automatic-context-compaction.ipynb`、`skills/README.md` |
+| 未対応 | FYI | 運用 | レイテンシを詰めるときは、先に eval と品質バーを固定して p50 / p90 で測り、モデルより先にループ (呼び出し回数・出力長) を直す。停止機構 (`max_tokens`・turn cap・timeout) と、モデルに見せる signal (task budget・時計・最終呼び出しの通知) は別物として両方張る。API ループを持たないこのハーネスには当たらない | cookbooks: `41ce172`、`latency_optimization/latency_optimization.ipynb` |
+| 未対応 | FYI | subagent | subagent を同時に起動すると、共有 context を各 agent が cache 無しで読む。pre-warm するか、1 体目の streaming 開始を待ってから残りを送る | cookbooks: `latency_optimization/latency_optimization.ipynb` |
+| 未対応 | FYI | 運用 | claude-agent-sdk 0.2 で `Task` tool が `Agent` に改名された (旧名も受け付ける) | cookbooks: `785d7a0` |
+
+latency notebook (約 55K トークン) は Read で開けなかったため、委譲先が読み取り専用の補助で中身を抽出した。蒸留版のレイテンシ節の数値は、その抽出結果に基づく。
+
+### 再蒸留 (awesome-harness-engineering) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | Happier: Claude Code / Codex などの tool 承認と permission プロンプトに、電話・Web から E2E 暗号化で応答できる。承認の面を端末から外すときの材料 | ahe: `5c21c8c` / `a683ecf`、`README.md` の `Human-in-the-Loop` |
+| 未対応 | FYI | hook | HOL Guard: shell / file / MCP / package 操作を、実行前に action policy と人の承認で止める Apache-2.0 の gate (対応 agent のみ)。自前の PreToolUse hook による実行前 gate と比べる参照。README の注記は 1 文で中身は未読 | ahe: `bb63647`、`README.md` の `Security` |
+| 未対応 | FYI | 運用 | Sage の RSI ループ: タスク実行・評価・package tuning を分け、固定の validation で候補を選び、採用はユーザーの明示判断に残す。自己改善ループに人の採用ゲートを置く型 | ahe: `2625d84`、`README.md` の `Generators & Meta-Harnesses` |
+
+ACP (Agent Client Protocol、`ff3e288`) は editor と agent の間のプロトコルで、ハーネスの設定を直す根拠にならないので候補なし。
+
+### 再蒸留 (hallmark / claude-code-best-practice / smarthr-design-system) から
+
+今回は取り込み候補なし。hallmark の 12 commit はスクリプトの不具合修正 (HTTP エラー時の capture skip、reroll のカタログ枯渇での停止、sloplint の明示ターゲット走査、contrast probe 後の style 復元、imagegen のバッチ再利用) と `.gitattributes` の追加。claude-code-best-practice の 14 commit は 11-03 の v2.1.317 定期 run で、commands・skills・subagents・concepts とも新規の drift は無く、ON HOLD の継続とバッジ・コレクション表の数値更新だけ。smarthr-design-system の 9 commit は renovate の依存更新で、ライティングガイドラインの MDX に変更なし。
+
+---
 ## 2026-11-03
 
 ### 再蒸留 (awesome-harness-engineering) から

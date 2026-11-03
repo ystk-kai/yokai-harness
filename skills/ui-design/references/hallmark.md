@@ -1,7 +1,7 @@
 ---
 source: https://github.com/Nutlope/hallmark
-distilled_commit: 4f6a46c6dc325d40ab268c93e25c7b96676ebccd
-distilled_at: 2026-10-31
+distilled_commit: 52328cb3129135499e4e178d4864ee90029dea2b
+distilled_at: 2026-11-04
 ---
 
 # hallmark 蒸留版
@@ -76,9 +76,9 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 | redesign / audit | skills/hallmark/references/redesign.md | 保持するもの、深さ 3 段、`--before`/`--kept`、Picks block の Redesign/Before/Keeps/Files 行、handoff 様式 |
 | comp (生成画像で先に構図) | skills/hallmark/references/comp.md | API キーがあるときだけ。2 案・1 承認・2 ラウンド上限、Floor は上書きしない |
 | レビュー用プロンプト | skills/hallmark/references/review-hero.md, review-finish.md | subagent が読む側。入力の限定と最初の語の選択肢 |
-| 静的 + render の linter | skills/hallmark/scripts/sloplint.mjs, sloplint-render.mjs | 依存ゼロ、Node 18+。`--genre`/`--scope page|component|app`/`--stage hero|page`/`--render`/`--url`/`--tier floor`/`--before`/`--kept`/`--json`。JSX/TSX/Vue/Svelte/Astro の Tailwind クラスも読む。引数で渡したパスが読めなければ `sloplint: cannot read` を出して exit 2 で止まる (走査中の下位パスは飛ばすだけ) |
-| テーマ操作 CLI | skills/hallmark/scripts/theme.mjs | `deal` / `draw` / `scaffold` (tokens.css・base.css・stamp 雛形) / `check` (axes・face・hue の重複) / `photos` / `log` / `index` / `list` / `validate`。`--prompt` (旧 `--brief` は alias) |
-| 実製品のスクリーンショット | skills/hallmark/scripts/capture.mjs | URL・HTML・dev server を 1440×900 と 390×844 で撮る。`--cdp` で Electron 等に接続。ブラウザ枠は描かない |
+| 静的 + render の linter | skills/hallmark/scripts/sloplint.mjs, sloplint-render.mjs | 依存ゼロ、Node 18+。`--genre`/`--scope page|component|app`/`--stage hero|page`/`--render`/`--url`/`--tier floor`/`--before`/`--kept`/`--json`。JSX/TSX/Vue/Svelte/Astro の Tailwind クラスも読む。引数で渡したパスが読めなければ `sloplint: cannot read` を出して exit 2 で止まる (走査中の下位パスは飛ばすだけ)。走査中は node_modules・dot folder・dist/build/coverage を飛ばすが、dist 等を引数で直接渡せば読む (親ディレクトリと並べて渡しても読む) |
+| テーマ操作 CLI | skills/hallmark/scripts/theme.mjs | `deal` / `draw` / `scaffold` (tokens.css・base.css・stamp 雛形) / `check` (axes・face・hue の重複) / `photos` / `log` / `index` / `list` / `validate`。`--prompt` (旧 `--brief` は alias)。`deal --reroll <n>` はカタログを配り切った時点で reroll を止め、配る手が残らなければ `nothing left to deal` で exit 1 |
+| 実製品のスクリーンショット | skills/hallmark/scripts/capture.mjs | URL・HTML・dev server を 1440×900 と 390×844 で撮る。`--cdp` で Electron 等に接続。ブラウザ枠は描かない。URL 対象で HTTP が非 2xx (304 を除く) の route はエラーページを撮らずに skip し、1 枚も撮れなければ exit 1 |
 | 編集時 Floor 検査 hook | skills/hallmark/scripts/lint-hook.mjs, install-hook.mjs | PostToolUse (`Write|Edit|MultiEdit`) で Hallmark の成果物だけ `--tier floor` で検査し FAIL を additionalContext で返す。install-hook は `.claude/settings.json` (または `--global` で user settings) に書き込む |
 | 参照整合の検査 | skills/hallmark/scripts/refcheck.mjs | references 内のリンク・gate 番号 (退役番号の一文を含む)・テーマ・SKILL.md frontmatter (description は 1 行の二重引用符・1,024 字以内) を検査 |
 | 配布形態 | .claude-plugin/plugin.json, .claude-plugin/marketplace.json, skills/hallmark/agents/openai.yaml, skills/hallmark/scripts/install.mjs | Claude Code plugin (skill だけを同梱)、Codex 用 metadata (`allow_implicit_invocation: true`)、clone からの検証付きコピー |
@@ -89,7 +89,7 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 - **各 gate の閾値の全文**: gates.md § 4 の表を直接読む。特に 40/41 (WCAG 4.5:1・3:1 と APCA Lc 60/45)、44a〜44d (3 幅での fold 判定)、58 (900px 窓あたり約 80 語)、85 (締めの職務判定) は記述が長い。
 - **50 テーマ個別の OKLCH 値・書体・Range・Do-nots**: `references/themes/<slug>.md` を 1 ファイルずつ。v1 の `site/css/tokens.css` は消え、トークンの正は各テーマ本文の `:root` ブロック。3 軸 (paper band・display class・accent band) は index.json に数値で入っている。
 - **21 macrostructure の個別仕様**: index から 1 ファイルずつ。全読みは原典自身が禁じている。nav/footer の archetype (v1 の component cookbook と `components/` 50 件) は削除され、chrome は `layout.md` と `theme.mjs draw` の側に移った。
-- **sloplint の実装詳細** (4,422 行 + render 1,252 行): 判定ロジックの確認が要るときだけ読む。tier 表は gates.md から導出されるので、規則の正は gates.md。
+- **sloplint の実装詳細** (4,426 行 + render 1,283 行): 判定ロジックの確認が要るときだけ読む。tier 表は gates.md から導出されるので、規則の正は gates.md。
 - **写真ライブラリの中身**: skills/hallmark/scripts/photos.json (1 行の JSON)。画像ファイルは含まない。
 - **サイト (`site/`)・eval (`eval/`)・テーマの picture とスクリーンショット (`docs/screenshots/`)**: デモと評価用で、スキルの規則ではない。
 - **v1 から消えたもの** (旧蒸留版の索引先): `references/slop-test.md`・`anti-patterns.md`・`component-cookbook.md`・`components/`・`custom-theme.md`・`typography.md`・`color.md`・`layout-and-space.md`・`motion.md`・`copy.md`・`hero-enrichment.md`・`custom-craft.md`・`assets.md`・`imagery-kit.md`・`structure.md`・`study.md`・`verbs/`・`floating-nav.md`、`docs/recipes.md`・`docs/study-examples.md`、`site/examples/`・`site/_tests/`。**study verb は廃止**され、verb は redesign と audit だけ。

@@ -1,7 +1,7 @@
 ---
 source: https://github.com/shanraisshan/claude-code-best-practice
-distilled_commit: 93dc85576d9a51143394c5019341ba2154763790
-distilled_at: 2026-11-03
+distilled_commit: af996886c3aefc93919494fe1933aa48a6dffb8e
+distilled_at: 2026-11-04
 ---
 
 # claude-code-best-practice 蒸留版
@@ -162,12 +162,12 @@ Claude Code の実践知を集めたリポジトリ (shanraisshan) の蒸留。�
       `permissionMode` に公式の `manual` (`default` の alias、v2.1.200+) が無く、`Explore` の model は `haiku`
       (公式は「親から継承」、Claude API では Opus 上限)、`model` 例は `claude-opus-4-6` のまま (公式は `fable` /
       `claude-opus-5`)、`prompt` は公式の `--agents` CLI JSON 側にしか無い。
-    - 10-31・11-01 時点で skills・commands・subagents のバッジは揃って v2.1.316 だが subagents 側の ON HOLD 4 件と watch item、skills 側の削除候補 4 件は 1 つも解消していない (11-01 の skills run は「25 vs 公式で [Skill] タグ付きの 20」と数え方を書き足した。10-31 の skills run は「no drift・公式と完全同期」と書きつつ削除候補 4 件を保留) — **バッジの更新は表本体が直ったことを意味しない**。
+    - 10-31・11-01 時点で skills・commands・subagents のバッジは揃って v2.1.316 だが subagents 側の ON HOLD 4 件と watch item、skills 側の削除候補 4 件は 1 つも解消していない (11-01 の skills run は「25 vs 公式で [Skill] タグ付きの 20」と数え方を書き足した。10-31 の skills run は「no drift・公式と完全同期」と書きつつ削除候補 4 件を保留。11-03 にバッジが v2.1.317 へ揃って進んでも同じ 8 件が残る) — **バッジの更新は表本体が直ったことを意味しない**。
     - **ON HOLD は解消されずに静かに消えることがある**。commands 側の `/cost` (cache miss 表示)・`/reload-plugins`
       (headless 対応)・`/effort` (既定保存と `s` キー) は 09-05 を最後に changelog から落ちたが公式 docs 表には
       入っておらず、以降の run は「fully in sync」と宣言。**「最新 run に出ていない = 解決した」ではない**。
       v2.1.283 で入った `/doctor prompt-audit` サブコマンドも skills 側の changelog (09-26) が触れるだけで commands 表には無い。
-      CHANGELOG のみの変更は docs 反映まで ON HOLD (`/mcp reconnect all` は 09-29 → 10-03 適用、`/autocompact` のモデル別保存 (v2.1.288) は 10-03 から ON HOLD が続き (10-19 の run では挙がらず、10-20〜10-25 に再掲)、10-25 の一括同期後も未適用。10-26・10-27 run は「fully in sync」とだけ書きこの ON HOLD は表から消えたが、10-28 run が「recurring from 2026-10-27」として再掲した — 消えた ON HOLD は戻ってくる。10-29 run ではまた消え、10-30 run が「recurring since 2026-10-03」として三たび戻し、10-31・11-01 run も継続)。
+      CHANGELOG のみの変更は docs 反映まで ON HOLD (`/mcp reconnect all` は 09-29 → 10-03 適用、`/autocompact` のモデル別保存 (v2.1.288) は 10-03 から ON HOLD が続き (10-19 の run では挙がらず、10-20〜10-25 に再掲)、10-25 の一括同期後も未適用。10-26・10-27 run は「fully in sync」とだけ書きこの ON HOLD は表から消えたが、10-28 run が「recurring from 2026-10-27」として再掲した — 消えた ON HOLD は戻ってくる。10-29 run ではまた消え、10-30 run が「recurring since 2026-10-03」として三たび戻し、10-31〜11-03 run も継続)。
     - `claude-settings.md` は 6 週間止まった末 10-13 に v2.1.252 → v2.1.296 へ追いつき、33 項目を直した。**その大半が型・scope・意味の誤り** (`feedbackDrafts` boolean → `"notify"/"quiet"/"off"`、`strictKnownMarketplaces` boolean → source object 配列、`enableArtifact`・`alwaysThinkingEnabled` の `true` は no-op、`USE_BUILTIN_RIPGREP` の向きが逆、ほか項目 7・9・10) — **止まっていた表の値は追従後にも疑う**。`claude-memory.md` (2026-03)・`claude-mcp.md` (2026-03)・`claude-cli-startup-flags.md` (2026-06) は数か月動いていない。
     → `best-practice/claude-skills.md`, `claude-commands.md`, `claude-subagents.md`, `claude-settings.md`
 
@@ -227,7 +227,7 @@ Claude Code の実践知を集めたリポジトリ (shanraisshan) の蒸留。�
 - **公式 slash command・CLI フラグ・env vars の全リスト** — `best-practice/claude-commands.md` と `claude-cli-startup-flags.md` を引く。
 - **tips 全文** — カテゴリ別一覧は `README.md` の TIPS AND TRICKS 節。各 tip に一次ソースリンク付き。
 - **★ 数とバッジ日付** — 日次 refresh で書き換わる。蒸留版は数値を持たない。バッジは「その表がまだ追われているか」の
-  指標としてのみ使う (項目 12)。2026-11-01 時点で skills / commands / subagents が v2.1.316、settings は v2.1.296 (10-13)。
+  指標としてのみ使う (項目 12)。2026-11-03 時点で skills / commands / subagents が v2.1.317、settings は v2.1.296 (10-13)。
 - **コミュニティワークフローの詳細比較・skill/agent コレクション集** — `README.md` の
   DEVELOPMENT WORKFLOWS / SKILL COLLECTIONS / AGENT COLLECTIONS 表。★ 数だけでなく**ステップ列も行の並び順も
   個数も日次で書き換わる** (gstack skills は 53/48/65/32/58/54/55 と揺れ、BMAD agents は 0 と 5 を往復、10-17 run は 11 workflow 中 9 個、10-18 run は 8 個のステップ列が前回と食い違い chain reset で ON HOLD、10-23 run も 7 個、10-24 run も 7 個が chain reset。10-23 に現行と一致した Superpowers・Matt Pocock も 10-24 は別のステップ数の版が出た) ため蒸留版は
