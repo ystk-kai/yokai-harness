@@ -1,7 +1,7 @@
 ---
 source: https://github.com/Nutlope/hallmark
-distilled_commit: 52328cb3129135499e4e178d4864ee90029dea2b
-distilled_at: 2026-11-04
+distilled_commit: de4999e0cd7a7a41df0b4e6903fa02fe9f1492a8
+distilled_at: 2026-11-05
 ---
 
 # hallmark 蒸留版
@@ -56,7 +56,7 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 |---|---|---|
 | ルール本体・Floor・Flow | skills/hallmark/SKILL.md | 155 行。Floor 16 項目 → Flow 0〜7 → Picks block の雛形 → Build/Sweep の手順。verb は redesign / audit の 2 つ |
 | gate 一覧・tier・waiver・レビュー | skills/hallmark/references/gates.md | § 1 tier/class/成績、§ 2 waiver 書式、§ 3 pre-emit critique、§ 4 gate 表 (色・書体・構造・chrome/copy・motion・asset/access)、§ 5 F1〜F26 と判定句、§ 6 fresh-context review。sloplint の tier 表はここから導出 |
-| 分岐 (component / app 画面 / fast / harness 差) | skills/hallmark/references/flow.md | component は 2 信号で判定し 8 states + preview を出す。app 画面は landing の gate を外し 4 データ状態 (loading/empty/error/full) を課す。harness 別のレバー表とモデル別 tic |
+| 分岐 (component / app 画面 / fast / harness 差) | skills/hallmark/references/flow.md | component は 2 信号で判定し 8 states + preview を出す。app 画面は `sloplint --scope app` で landing の gate (1, 6, 8, 9, 32, 42, 44, 46b, 58, 59, 66, 68, 77〜79, 81〜83, 85 と F8/F15/F20) を外し、4 データ状態 (loading/empty/error/full) を課す。type scale は `theme.mjs scaffold <slug> --scope app` が書く。harness 別のレバー表とモデル別 tic |
 | 職務別の page anatomy | skills/hallmark/references/anatomy.md | 10 job のアクション位置・固有セクション・締め方。事実の無いセクションはサンプル扱いで価格・人名・件数は出さない |
 | レイアウト (canvas・寸法・hero posture) | skills/hallmark/references/layout.md | 12 カラム、`--text-*` 段 (h1 84 / h2 52 / h3 25px @1440)、セクション間 rhythm、§ 5 composition 17 種 (Split〜Offer。16 Schedule は訪問者が選ぶ時刻専用)、§ 6 hero posture (Settled/Stage/Banner/Ledge/Corridor/Poster/Counter/Index)、§ 7 ページ全体 |
 | 書体・配色・surface・motion・copy | skills/hallmark/references/craft.md | § 1 Type、§ 2 Colour (4 層、accent 0.12〜0.22、posture 4 種)、§ 3 Surfaces、§ 5 Motion、§ 6 Copy、§ 7 見出しの始め方 12 通り (eyebrow の代替)、§ 8 欠けた事実の slot |
@@ -69,7 +69,7 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 | 画像の順位・ライブラリ・製品の捕捉 | skills/hallmark/references/imagery.md | § 1 何で埋めるか、§ 2 写真ライブラリ、§ 3 slot、§ 4 実製品の捕捉優先、§ 7 Never |
 | 書体の候補と禁止既定 | skills/hallmark/references/fonts.md | banned as default、catalog 未使用の display 書体、body 書体、読み込み |
 | 状態・フォーム・focus | skills/hallmark/references/interaction-and-states.md, microinteractions.md | 8 states、focus ring、hit target、modal/popover、undo over confirm、loading/empty |
-| レスポンシブ | skills/hallmark/references/responsive.md | script が測るもの / 測れないもの、clickable text は折り返さない、表・画像・多言語 |
+| レスポンシブ | skills/hallmark/references/responsive.md | script が 320/375/414/768/1024/1280/1440/1920 の 8 幅で測るもの (34・49・50・53・56) / 目で見るもの、clickable text は折り返さない、表・画像・多言語 |
 | dark mode・データ可視化 | skills/hallmark/references/dark-mode.md, data-viz.md | 反転でなく token の再導出、チャートはライブラリ無しの inline SVG で捏造禁止 |
 | texture・scroll 演出 | skills/hallmark/references/texture.md, scroll-choreography.md | grain/halftone/misregistration/scanline/deckle の予算、scroll 演出は 4 型から 1 つ |
 | 実ブランド・design.md・token export | skills/hallmark/references/brand-truth.md, design-md.md, export-formats.md | 実ブランドを記憶でテーマ化しない手順、ロック済みシステムの書式、Tailwind v4 / DTCG / shadcn への写像 |
@@ -77,7 +77,7 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 | comp (生成画像で先に構図) | skills/hallmark/references/comp.md | API キーがあるときだけ。2 案・1 承認・2 ラウンド上限、Floor は上書きしない |
 | レビュー用プロンプト | skills/hallmark/references/review-hero.md, review-finish.md | subagent が読む側。入力の限定と最初の語の選択肢 |
 | 静的 + render の linter | skills/hallmark/scripts/sloplint.mjs, sloplint-render.mjs | 依存ゼロ、Node 18+。`--genre`/`--scope page|component|app`/`--stage hero|page`/`--render`/`--url`/`--tier floor`/`--before`/`--kept`/`--json`。JSX/TSX/Vue/Svelte/Astro の Tailwind クラスも読む。引数で渡したパスが読めなければ `sloplint: cannot read` を出して exit 2 で止まる (走査中の下位パスは飛ばすだけ)。走査中は node_modules・dot folder・dist/build/coverage を飛ばすが、dist 等を引数で直接渡せば読む (親ディレクトリと並べて渡しても読む) |
-| テーマ操作 CLI | skills/hallmark/scripts/theme.mjs | `deal` / `draw` / `scaffold` (tokens.css・base.css・stamp 雛形) / `check` (axes・face・hue の重複) / `photos` / `log` / `index` / `list` / `validate`。`--prompt` (旧 `--brief` は alias)。`deal --reroll <n>` はカタログを配り切った時点で reroll を止め、配る手が残らなければ `nothing left to deal` で exit 1 |
+| テーマ操作 CLI | skills/hallmark/scripts/theme.mjs | `deal` / `draw` (`--material photo|product|words --job <10 職務>`) / `scaffold` (tokens.css・base.css・stamp 雛形。`<slug>` か `--custom`/`--brand`。`--scope app` の `app` は slug ではなく flag の値として読む) / `check` (axes・face・hue の重複) / `photos` / `log` / `index` / `list` / `validate`。`--prompt` (旧 `--brief` は alias)。`deal --reroll <n>` はカタログを配り切った時点で reroll を止め、配る手が残らなければ `nothing left to deal` で exit 1 |
 | 実製品のスクリーンショット | skills/hallmark/scripts/capture.mjs | URL・HTML・dev server を 1440×900 と 390×844 で撮る。`--cdp` で Electron 等に接続。ブラウザ枠は描かない。URL 対象で HTTP が非 2xx (304 を除く) の route はエラーページを撮らずに skip し、1 枚も撮れなければ exit 1 |
 | 編集時 Floor 検査 hook | skills/hallmark/scripts/lint-hook.mjs, install-hook.mjs | PostToolUse (`Write|Edit|MultiEdit`) で Hallmark の成果物だけ `--tier floor` で検査し FAIL を additionalContext で返す。install-hook は `.claude/settings.json` (または `--global` で user settings) に書き込む |
 | 参照整合の検査 | skills/hallmark/scripts/refcheck.mjs | references 内のリンク・gate 番号 (退役番号の一文を含む)・テーマ・SKILL.md frontmatter (description は 1 行の二重引用符・1,024 字以内) を検査 |

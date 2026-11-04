@@ -27,6 +27,35 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-05
+
+### 再蒸留 (natural-japanese v1.6.5) から
+
+ja-slop-review/SKILL.md は全文を Read して照合した (Grep ツールが無い環境)。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | ja-slop-review/SKILL.md 手順 0 の「書き手に確かめたい点」など、修正した本文の後にエージェント自身が書く文には、§12・§13 の点検 (和語の動詞を 1 語だけ名詞にした「文章の確かめ」「指摘の突き合わせ」など) を当てる規則が無い。原典は報告の文は lint にかけないのでそこにだけ残りやすいとし、§3 の見つけ方を報告・返答の文にも当てて確認・照合に戻す。当てる先はエージェントが新しく書く文だけなので、人が書いた本文の言い回しは変えない。取り込むときは MAPPING.md の SKILL.md § Process の行に出所を足す | skills/natural-japanese/SKILL.md §6 冒頭 (`81eb228`) |
+| 却下 (人の文への誤検出が見込まれる: 報道文の「警察の調べでは」が検出条件 (名詞「調べ」+「で」) に当たる。この反例は委譲先の当てはめで原典に無い。syntax-patterns.md §12・§13 は「結果の確かめ」「知らせが来る」を既に扱う) | FYI | skill | lint の `wago_nominalization` (warn) が 確かめ→確認・知らせ→通知・測り→測定・調べ→調査 を、直後の助詞を絞って拾う。「に」は「調べに行く」と区別できないので除く | skills/natural-japanese/scripts/lint.py `WAGO_NOMINALIZATION` (`81eb228`) |
+| 却下 (syntax-patterns.md §12 の残す条件 (複合動詞由来・別義で定着した語) で既に覆われている) | FYI | skill | 原典は分野で定着した「突き合わせ」(経理) を検出の対象から外している | lint.py `WAGO_NOMINALIZATION` 直上のコメント (`81eb228`) |
+
+### 再蒸留 (awesome-harness-engineering) から
+
+README の注記ベースで、リンク先の本文は未読。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | SLCR: 完了を agent の「done」の自己申告で決めず、要件ごとの acceptance criteria を test / linter / ast-grep rule に対応づけて CI で充足を判定する。agent には spec 全体でなく、その要件に要る依存と用語集の slice だけを渡す。受け入れ条件を機械判定に寄せるときの参照先 | ahe: `ba2e4fe`、`README.md` の `Verification & CI Integration` |
+| 未対応 | FYI | settings | Microsandbox: local-first で組み込める microVM runtime。secret を VM に入れず sandbox 内のコードから読めない。手元のマシンで hardware isolation が要るときの選択肢 | ahe: `c4912ff`、`README.md` の `Security, Sandbox & Permissions` |
+| 未対応 | FYI | CLAUDE.md | Most Capable Agent System Prompt: プロジェクト状態をファイル (`AGENTS.md` / `plan.md` / `tasks.md` / `FAILURE.md`) で持ち、最初の milestone で goal → 検証済みの結果 → 記録した lesson の閉ループを 1 本通させる。失敗の記録を専用ファイルに分ける型 | ahe: `a019448`、`README.md` の `Generators & Meta-Harnesses` |
+
+deja-vu の Context Delivery からの削除 (`c4912ff`) は蒸留版が元々 Memory 側に索引しており候補なし。
+
+### 再蒸留 (hallmark / claude-code-best-practice / smarthr-design-system / yomiyasu) から
+
+今回は取り込み候補なし。hallmark の 12 commit はスクリプトの小修正 (scaffold コマンドのテーマ名、`--scope` を flag として読む、幅チェックに 1440 を追加、app-scope の skip に gate 85、jazz-club の id、`draw --job` の単語単位照合)。claude-code-best-practice の 14 commit は 11-04 の v2.1.318 定期 run で、commands 表の説明文同期 (`/review` 引数なしで PR 一覧から選ぶ等) と skills・subagents・concepts の ON HOLD 継続だけ。smarthr-design-system の 6 commit はユーザビリティのリンク差し替え・Icon ドキュメントの例の移動・pnpm 更新で、ライティングガイドラインの MDX に変更が無く、蒸留版は内容への影響なしとして SHA だけを進めた。yomiyasu の 1 commit は README に理想科学工業のサービス「ヨミヤス (YOMIYAS)」と無関係である旨の注記を足しただけで、規則・ライセンスは不変。MAPPING.md への影響なし。
+
+---
 ## 2026-11-04
 
 ### 再蒸留 (claude-cookbooks) から
