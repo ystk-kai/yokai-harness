@@ -27,6 +27,34 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-06
+
+### 再蒸留 (natural-japanese v2.0.0) から
+
+ja-writing/SKILL.md と ja-slop-review/SKILL.md は全文を Read して照合した (Grep ツールが無い環境)。critical-thinking/SKILL.md の該当手順も Read で確かめた。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | ja-writing/SKILL.md「別スキルとの分担」は「`natural-japanese` プラグインが有効でも、既存文書の修正には使わない」としている。ところが同じプラグインに入った critical-thinking は、直す工程の最後 (手順 8) で、直した既存文書に natural-japanese をかける。critical-thinking を使うと、この方針を通らずに natural-japanese が既存文書を直す。分担節にこの経路を書き足し、参照リポジトリ表の natural-japanese 行の使いどころにも critical-thinking (稟議書などの論旨の検査と直し) を足す | skills/critical-thinking/SKILL.md「指摘を反映して直すよう頼まれたとき」8 (`9104690`) |
+| 未対応 | RECOMMENDED | skill | ja-slop-review/SKILL.md 手順 0 (修正時の制約) に「改訂の経緯を書かない」を足す。本文の「第1版では〜としていた」に加え、冒頭の版番号・改訂日・「指摘を反映」の注記も経緯に当たる。理由は「読む人は改訂の前を知らない」。足さないことを決める歯止めなので、書き手の言い回しや言い切りの強さは変えない | skills/critical-thinking/SKILL.md「指摘を反映して直す」6 |
+| 却下 (ja-slop-review 手順 0 の「確信度をどちらにも変えない」と衝突する) | FYI | skill | critical-thinking の直す工程は、言い切りの強さを根拠に合わせて動かす。根拠のない言い切りは仮定の形にし、根拠があるのに弱腰な文は言い切りに戻す | skills/critical-thinking/SKILL.md「指摘を反映して直す」2 |
+| 未対応 | FYI | skill | 問いの扱いは ja-slop-review の 2026-11-02 の規則と同じ向き (文書の中で答えが出ることは聞かずに直す、聞くのは 3 つまで、本文に【要確認】を置かない)。違いは 1 点で、文書の 2 か所で値が食い違うときだけ、最初の箇所に「(…確認中)」を 1 回書く。中身の矛盾を扱う規則で文体の範囲の外なので、今は取り込まない | skills/critical-thinking/SKILL.md「指摘を反映して直す」3 (`fae628a`) |
+| 未対応 | FYI | 運用 | 長い工程の最後の推敲は、直した文書だけを渡した別のサブエージェントに任せ、段落ごとの確認を最後まで書き出させる。同じ文脈で続けると、長い工程の最後では手順が省かれるため | skills/critical-thinking/SKILL.md「指摘を反映して直す」8 |
+| 未対応 | FYI | 運用 | スキル評価の組み方 (ct-eval)。仕込んだ欠陥の一覧は最初の実行より前に書き、結果を見て足さない。判定は生成と別のモデルにする。3 回中 2 回以上で見つかったかで合否を決める。欠陥の無い素材で誤検知の基準線を取る。CI には入れず手で回す | dev/ct-eval/README.md |
+
+MAPPING.md は critical-thinking を扱っておらず、natural-japanese の規則にも変化が無いため影響なし。
+
+### 再蒸留 (claude-cookbooks) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | dreaming: 終わったセッションの transcript から、次のセッションが読む記憶を夜間に作る型。transcript は未信頼入力として扱う。analyzer には file tool だけを持たせ、network は渡さない。記憶は使う側に read-only で mount する。完了は自己申告でなく、全 transcript に analyzer が走ったかで確かめる。auto-memory を transcript から作り直す仕組みを設計するときの材料 | managed_agents/CMA_dreaming_with_a_dynamic_workflow.ipynb (`d4bd2fb`) |
+
+### 再蒸留 (hallmark / claude-code-best-practice) から
+
+今回は取り込み候補なし。hallmark の 7 commit はスクリプトの小修正 3 件 (sloplint が引数で直接渡した dot folder も読む、テーマの検査が CRLF のファイルも LF と同じに扱う、画像生成の応答件数の検査)。claude-code-best-practice の 2 commit は 11-05 の定期実行で、subagents の ON HOLD 4 件を前回と同じ内容で載せ直したものとバッジの更新だけ。
+
+---
 ## 2026-11-05
 
 ### 再蒸留 (natural-japanese v1.6.5) から

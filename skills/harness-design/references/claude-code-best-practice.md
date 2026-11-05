@@ -1,7 +1,7 @@
 ---
 source: https://github.com/shanraisshan/claude-code-best-practice
-distilled_commit: fd8e4bf01e4c55cc9bf0cb2ab6902456febf0aaa
-distilled_at: 2026-11-05
+distilled_commit: 55274f3c2b8dac9fa63f325580c908e205432e7b
+distilled_at: 2026-11-06
 ---
 
 # claude-code-best-practice 蒸留版
@@ -162,7 +162,7 @@ Claude Code の実践知を集めたリポジトリ (shanraisshan) の蒸留。�
       `permissionMode` に公式の `manual` (`default` の alias、v2.1.200+) が無く、`Explore` の model は `haiku`
       (公式は「親から継承」、Claude API では Opus 上限)、`model` 例は `claude-opus-4-6` のまま (公式は `fable` /
       `claude-opus-5`)、`prompt` は公式の `--agents` CLI JSON 側にしか無い。
-    - 10-31・11-01 時点で skills・commands・subagents のバッジは揃って v2.1.316 だが subagents 側の ON HOLD 4 件と watch item、skills 側の削除候補 4 件は 1 つも解消していない (11-01 の skills run は「25 vs 公式で [Skill] タグ付きの 20」と数え方を書き足した。10-31 の skills run は「no drift・公式と完全同期」と書きつつ削除候補 4 件を保留。11-03・11-04 にバッジが v2.1.317 → v2.1.318 へ揃って進んでも同じ 8 件が残る。11-04 の skills run は「No new bundled skills or frontmatter fields in v2.1.307–v2.1.318」) — **バッジの更新は表本体が直ったことを意味しない**。
+    - 10-31・11-01 時点で skills・commands・subagents のバッジは揃って v2.1.316 だが subagents 側の ON HOLD 4 件と watch item、skills 側の削除候補 4 件は 1 つも解消していない (11-01 の skills run は「25 vs 公式で [Skill] タグ付きの 20」と数え方を書き足した。10-31 の skills run は「no drift・公式と完全同期」と書きつつ削除候補 4 件を保留。11-03・11-04 にバッジが v2.1.317 → v2.1.318 へ揃って進んでも同じ 8 件が残る。11-04 の skills run は「No new bundled skills or frontmatter fields in v2.1.307–v2.1.318」。11-05 の subagents run も v2.1.318 のまま同じ 4 件を ON HOLD で再掲しただけ) — **バッジの更新は表本体が直ったことを意味しない**。
     - **ON HOLD は解消されずに静かに消えることがある**。commands 側の `/cost` (cache miss 表示)・`/reload-plugins`
       (headless 対応)・`/effort` (既定保存と `s` キー) は 09-05 を最後に changelog から落ちたが公式 docs 表には
       入っておらず、以降の run は「fully in sync」と宣言。**「最新 run に出ていない = 解決した」ではない**。

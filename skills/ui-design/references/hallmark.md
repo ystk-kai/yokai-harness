@@ -1,7 +1,7 @@
 ---
 source: https://github.com/Nutlope/hallmark
-distilled_commit: de4999e0cd7a7a41df0b4e6903fa02fe9f1492a8
-distilled_at: 2026-11-05
+distilled_commit: 407fa689f4a276f2fd389208d271d0fef08f5058
+distilled_at: 2026-11-06
 ---
 
 # hallmark 蒸留版
@@ -76,8 +76,8 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 | redesign / audit | skills/hallmark/references/redesign.md | 保持するもの、深さ 3 段、`--before`/`--kept`、Picks block の Redesign/Before/Keeps/Files 行、handoff 様式 |
 | comp (生成画像で先に構図) | skills/hallmark/references/comp.md | API キーがあるときだけ。2 案・1 承認・2 ラウンド上限、Floor は上書きしない |
 | レビュー用プロンプト | skills/hallmark/references/review-hero.md, review-finish.md | subagent が読む側。入力の限定と最初の語の選択肢 |
-| 静的 + render の linter | skills/hallmark/scripts/sloplint.mjs, sloplint-render.mjs | 依存ゼロ、Node 18+。`--genre`/`--scope page|component|app`/`--stage hero|page`/`--render`/`--url`/`--tier floor`/`--before`/`--kept`/`--json`。JSX/TSX/Vue/Svelte/Astro の Tailwind クラスも読む。引数で渡したパスが読めなければ `sloplint: cannot read` を出して exit 2 で止まる (走査中の下位パスは飛ばすだけ)。走査中は node_modules・dot folder・dist/build/coverage を飛ばすが、dist 等を引数で直接渡せば読む (親ディレクトリと並べて渡しても読む) |
-| テーマ操作 CLI | skills/hallmark/scripts/theme.mjs | `deal` / `draw` (`--material photo|product|words --job <10 職務>`) / `scaffold` (tokens.css・base.css・stamp 雛形。`<slug>` か `--custom`/`--brand`。`--scope app` の `app` は slug ではなく flag の値として読む) / `check` (axes・face・hue の重複) / `photos` / `log` / `index` / `list` / `validate`。`--prompt` (旧 `--brief` は alias)。`deal --reroll <n>` はカタログを配り切った時点で reroll を止め、配る手が残らなければ `nothing left to deal` で exit 1 |
+| 静的 + render の linter | skills/hallmark/scripts/sloplint.mjs, sloplint-render.mjs | 依存ゼロ、Node 18+。`--genre`/`--scope page|component|app`/`--stage hero|page`/`--render`/`--url`/`--tier floor`/`--before`/`--kept`/`--json`。JSX/TSX/Vue/Svelte/Astro の Tailwind クラスも読む。引数で渡したパスが読めなければ `sloplint: cannot read` を出して exit 2 で止まる (走査中の下位パスは飛ばすだけ)。走査中は node_modules・dot folder・dist/build/coverage を飛ばすが、dot folder と dist 等は引数で直接渡せば読む (親ディレクトリと並べて渡しても読む。node_modules だけは渡しても読まない) |
+| テーマ操作 CLI | skills/hallmark/scripts/theme.mjs | `deal` / `draw` (`--material photo|product|words --job <10 職務>`) / `scaffold` (tokens.css・base.css・stamp 雛形。`<slug>` か `--custom`/`--brand`。`--scope app` の `app` は slug ではなく flag の値として読む) / `check` (axes・face・hue の重複) / `photos` / `log` / `index` / `list` / `validate`。`--prompt` (旧 `--brief` は alias)。`deal --reroll <n>` はカタログを配り切った時点で reroll を止め、配る手が残らなければ `nothing left to deal` で exit 1。テーマの検査は CRLF 改行のテーマファイルも LF と同じに扱う (commit 9cbc89c) |
 | 実製品のスクリーンショット | skills/hallmark/scripts/capture.mjs | URL・HTML・dev server を 1440×900 と 390×844 で撮る。`--cdp` で Electron 等に接続。ブラウザ枠は描かない。URL 対象で HTTP が非 2xx (304 を除く) の route はエラーページを撮らずに skip し、1 枚も撮れなければ exit 1 |
 | 編集時 Floor 検査 hook | skills/hallmark/scripts/lint-hook.mjs, install-hook.mjs | PostToolUse (`Write|Edit|MultiEdit`) で Hallmark の成果物だけ `--tier floor` で検査し FAIL を additionalContext で返す。install-hook は `.claude/settings.json` (または `--global` で user settings) に書き込む |
 | 参照整合の検査 | skills/hallmark/scripts/refcheck.mjs | references 内のリンク・gate 番号 (退役番号の一文を含む)・テーマ・SKILL.md frontmatter (description は 1 行の二重引用符・1,024 字以内) を検査 |
