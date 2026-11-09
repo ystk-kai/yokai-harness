@@ -27,6 +27,24 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-09
+
+### 再蒸留 (awesome-harness-engineering) から
+
+~/.claude/CLAUDE.md は Read で照合した (Grep ツールが無い環境)。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | CLAUDE.md | 会話の途中で与えた安全ルールは `/compact` で大半が消える (1 回で 53%、5 回で 10% が残る。4 モデル系列・試したすべての要約戦略で同じ)。安全上重要なルールは会話中の指示で済ませず、CLAUDE.md や hook に置く。このハーネスは安全ルールを ~/.claude/CLAUDE.md に書き、PreToolUse hook でも拒否しているので当たらない。会話中の指示だけに頼るルールを新しく作るときの判断材料 | README.md `### Context Delivery & Compaction` (Compaction Cliff, arXiv 2608.22752、`ee8d47c`) |
+| 未対応 | FYI | subagent | context 方針の効果はモデルによって逆転する (sub-agent への isolation は Qwen3.5 で +19%、GLM-4.7 ではマイナス)。別のモデル構成で効いた方針を流用せず、backbone ごとに確かめる | 同節 (arXiv 2606.29718、`4c8acef`) |
+| 未対応 | FYI | 運用 | 長い search 型タスクでは、window が埋まる前から premature termination (解ける問題を諦める) が増える。効くのは token 数より内容の noise で、compaction と trimming の併用がいちばん釣り合いがよかった | 同上 |
+| 未対応 | FYI | hook | mu: loop 上の定型判断 (context に入れる tool 出力、command のリスクと承認、prompt injection の検出、done が検証済みか) を 40 の判断点で小型の judge model に任せる設計例。承認判定を主モデルと別に置くときの参考 | README.md `### Demo Harnesses` (`f8ae2d2`) |
+
+### 再蒸留 (claude-code-best-practice / skills / natural-japanese / smarthr-design-system / design.md) から
+
+今回は取り込み候補なし。claude-code-best-practice の 35 commit は v2.1.319 までのバッジ更新と drift-check の記録で、subagents の ON HOLD 4 件は前回と同じ。`permissions.denyInsteadOfPrompting` は名前が挙がっただけで、意味も型も書かれていない。skills は document skills を Apache 2.0 に移しただけ。natural-japanese はインストール手順の文言と plugin.json の版番号だけで規則に変化がないため、MAPPING.md と ja-slop-review への影響もない。smarthr-design-system は依存の更新と、ライティング以外 (usability とコード例) の修正だけ。design.md は DTCG 出力の修正と依存の更新だけ。
+
+---
 ## 2026-11-06
 
 ### 再蒸留 (natural-japanese v2.0.0) から

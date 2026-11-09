@@ -1,7 +1,7 @@
 ---
 source: https://github.com/google-labs-code/design.md
-distilled_commit: 6e5da5382f41edbba9d73b2c62f33f32e9971f15
-distilled_at: 2026-10-17
+distilled_commit: 1ed38aa9dd4451b9039f9aeb9ed1d2579edafddf
+distilled_at: 2026-11-09
 ---
 
 # design.md (DESIGN.md 形式仕様) 蒸留版
@@ -59,7 +59,8 @@ Google Labs が 2026-04 に Apache-2.0 で公開した **DESIGN.md 形式の規�
 7. **DTCG との関係は「着想元 + 変換可能」であって同一ではない**。仕様は DTCG から
    *typed token group* の概念と `{path.to.token}` 参照構文だけを採用したと明記する。相互運用は
    `export` コマンドが担い、`--format dtcg` で W3C Design Tokens Format Module の `tokens.json` を
-   吐く (他に Tailwind v3 の `theme.extend` JSON、Tailwind v4 の `@theme { }` CSS)。
+   吐く (他に Tailwind v3 の `theme.extend` JSON、Tailwind v4 の `@theme { }` CSS)。`d41905d` (release 0.4.1 の後) の題は
+   "emit required typography lineHeight and letterSpacing" で、DTCG 出力の typography にこの 2 つが出るよう直った。`export` は lint の結果にかかわらず exit 0 なので、ゲートは `lint` で掛ける。
    **トークンの型・命名の可否そのものは引き続き DTCG (`community-group/`) を正とし、DESIGN.md は
    その写像として扱う**のが安全。 → `docs/spec.md` の `# Design Tokens`, `README.md` の Design Token Interoperability
 

@@ -1,7 +1,7 @@
 ---
 source: https://github.com/anthropics/skills
-distilled_commit: ca45fc496a3436251f191354091d557da31c15b5
-distilled_at: 2026-10-30
+distilled_commit: 2c5958ecac7cee2b583967a2c4981d0f4a75c579
+distilled_at: 2026-11-09
 ---
 
 # anthropics/skills 蒸留版
@@ -246,4 +246,4 @@ Anthropic 公式の Agent Skills リポジトリ。skill 定義 (SKILL.md) の�
 - **eval スクリプトの実装詳細** — `scripts/*.py` の CLI 引数や内部ロジック。skill-creator SKILL.md と `references/schemas.md` を引く。
 - **skill-creator の環境別分岐** (Claude.ai / Cowork の subagent 有無・browser 有無による手順差) — 必要時に
   `skills/skill-creator/SKILL.md` 末尾の各 "-specific instructions" 節を読む。
-- **THIRD_PARTY_NOTICES.md / 各 LICENSE.txt** — document skills は source-available、他は Apache 2.0。
+- **THIRD_PARTY_NOTICES.md / 各 LICENSE.txt** — `2c5958e` (#2146) で document skills (`docx` / `pdf` / `pptx` / `xlsx`) も source-available から Apache 2.0 に移り、README.md も「These are also open source (Apache 2.0)」と書く。全 skill が Apache 2.0。
