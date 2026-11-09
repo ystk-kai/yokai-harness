@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カルテノート｜歯科医院のWeb予約と問診票</title>
+<meta name="description" content="従業員5〜30名の歯科医院向けのWeb予約と問診票のクラウドサービス。患者さんは予約と問診の記入をスマートフォンで済ませ、医院は受付の電話と紙の問診票の転記を減らせます。30日間無料で試せます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · custom · genre modern-minimal · job sign up · posture Committed (field: 付箋の黄) · paper oklch 99.2% C0.005 H150 · accent green H150 · weakest axis S: 機能の並びが均質になりかけたので、時間順の4場面に分け問診とCSVを広く取った */
+:root {
+  --color-paper: oklch(99.2% 0.005 150);
+  --color-paper-2: oklch(96.4% 0.022 150);
+  --color-ink: oklch(23% 0.014 150);
+  --color-muted: oklch(44% 0.014 150);
+  --color-line: oklch(87% 0.01 150);
+  --color-line-strong: oklch(62% 0.014 150);
+  --color-accent: oklch(49% 0.165 150);
+  --color-accent-hover: oklch(42% 0.15 150);
+  --color-on-accent: oklch(99.5% 0.004 150);
+  --color-field: oklch(91% 0.165 98);
+  --color-field-ink: oklch(22% 0.03 98);
+  --color-field-faint: oklch(76% 0.11 98);
+  --color-focus: oklch(46% 0.2 260);
+  --color-error: oklch(52% 0.2 27);
+  --color-shadow: oklch(23% 0.014 150 / 0.12);
+
+  --font-display: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic, Meiryo, "Noto Sans JP", sans-serif;
+  --font-body: -apple-system, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic, Meiryo, "Noto Sans JP", sans-serif;
+
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-md: 18px;
+  --text-lg: 22px;
+  --text-xl: 28px;
+  --text-h2: clamp(30px, 3.4vw, 42px);
+  --text-h1: clamp(34px, 4.6vw, 58px);
+
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 20px;
+  --space-lg: 32px;
+  --space-xl: 56px;
+  --space-2xl: 96px;
+
+  --radius-control: 8px;
+  --radius-panel: 18px;
+  --container: 1160px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.75;
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+:lang(ja) { font-synthesis-style: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; margin: 0; letter-spacing: 0; }
+h1, h2 { word-break: auto-phrase; }
+p { margin: 0; }
+a { color: var(--color-accent); }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+.wrap { width: min(100% - 40px, var(--container)); margin-inline: auto; }
+.skip { position: absolute; left: 12px; top: -60px; background: var(--color-ink); color: var(--color-paper); padding: 8px 14px; border-radius: var(--radius-control); z-index: 10; }
+.skip:focus { top: 12px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 0 26px;
+  background: var(--color-accent); color: var(--color-on-accent);
+  border: 0; border-radius: var(--radius-control);
+  font-weight: 700; font-size: var(--text-md); text-decoration: none;
+  white-space: nowrap; cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.btn:hover { background: var(--color-accent-hover); }
+.btn--small { min-height: 42px; padding: 0 18px; font-size: var(--text-base); }
+
+/* header */
+.site-head { border-bottom: 1px solid var(--color-line); }
+.site-head .wrap { display: flex; align-items: center; gap: var(--space-lg); min-height: 72px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; color: var(--color-ink); text-decoration: none; font-family: var(--font-display); font-size: var(--text-lg); white-space: nowrap; }
+.logo svg { width: 28px; height: 28px; flex: none; }
+.site-nav { display: flex; gap: var(--space-md); margin-left: auto; }
+.site-nav a { color: var(--color-ink); text-decoration: none; white-space: nowrap; }
+.site-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* hero */
+.hero { padding: var(--space-xl) 0 var(--space-xl); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-xl); align-items: center; }
+.hero h1 { font-size: var(--text-h1); line-height: 1.32; }
+.hero__lede { margin-top: var(--space-md); font-size: var(--text-md); max-width: 34em; color: var(--color-ink); }
+.hero__action { margin-top: var(--space-lg); display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xs); }
+.hero__terms { font-size: var(--text-sm); color: var(--color-muted); }
+
+.stage { position: relative; display: flex; justify-content: center; padding: 8px 0 28px; }
+.screen {
+  width: 300px; max-width: 100%;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line-strong);
+  border-radius: 28px;
+  padding: 22px 18px 18px;
+  box-shadow: 0 24px 48px -28px var(--color-shadow);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+.screen__top { display: flex; justify-content: space-between; align-items: baseline; color: var(--color-muted); }
+.screen__clinic { font-weight: 700; color: var(--color-ink); }
+.progress { height: 6px; border-radius: 3px; background: var(--color-paper-2); margin: 10px 0 18px; }
+.progress span { display: block; width: 40%; height: 100%; border-radius: 3px; background: var(--color-accent); }
+.screen__q { font-size: var(--text-base); font-weight: 700; margin-bottom: 10px; }
+.opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--color-line); border-radius: var(--radius-control); margin-bottom: 8px; }
+.opt i { width: 18px; height: 18px; border: 2px solid var(--color-line-strong); border-radius: 4px; flex: none; display: grid; place-items: center; }
+.opt--on { border-color: var(--color-accent); background: var(--color-paper-2); }
+.opt--on i { background: var(--color-accent); border-color: var(--color-accent); }
+.opt--on i svg { width: 12px; height: 12px; }
+.teeth { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 6px 0 16px; }
+.teeth span { text-align: center; padding: 7px 0; border: 1px solid var(--color-line); border-radius: 6px; }
+.teeth .on { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
+.screen__next { display: block; text-align: center; padding: 11px 0; border-radius: var(--radius-control); background: var(--color-accent); color: var(--color-on-accent); font-weight: 700; }
+.ticket {
+  position: absolute; left: 0; bottom: 0;
+  background: var(--color-field); color: var(--color-field-ink);
+  border-radius: 12px; padding: 12px 16px; font-size: var(--text-sm); line-height: 1.5;
+  box-shadow: 0 14px 30px -18px var(--color-shadow);
+}
+.ticket strong { display: block; font-size: var(--text-base); }
+
+/* proof band */
+.proof { background: var(--color-field); color: var(--color-field-ink); padding: var(--space-xl) 0; }
+.proof .wrap { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-xl); align-items: center; }
+.proof__claim { font-family: var(--font-display); font-size: clamp(26px, 3vw, 38px); line-height: 1.45; }
+.proof__note { margin-top: var(--space-sm); font-size: var(--text-sm); }
+.calls { display: grid; gap: var(--space-sm); }
+.calls__row { display: flex; gap: 6px; }
+.calls__row svg { width: 34px; height: 34px; flex: none; }
+.calls__row .gone { color: var(--color-field-faint); }
+.calls__row .kept { color: var(--color-field-ink); }
+.calls__cap { font-size: var(--text-sm); }
+
+/* moments */
+.section { padding: var(--space-2xl) 0; }
+.section__head { max-width: 40em; margin-bottom: var(--space-xl); }
+.section__head h2 { font-size: var(--text-h2); line-height: 1.4; }
+.section__head p { margin-top: var(--space-md); font-size: var(--text-md); color: var(--color-muted); }
+
+.moment { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl); align-items: center; padding: var(--space-xl) 0; border-top: 1px solid var(--color-line); }
+.moment--flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.moment--flip .moment__text { order: 2; }
+.moment__when { font-weight: 700; color: var(--color-accent); font-size: var(--text-base); }
+.moment h3 { font-size: var(--text-xl); line-height: 1.45; margin-top: var(--space-2xs); }
+.moment__text p { margin-top: var(--space-sm); max-width: 30em; }
+
+.panel { background: var(--color-paper-2); border-radius: var(--radius-panel); padding: var(--space-lg); }
+
+.slots__day { font-weight: 700; margin-bottom: var(--space-sm); }
+.slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; max-width: 460px; }
+.slot { background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-control); padding: 10px 6px; text-align: center; line-height: 1.3; font-size: var(--text-sm); }
+.slot b { display: block; font-size: var(--text-base); }
+.slot--full { color: var(--color-muted); background: transparent; border-style: dashed; }
+.slot--pick { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
+.slots__note { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); }
+
+.csv { background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 12px; overflow-x: auto; }
+.csv__bar { display: flex; justify-content: space-between; align-items: center; gap: var(--space-sm); padding: 10px 14px; border-bottom: 1px solid var(--color-line); font-size: var(--text-sm); }
+.csv__file { font-weight: 700; }
+.csv__dl { padding: 6px 12px; border-radius: 6px; background: var(--color-ink); color: var(--color-paper); white-space: nowrap; }
+.csv table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); line-height: 1.5; }
+.csv th, .csv td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--color-line); white-space: nowrap; }
+.csv th { color: var(--color-muted); font-weight: 400; }
+.csv tr:last-child td { border-bottom: 0; }
+.flowline { display: flex; align-items: center; gap: var(--space-sm); margin-top: var(--space-md); font-size: var(--text-sm); flex-wrap: wrap; }
+.flowline span { padding: 6px 12px; border: 1px solid var(--color-line-strong); border-radius: 6px; background: var(--color-paper); }
+.flowline svg { width: 18px; height: 18px; color: var(--color-muted); flex: none; }
+
+.sms { max-width: 360px; }
+.sms__from { font-size: var(--text-sm); color: var(--color-muted); margin-bottom: 6px; }
+.sms__bubble { background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 18px 18px 18px 4px; padding: 14px 16px; line-height: 1.6; }
+.sms__time { font-size: var(--text-sm); color: var(--color-muted); margin-top: 6px; }
+
+.wait { list-style: none; margin: 0; padding: 0; max-width: 460px; }
+.wait__head { font-weight: 700; margin-bottom: var(--space-sm); }
+.wait li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-sm); align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-line); }
+.wait li:last-child { border-bottom: 0; }
+.wait__no { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--color-paper); border: 1px solid var(--color-line-strong); font-size: var(--text-sm); }
+.wait__state { font-size: var(--text-sm); white-space: nowrap; }
+.wait__state--sent { color: var(--color-accent); font-weight: 700; }
+.wait__state--idle { color: var(--color-muted); }
+
+/* pricing */
+.pricing { background: var(--color-ink); color: var(--color-paper); }
+.pricing .section__head p { color: var(--color-line); }
+.price { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl); align-items: start; }
+.price__main { font-family: var(--font-display); line-height: 1.2; }
+.price__label { font-family: var(--font-body); font-size: var(--text-md); display: block; margin-bottom: var(--space-xs); }
+.price__num { font-size: clamp(56px, 7vw, 88px); }
+.price__unit { font-size: var(--text-xl); margin-left: 6px; }
+.price__tax { font-family: var(--font-body); font-size: var(--text-base); display: block; margin-top: var(--space-xs); color: var(--color-line); }
+.price__terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg) var(--space-xl); margin: 0; }
+.price__terms dt { color: var(--color-line); font-size: var(--text-sm); }
+.price__terms dd { margin: 4px 0 0; font-size: var(--text-lg); font-weight: 700; line-height: 1.5; }
+.price__terms .wide { grid-column: 1 / -1; }
+.price__terms .wide dd { font-size: var(--text-md); font-weight: 400; }
+.price__cta { margin-top: var(--space-xl); }
+.pricing .btn { background: var(--color-field); color: var(--color-field-ink); }
+.pricing .btn:hover { background: var(--color-paper); }
+.pricing a:focus-visible, .pricing .btn:focus-visible { outline-color: var(--color-field); }
+
+/* faq */
+.faq { max-width: 760px; }
+.faq details { border-bottom: 1px solid var(--color-line); }
+.faq summary { cursor: pointer; padding: var(--space-md) 0; font-weight: 700; font-size: var(--text-md); list-style: none; display: flex; justify-content: space-between; gap: var(--space-md); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-size: var(--text-xl); line-height: 1; color: var(--color-accent); flex: none; }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { padding-bottom: var(--space-md); max-width: 38em; }
+
+/* trial form */
+.trial { background: var(--color-paper-2); }
+.trial .wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl); align-items: start; }
+.trial h2 { font-size: var(--text-h2); line-height: 1.4; }
+.trial__lede { margin-top: var(--space-md); font-size: var(--text-md); }
+.trial__list { margin: var(--space-md) 0 0; padding-left: 1.2em; }
+.trial__list li { margin-top: var(--space-2xs); }
+.form { background: var(--color-paper); border-radius: var(--radius-panel); padding: var(--space-lg); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.field { display: grid; gap: 6px; }
+.field--wide { grid-column: 1 / -1; }
+.field label { font-weight: 700; font-size: var(--text-base); }
+.field label small { font-weight: 400; color: var(--color-muted); font-size: var(--text-sm); margin-left: 6px; }
+.field input, .field select {
+  min-height: 48px; width: 100%; min-width: 0;
+  padding: 0 14px; font-size: 16px;
+  background: var(--color-paper); border: 1px solid var(--color-line-strong); border-radius: var(--radius-control);
+}
+.field input[aria-invalid] { border-color: var(--color-error); }
+.form__foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); }
+.form__help { grid-column: 1 / -1; min-height: 1.75em; font-size: var(--text-sm); color: var(--color-muted); }
+.form__help.is-error { color: var(--color-error); }
+
+.site-foot { padding: var(--space-lg) 0; border-top: 1px solid var(--color-line); font-size: var(--text-sm); color: var(--color-muted); }
+.site-foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-md); }
+.site-foot a { color: var(--color-muted); white-space: nowrap; }
+.site-foot nav { display: flex; gap: var(--space-md); flex-wrap: wrap; }
+
+@media (max-width: 900px) {
+  .hero .wrap, .proof .wrap, .moment, .moment--flip, .price, .trial .wrap { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+  .moment--flip .moment__text { order: 0; }
+  .site-nav { display: none; }
+  .site-head .btn { margin-left: auto; }
+  .section { padding: var(--space-xl) 0; }
+  .moment { padding: var(--space-lg) 0; }
+}
+@media (max-width: 560px) {
+  .form { grid-template-columns: minmax(0, 1fr); padding: var(--space-md); }
+  .price__terms { grid-template-columns: minmax(0, 1fr); }
+  .slots { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .panel { padding: var(--space-md); }
+  .calls__row svg { width: 26px; height: 26px; }
+  .site-head .btn { padding: 0 12px; font-size: var(--text-sm); }
+  .logo { font-size: var(--text-md); }
+  .ticket { position: static; margin-top: var(--space-sm); }
+  .stage { flex-direction: column; align-items: center; padding-bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="カルテノート トップへ">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="2" width="22" height="24" rx="5" fill="var(--color-accent)"/><path d="M9 10h10M9 15h10M9 20h6" stroke="var(--color-on-accent)" stroke-width="2.2" stroke-linecap="round"/></svg>
+      カルテノート
+    </a>
+    <nav class="site-nav" aria-label="ページ内">
+      <a href="#features">できること</a>
+      <a href="#pricing">料金</a>
+      <a href="#faq">よくある質問</a>
+    </nav>
+    <a class="btn btn--small" href="#trial">無料で試す</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div>
+        <h1>予約も問診も、来院前に患者さんのスマートフォンで。</h1>
+        <p class="hero__lede">カルテノートは、従業員 5〜30 名の歯科医院のための Web 予約と問診票のクラウドサービスです。受付の電話対応と、紙の問診票を電子カルテへ書き写す手間を減らします。</p>
+        <div class="hero__action">
+          <a class="btn" href="#trial">30 日間 無料で試す</a>
+          <p class="hero__terms">初期費用は 0 円。試用のあとは月額 9,800 円 (税別) です。</p>
+        </div>
+      </div>
+
+      <div class="stage" aria-label="患者さんがスマートフォンで問診に答えている画面の例">
+        <div class="screen">
+          <div class="screen__top"><span class="screen__clinic">Web 問診票</span><span>2 / 5</span></div>
+          <div class="progress"><span></span></div>
+          <p class="screen__q">今日はどうされましたか</p>
+          <div class="opt opt--on"><i><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5l2.5 2.5L10 3.5" fill="none" stroke="var(--color-on-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>歯が痛む、しみる</div>
+          <div class="opt"><i></i>詰め物が取れた</div>
+          <div class="opt"><i></i>歯ぐきから血が出る</div>
+          <div class="opt"><i></i>検診・クリーニング</div>
+          <p class="screen__q" style="margin-top:14px">痛むのはどのあたりですか</p>
+          <div class="teeth"><span>右上</span><span>左上</span><span class="on">右下</span><span>左下</span></div>
+          <span class="screen__next">次へ</span>
+        </div>
+        <div class="ticket">
+          <strong>11 月 12 日 (水) 10:30</strong>
+          予約を受け付けました
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof" aria-labelledby="proof-claim">
+    <div class="wrap">
+      <div>
+        <p class="proof__claim" id="proof-claim">導入した 320 院の平均で、受付にかかってくる電話は 4 割減りました。</p>
+        <p class="proof__note">導入医院数は 2026 年 10 月時点です。</p>
+      </div>
+      <div class="calls">
+        <div class="calls__row" aria-hidden="true">
+          <svg class="kept" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="kept" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="kept" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="kept" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="kept" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="kept" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="gone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="gone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="gone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+          <svg class="gone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+        </div>
+        <p class="calls__cap">導入前に 10 本あった電話が、平均して 6 本になった割合です。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features" aria-labelledby="features-title">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 id="features-title">受付の仕事を、患者さんが来る前に片づける</h2>
+        <p>予約を取ってから来院するまでの流れに沿って、カルテノートが受け持つ 4 つの仕事を紹介します。</p>
+      </div>
+
+      <article class="moment">
+        <div class="moment__text">
+          <p class="moment__when">予約を取るとき</p>
+          <h3>24 時間、Web から予約が入る</h3>
+          <p>診療が終わった夜や休診日でも、患者さんは空いている時間を見て自分で予約できます。診療中に予約の電話で手を止めることが減ります。</p>
+        </div>
+        <div class="panel" aria-label="予約画面の例">
+          <p class="slots__day">11 月 12 日 (水) の空き</p>
+          <div class="slots">
+            <div class="slot slot--full"><b>9:00</b>満</div>
+            <div class="slot"><b>9:30</b>空き</div>
+            <div class="slot slot--full"><b>10:00</b>満</div>
+            <div class="slot slot--pick"><b>10:30</b>選択中</div>
+            <div class="slot"><b>11:00</b>空き</div>
+            <div class="slot slot--full"><b>11:30</b>満</div>
+            <div class="slot"><b>14:00</b>空き</div>
+            <div class="slot"><b>14:30</b>空き</div>
+          </div>
+          <p class="slots__note">予約の受付時間帯や枠の数は医院ごとに設定します。</p>
+        </div>
+      </article>
+
+      <article class="moment moment--flip">
+        <div class="moment__text">
+          <p class="moment__when">来院の前</p>
+          <h3>問診は Web で記入、回答は CSV で電子カルテへ</h3>
+          <p>患者さんは自宅で問診票に答えてから来院します。回答はそのまま電子カルテへ転記できる CSV で書き出せるので、紙の問診票を見ながら打ち直す作業がなくなります。</p>
+        </div>
+        <div class="panel">
+          <div class="csv" role="region" aria-label="問診回答の CSV の例" tabindex="0">
+            <div class="csv__bar"><span class="csv__file">monshin_1112.csv</span><span class="csv__dl">CSV を書き出す</span></div>
+            <table>
+              <thead><tr><th scope="col">予約時刻</th><th scope="col">氏名</th><th scope="col">主訴</th><th scope="col">部位</th><th scope="col">服用中の薬</th></tr></thead>
+              <tbody>
+                <tr><td>10:30</td><td>山田 花子</td><td>歯が痛む、しみる</td><td>右下</td><td>なし</td></tr>
+                <tr><td>11:00</td><td>佐藤 健</td><td>詰め物が取れた</td><td>左上</td><td>降圧剤</td></tr>
+                <tr><td>14:00</td><td>鈴木 美咲</td><td>検診・クリーニング</td><td>なし</td><td>なし</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flowline" aria-label="回答が電子カルテに入るまで">
+            <span>患者さんのスマートフォン</span>
+            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>カルテノート</span>
+            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>CSV で電子カルテへ</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="moment">
+        <div class="moment__text">
+          <p class="moment__when">予約の前日</p>
+          <h3>SMS で予約をお知らせ</h3>
+          <p>予約の前日に、日時を書いた SMS を患者さんへ自動で送ります。受付から確認の電話をかける必要はありません。</p>
+        </div>
+        <div class="panel">
+          <div class="sms" aria-label="前日に届く SMS の例">
+            <p class="sms__from">SMS</p>
+            <p class="sms__bubble">明日 11 月 12 日 (水) 10:30 にご予約をいただいています。ご来院をお待ちしております。日時の変更は予約ページからお手続きください。</p>
+            <p class="sms__time">11 月 11 日 (火) 送信</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="moment moment--flip">
+        <div class="moment__text">
+          <p class="moment__when">キャンセルが出たとき</p>
+          <h3>キャンセル待ちの患者さんへ自動で案内</h3>
+          <p>空いた枠は、キャンセル待ちに登録している患者さんへ自動で案内されます。受付が順番に電話をかけて空きを埋める必要はありません。</p>
+        </div>
+        <div class="panel">
+          <p class="wait__head">11 月 12 日 (水) 9:00 にキャンセル</p>
+          <ul class="wait" aria-label="キャンセル待ちの一覧の例">
+            <li><span class="wait__no">1</span><span>伊藤 さん</span><span class="wait__state wait__state--sent">案内を送信しました</span></li>
+            <li><span class="wait__no">2</span><span>渡辺 さん</span><span class="wait__state wait__state--idle">待機中</span></li>
+            <li><span class="wait__no">3</span><span>中村 さん</span><span class="wait__state wait__state--idle">待機中</span></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section pricing" id="pricing" aria-labelledby="pricing-title">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 id="pricing-title">料金は月額ひとつだけ</h2>
+        <p>初期費用はかかりません。最初の 30 日間は無料でお使いいただけます。</p>
+      </div>
+      <div class="price">
+        <p class="price__main">
+          <span class="price__label">月額</span>
+          <span class="price__num">9,800</span><span class="price__unit">円</span>
+          <span class="price__tax">税別</span>
+        </p>
+        <div>
+          <dl class="price__terms">
+            <div><dt>初期費用</dt><dd>0 円</dd></div>
+            <div><dt>無料試用</dt><dd>30 日間</dd></div>
+            <div class="wide"><dt>使える機能</dt><dd>24 時間の Web 予約、来院前の Web 問診と CSV 書き出し、前日の SMS リマインド、キャンセル待ちの自動案内</dd></div>
+            <div class="wide"><dt>向いている医院</dt><dd>従業員 5〜30 名の歯科医院</dd></div>
+          </dl>
+          <div class="price__cta"><a class="btn" href="#trial">30 日間 無料で試す</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 id="faq-title">よくある質問</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>どのくらいの規模の医院を想定していますか</summary>
+          <p>従業員 5〜30 名の歯科医院を想定して作っています。受付を少人数で回していて、電話や問診票の転記に手を取られている医院に向いています。</p>
+        </details>
+        <details>
+          <summary>問診の回答は電子カルテにどう入りますか</summary>
+          <p>回答は、電子カルテへそのまま転記できる CSV で書き出せます。紙の問診票を読みながら入力し直す必要はありません。</p>
+        </details>
+        <details>
+          <summary>試すのに費用はかかりますか</summary>
+          <p>30 日間は無料で試せます。初期費用も 0 円です。続けてお使いになる場合は月額 9,800 円 (税別) です。</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section trial" id="trial" aria-labelledby="trial-title">
+    <div class="wrap">
+      <div>
+        <h2 id="trial-title">まず 30 日間、受付で使ってみてください</h2>
+        <p class="trial__lede">院長先生、または事務長の方からお申し込みください。初期費用はかかりません。</p>
+        <ul class="trial__list">
+          <li>試用期間中も 4 つの機能をすべて使えます</li>
+          <li>導入医院は全国 320 院 (2026 年 10 月時点)</li>
+        </ul>
+      </div>
+
+      <form class="form" data-endpoint="" novalidate aria-describedby="form-help">
+        <div class="field field--wide">
+          <label for="clinic">医院名</label>
+          <input id="clinic" name="clinic" type="text" autocomplete="organization" required>
+        </div>
+        <div class="field">
+          <label for="name">お名前</label>
+          <input id="name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="role">ご役職</label>
+          <select id="role" name="role" required>
+            <option value="">選んでください</option>
+            <option>院長</option>
+            <option>事務長</option>
+            <option>その他</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="tel">電話番号</label>
+          <input id="tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" required>
+        </div>
+        <div class="field">
+          <label for="email">メールアドレス</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field field--wide">
+          <label for="staff">従業員数<small>任意</small></label>
+          <select id="staff" name="staff">
+            <option value="">選んでください</option>
+            <option>5〜10 名</option>
+            <option>11〜20 名</option>
+            <option>21〜30 名</option>
+            <option>そのほか</option>
+          </select>
+        </div>
+        <div class="form__foot">
+          <button class="btn" type="submit">無料試用を申し込む</button>
+        </div>
+        <p class="form__help" id="form-help" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>© 2026 カルテノート</p>
+    <nav aria-label="フッター">
+      <a href="#features">できること</a>
+      <a href="#pricing">料金</a>
+      <a href="#faq">よくある質問</a>
+      <a href="#trial">無料試用の申し込み</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('form[data-endpoint]').forEach(function (form) {
+  var help = form.querySelector('[aria-live]');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fields = form.querySelectorAll('input, select');
+    var firstBad = null;
+    fields.forEach(function (el) {
+      var ok = el.checkValidity();
+      el.toggleAttribute('aria-invalid', !ok);
+      if (!ok && !firstBad) firstBad = el;
+    });
+    help.classList.remove('is-error');
+    if (firstBad) {
+      var label = form.querySelector('label[for="' + firstBad.id + '"]');
+      var name = label ? label.childNodes[0].textContent.trim() : '入力欄';
+      help.textContent = name + 'が未入力か、形式が正しくありません。ご確認ください。';
+      help.classList.add('is-error');
+      firstBad.focus();
+      return;
+    }
+    if (!form.dataset.endpoint) {
+      help.textContent = 'このフォームはまだ送信先につながっていないため、内容は送られていません。';
+      return;
+    }
+    fetch(form.dataset.endpoint, { method: 'POST', body: new FormData(form) })
+      .then(function (r) {
+        help.textContent = r.ok ? 'お申し込みを受け付けました。ご入力のメールアドレスへ試用のご案内をお送りします。' : '送信できませんでした。時間をおいてもう一度お試しください。';
+      })
+      .catch(function () { help.textContent = '送信できませんでした。時間をおいてもう一度お試しください。'; });
+  });
+});
+</script>
+</body>
+</html>

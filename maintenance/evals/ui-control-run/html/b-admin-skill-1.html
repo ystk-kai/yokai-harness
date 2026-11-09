@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>承認待ちの申請 | 経費精算</title>
+<style>
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: custom · contrast: pass · v2.0.0 · weakest: H (表の行が同じ声量) → 要確認の行を地色と理由の文で分け、金額を右揃えの等幅数字にした */
+:root {
+  --paper: oklch(99.2% 0.004 160);
+  --panel: oklch(96.6% 0.006 160);
+  --panel-2: oklch(93.8% 0.008 160);
+  --line: oklch(89% 0.008 160);
+  --line-strong: oklch(62% 0.012 160);
+  --ink: oklch(23% 0.014 160);
+  --ink-2: oklch(45% 0.014 160);
+  --accent: oklch(49% 0.15 150);
+  --accent-hover: oklch(42% 0.14 150);
+  --accent-wash: oklch(95.4% 0.04 150);
+  --on-accent: oklch(99% 0.006 150);
+  --pending: oklch(80% 0.09 150);
+  --flag: oklch(49% 0.17 40);
+  --flag-wash: oklch(96.8% 0.032 75);
+  --flag-line: oklch(78% 0.1 60);
+  --focus: oklch(52% 0.2 255);
+  --font-body: -apple-system, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic, Meiryo, "Noto Sans JP", sans-serif;
+  --radius: 6px;
+  --dur-micro: 120ms;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+:lang(ja) { font-synthesis-style: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* top bar */
+.topbar { border-bottom: 1px solid var(--line); background: var(--panel); }
+.topbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 32px; min-height: 56px; }
+.product { font-weight: 700; font-size: 17px; white-space: nowrap; }
+.nav { display: flex; gap: 4px; flex: 1; }
+.nav a { color: var(--ink-2); text-decoration: none; padding: 8px 12px; border-radius: var(--radius); white-space: nowrap; font-size: 15px; }
+.nav a:hover { color: var(--ink); background: var(--panel-2); }
+.nav a[aria-current="page"] { color: var(--ink); font-weight: 700; box-shadow: inset 0 -2px 0 var(--accent); border-radius: 0; }
+.user { font-size: 14px; color: var(--ink-2); white-space: nowrap; }
+
+main { max-width: 1200px; margin: 0 auto; padding: 28px 24px 0; }
+
+/* heading + budget */
+.head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 32px; align-items: end; margin-bottom: 24px; }
+h1 { font-size: 26px; line-height: 1.4; margin: 0 0 4px; letter-spacing: 0; }
+.lead { margin: 0; color: var(--ink-2); }
+.lead strong { color: var(--flag); }
+.budget { border: 1px solid var(--line); border-radius: 8px; padding: 16px 20px; background: var(--paper); }
+.budget-title { margin: 0; font-size: 14px; color: var(--ink-2); font-weight: 400; }
+.budget-figure { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 2px 0 10px; }
+.budget-total { font-size: 28px; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.budget-of { color: var(--ink-2); font-size: 14px; }
+.budget-rate { margin-left: auto; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.budget-rate small { font-size: 14px; font-weight: 400; color: var(--ink-2); margin-right: 4px; }
+.bar { position: relative; height: 12px; border-radius: 3px; background: var(--panel-2); overflow: hidden; }
+.bar-approved, .bar-pending { position: absolute; top: 0; bottom: 0; transition: width var(--dur-micro) ease-out, left var(--dur-micro) ease-out; }
+.bar-approved { left: 0; background: var(--accent); }
+.bar-pending { background: repeating-linear-gradient(135deg, var(--pending) 0 4px, var(--accent-wash) 4px 8px); }
+.bar-month { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.budget-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+.budget-legend b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.key { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+.key-approved { background: var(--accent); }
+.key-pending { background: repeating-linear-gradient(135deg, var(--pending) 0 3px, var(--accent-wash) 3px 6px); border: 1px solid var(--pending); }
+.key-month { width: 2px; height: 12px; background: var(--ink); border-radius: 0; }
+
+/* filters */
+.filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 20px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; }
+.field { display: grid; gap: 4px; }
+.field label { font-size: 14px; color: var(--ink-2); line-height: 1.4; }
+select { min-height: 40px; min-width: 168px; padding: 0 36px 0 12px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23384540' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 12px center; appearance: none; font-size: 16px; cursor: pointer; }
+.check-field { display: flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; white-space: nowrap; }
+.check-field input, .row-check input, .all-check input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+.filters-end { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--paper); font-weight: 700; font-size: 15px; white-space: nowrap; cursor: pointer; transition: background-color var(--dur-micro), border-color var(--dur-micro); }
+.btn:hover { background: var(--panel-2); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn:disabled { background: var(--panel-2); border-color: var(--line); color: var(--ink-2); cursor: not-allowed; }
+.btn-quiet { border-color: transparent; background: transparent; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-weight: 400; padding: 0 8px; }
+.btn-quiet:hover { background: var(--panel-2); }
+.btn-small { min-height: 36px; padding: 0 12px; font-size: 14px; }
+
+/* table */
+.table-wrap { border: 1px solid var(--line); border-radius: 0 0 8px 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+thead th { background: var(--panel); text-align: left; font-size: 14px; font-weight: 700; color: var(--ink-2); padding: 8px 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line-strong); white-space: nowrap; line-height: 1.4; }
+th.num, td.num { text-align: right; }
+td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.45; }
+tbody tr:last-child td { border-bottom: 0; }
+.col-check { width: 52px; padding-left: 16px; padding-right: 4px; }
+.row-check, .all-check { display: flex; align-items: center; justify-content: center; width: 32px; min-height: 32px; margin: -6px 0; cursor: pointer; }
+.sort { border: 0; background: none; padding: 4px 6px; margin: -4px -6px; font-weight: 700; color: var(--ink-2); cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; }
+.sort:hover { color: var(--ink); background: var(--panel-2); }
+.sort svg { width: 10px; height: 10px; opacity: .35; }
+th[aria-sort] .sort { color: var(--ink); }
+th[aria-sort] .sort svg { opacity: 1; }
+th[aria-sort="ascending"] .sort svg { transform: rotate(180deg); }
+.name { font-weight: 700; white-space: nowrap; }
+.date, .elapsed { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.amount { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 700; }
+.sub { display: block; font-size: 14px; color: var(--ink-2); font-weight: 400; }
+.elapsed.is-old { font-weight: 700; }
+.receipt-none { color: var(--ink-2); }
+.flag { display: flex; gap: 6px; color: var(--flag); font-weight: 700; font-size: 14px; line-height: 1.5; }
+.flag svg { flex: none; width: 16px; height: 16px; margin-top: 2px; }
+.flag ul { margin: 0; padding: 0; list-style: none; }
+.ok { color: var(--ink-2); font-size: 14px; }
+tr.is-flagged > td { background: var(--flag-wash); }
+tr.is-flagged > td.col-check { box-shadow: inset 4px 0 0 var(--flag-line); }
+tr.is-selected > td { background: var(--accent-wash); }
+tr.is-open > td { border-bottom-color: transparent; }
+.col-action { width: 1%; text-align: right; }
+.toggle svg { width: 12px; height: 12px; transition: transform var(--dur-micro); }
+.toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* detail */
+tr.detail > td { background: var(--panel); border-bottom: 1px solid var(--line-strong); padding: 4px 16px 20px 64px; }
+.detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); gap: 32px; }
+.detail dl { display: grid; grid-template-columns: 8em minmax(0, 1fr); gap: 6px 16px; margin: 0; font-size: 15px; }
+.detail dt { color: var(--ink-2); }
+.detail dd { margin: 0; }
+.detail .rule { color: var(--flag); font-weight: 700; }
+.decide { display: grid; gap: 12px; align-content: start; }
+.decide-approve { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.return-form { display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 12px; }
+.return-form label { font-weight: 700; font-size: 15px; }
+.return-form .hint { font-size: 14px; color: var(--ink-2); margin: 0; }
+textarea { width: 100%; min-height: 76px; resize: vertical; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--paper); font-size: 16px; line-height: 1.6; }
+textarea[aria-invalid="true"] { border-color: var(--flag); box-shadow: 0 0 0 1px var(--flag); }
+.error { color: var(--flag); font-size: 14px; font-weight: 700; margin: 0; }
+.return-form .btn { justify-self: start; }
+
+/* empty */
+.empty td { padding: 48px 16px; text-align: center; background: var(--paper); }
+.empty p { margin: 0 0 12px; }
+
+/* action bar */
+.actionbar { position: sticky; bottom: 0; z-index: 2; margin-top: 16px; padding: 12px 0 16px; background: linear-gradient(to bottom, transparent, var(--paper) 12px); }
+.actionbar-inner { display: flex; align-items: center; gap: 12px 20px; flex-wrap: wrap; padding: 12px 16px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--paper); box-shadow: 0 6px 20px -8px oklch(23% 0.014 160 / 0.25); }
+.sel-summary { font-variant-numeric: tabular-nums; }
+.sel-summary b { font-size: 18px; }
+.sel-warn { color: var(--flag); font-weight: 700; font-size: 14px; }
+.actionbar-end { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.status { flex-basis: 100%; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; font-size: 15px; }
+.status:empty { display: none; }
+.foot-note { color: var(--ink-2); font-size: 14px; margin: 8px 0 40px; }
+
+@media (max-width: 960px) {
+  .head { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .user { display: none; }
+}
+@media (max-width: 760px) {
+  .topbar-inner { padding: 0 16px; gap: 12px; flex-wrap: wrap; }
+  .nav { overflow-x: auto; }
+  main { padding: 20px 16px 0; }
+  h1 { font-size: 22px; }
+  select { min-width: 0; width: 100%; }
+  .field { flex: 1 1 140px; }
+  .filters-end { margin-left: 0; }
+  thead tr { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line-strong); padding: 6px 12px; }
+  thead th { display: none; border: 0; padding: 0; }
+  thead th.col-check, thead th.th-sortable { display: block; }
+  thead th.col-check { width: auto; }
+  table, tbody { display: block; }
+  tbody tr { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; column-gap: 8px; padding: 12px 12px 12px 0; border-bottom: 1px solid var(--line); }
+  tbody tr > td { border: 0; padding: 2px 0; background: transparent; }
+  tr.is-flagged, tr.is-flagged > td { background: var(--flag-wash); }
+  tr.is-selected, tr.is-selected > td { background: var(--accent-wash); }
+  tr.is-flagged { box-shadow: inset 4px 0 0 var(--flag-line); }
+  tr.is-flagged > td.col-check { box-shadow: none; }
+  td.col-check { grid-column: 1; grid-row: 1 / span 4; width: auto; padding: 0 0 0 4px; }
+  td.c-name { grid-column: 2; grid-row: 1; }
+  td.c-amount { grid-column: 3; grid-row: 1; }
+  td.c-meta { grid-column: 2 / 4; grid-row: 2; color: var(--ink-2); font-size: 14px; }
+  td.c-flag { grid-column: 2 / 4; grid-row: 3; }
+  td.c-action { grid-column: 2 / 4; grid-row: 4; text-align: left; width: auto; padding-top: 6px; }
+  td.c-date, td.c-cat, td.c-receipt, td.c-elapsed { display: none; }
+  tr.detail { display: block; padding: 0; }
+  tr.detail > td { display: block; padding: 12px 16px 20px; }
+  .detail-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .detail dl { grid-template-columns: 6.5em minmax(0, 1fr); }
+  .empty { display: block; }
+  .empty td { display: block; }
+  .actionbar-end { margin-left: 0; width: 100%; }
+  .actionbar-end .btn-primary { flex: 1; }
+}
+@media (min-width: 761px) { td.c-meta { display: none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <span class="product">経費精算</span>
+    <nav class="nav" aria-label="メインメニュー">
+      <a href="#" aria-current="page">承認待ち</a>
+      <a href="#">承認履歴</a>
+      <a href="#">部署の経費</a>
+    </nav>
+    <span class="user">木村 隆之(営業第二課 課長)</span>
+  </div>
+</header>
+
+<main>
+  <div class="head">
+    <div>
+      <h1>承認待ちの申請</h1>
+      <p class="lead" id="lead">読み込み中です。</p>
+    </div>
+    <section class="budget" aria-labelledby="budget-title">
+      <h2 class="budget-title" id="budget-title">営業第二課の11月の経費(承認済み)</h2>
+      <div class="budget-figure">
+        <span class="budget-total" id="b-total">¥0</span>
+        <span class="budget-of" id="b-of">予算 ¥0</span>
+        <span class="budget-rate"><small>消化率</small><span id="b-rate">0%</span></span>
+      </div>
+      <div class="bar" role="img" id="b-bar" aria-label="">
+        <span class="bar-approved" id="b-approved"></span>
+        <span class="bar-pending" id="b-pending"></span>
+        <span class="bar-month" id="b-month"></span>
+      </div>
+      <ul class="budget-legend">
+        <li><span class="key key-approved"></span>承認済み</li>
+        <li><span class="key key-pending"></span>承認待ちをすべて承認すると <b id="b-proj">0%</b></li>
+        <li><span class="key key-month"></span>月の経過 <b id="b-day">0%</b></li>
+      </ul>
+    </section>
+  </div>
+
+  <form class="filters" id="filters" aria-label="絞り込み" onsubmit="return false">
+    <div class="field">
+      <label for="f-cat">費目</label>
+      <select id="f-cat">
+        <option value="">すべての費目</option>
+        <option>交通費</option>
+        <option>接待交際費</option>
+        <option>消耗品費</option>
+        <option>出張旅費</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="f-person">申請者</label>
+      <select id="f-person"><option value="">全員</option></select>
+    </div>
+    <label class="check-field"><input type="checkbox" id="f-flag"> 要確認の申請だけ表示</label>
+    <div class="filters-end">
+      <button type="button" class="btn btn-quiet" id="f-reset" hidden>絞り込みを解除</button>
+      <button type="button" class="btn" id="select-clean">問題のない申請をすべて選択</button>
+    </div>
+  </form>
+
+  <div class="table-wrap">
+    <table>
+      <caption class="visually-hidden">承認待ちの申請一覧。要確認の行には規程に照らした理由を表示しています。</caption>
+      <thead>
+        <tr>
+          <th class="col-check" scope="col"><label class="all-check"><input type="checkbox" id="check-all"><span class="visually-hidden">表示中の申請をすべて選択</span></label></th>
+          <th scope="col">申請者</th>
+          <th scope="col">申請日</th>
+          <th scope="col">費目</th>
+          <th scope="col" class="num th-sortable" data-key="amount"><button type="button" class="sort" data-sort="amount">金額<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 9L1 3h8z" fill="currentColor"/></svg></button></th>
+          <th scope="col">領収書</th>
+          <th scope="col" class="th-sortable" data-key="elapsed"><button type="button" class="sort" data-sort="elapsed">経過<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 9L1 3h8z" fill="currentColor"/></svg></button></th>
+          <th scope="col">規程の確認</th>
+          <th scope="col" class="col-action"><span class="visually-hidden">操作</span></th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <noscript><p>この画面の操作には JavaScript が必要です。</p></noscript>
+
+  <div class="actionbar">
+    <div class="actionbar-inner">
+      <span class="sel-summary" id="sel-summary"><b>0件</b>を選択中</span>
+      <span class="sel-warn" id="sel-warn" hidden></span>
+      <div class="actionbar-end">
+        <button type="button" class="btn btn-quiet" id="clear-sel" hidden>選択を解除</button>
+        <button type="button" class="btn btn-primary" id="approve-sel" disabled>選択した申請を承認</button>
+      </div>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+  <p class="foot-note">要確認の基準: 接待交際費は1人あたり ¥5,000 まで。1万円以上の申請は領収書が必要です。</p>
+</main>
+
+<script>
+(function () {
+  var TODAY = new Date(2026, 10, 9);
+  var BUDGET = 1500000;
+  var approvedTotal = 812400;
+  var DAYS_IN_MONTH = 30;
+  var ENT_LIMIT = 5000;
+  var RECEIPT_LIMIT = 10000;
+
+  var pending = [
+    { id: "EX-2611-0412", name: "佐藤 健太", date: [11, 2], cat: "接待交際費", amount: 38400, receipt: true, people: 4, purpose: "株式会社三和精機 購買部との会食", payee: "割烹 たかむら(新橋)" },
+    { id: "EX-2611-0431", name: "鈴木 美咲", date: [11, 6], cat: "交通費", amount: 1280, receipt: false, purpose: "顧客訪問(品川 ⇔ 大崎)", payee: "JR 東日本(IC カード)" },
+    { id: "EX-2611-0418", name: "高橋 誠", date: [11, 4], cat: "出張旅費", amount: 48620, receipt: true, purpose: "大阪支店との合同商談 1泊2日", payee: "新幹線・ホテル京阪 梅田" },
+    { id: "EX-2611-0437", name: "田中 由紀", date: [11, 7], cat: "消耗品費", amount: 3980, receipt: true, purpose: "提案資料用のクリアファイル・製本テープ", payee: "オフィスデポ 田町店" },
+    { id: "EX-2611-0425", name: "伊藤 大輔", date: [11, 5], cat: "接待交際費", amount: 14300, receipt: true, people: 3, purpose: "新規取引先 北辰物流との打ち合わせ後の昼食", payee: "ビストロ ル・パン" },
+    { id: "EX-2611-0414", name: "渡辺 彩", date: [11, 3], cat: "消耗品費", amount: 12800, receipt: false, purpose: "展示会用のパネルスタンド", payee: "ネット通販(領収書は後日提出予定)" },
+    { id: "EX-2611-0442", name: "山本 翔", date: [11, 8], cat: "交通費", amount: 2460, receipt: false, purpose: "顧客訪問(東京 ⇔ 川崎)", payee: "JR 東日本(IC カード)" },
+    { id: "EX-2610-0388", name: "中村 恵", date: [10, 28], cat: "出張旅費", amount: 62150, receipt: true, purpose: "福岡の代理店研修 2泊3日", payee: "航空券・西鉄ホテル" },
+    { id: "EX-2611-0433", name: "佐藤 健太", date: [11, 6], cat: "交通費", amount: 980, receipt: false, purpose: "顧客訪問(新橋 ⇔ 浜松町)", payee: "都営地下鉄(IC カード)" },
+    { id: "EX-2611-0438", name: "小林 直人", date: [11, 7], cat: "接待交際費", amount: 22000, receipt: true, people: 2, purpose: "既存顧客 丸栄商事 部長との会食", payee: "鮨 いしかわ(銀座)" },
+    { id: "EX-2611-0420", name: "高橋 誠", date: [11, 4], cat: "交通費", amount: 18720, receipt: false, purpose: "名古屋の顧客訪問(新幹線 往復)", payee: "JR 東海(領収書紛失)" },
+    { id: "EX-2610-0401", name: "田中 由紀", date: [10, 31], cat: "消耗品費", amount: 5500, receipt: true, purpose: "営業用名刺入れ・ペン", payee: "伊東屋" }
+  ];
+
+  var WD = ["日", "月", "火", "水", "木", "金", "土"];
+  pending.forEach(function (r) {
+    var d = new Date(2026, r.date[0] - 1, r.date[1]);
+    r.elapsed = Math.round((TODAY - d) / 86400000);
+    r.dateLabel = r.date[0] + "/" + String(r.date[1]).padStart(2, "0") + "(" + WD[d.getDay()] + ")";
+    r.dateLong = r.date[0] + "月" + r.date[1] + "日";
+    r.flags = [];
+    if (r.cat === "接待交際費" && r.people) {
+      r.perHead = Math.round(r.amount / r.people);
+      if (r.perHead > ENT_LIMIT) r.flags.push("1人あたり " + yen(r.perHead) + "(上限 " + yen(ENT_LIMIT) + ")");
+    }
+    if (!r.receipt && r.amount >= RECEIPT_LIMIT) r.flags.push("領収書なしで1万円以上");
+  });
+
+  var state = { cat: "", person: "", flagOnly: false, sort: { key: "elapsed", dir: "desc" }, selected: new Set(), open: null, last: null, errors: {} };
+
+  var $ = function (id) { return document.getElementById(id); };
+  function yen(n) { return "¥" + n.toLocaleString("ja-JP"); }
+  function pct(n) { return (Math.round(n * 1000) / 10).toFixed(1) + "%"; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function byId(id) { return pending.find(function (r) { return r.id === id; }); }
+
+  function visible() {
+    var list = pending.filter(function (r) {
+      return (!state.cat || r.cat === state.cat) && (!state.person || r.name === state.person) && (!state.flagOnly || r.flags.length);
+    });
+    var k = state.sort.key, m = state.sort.dir === "asc" ? 1 : -1;
+    return list.sort(function (a, b) { return (a[k] - b[k]) * m || b.elapsed - a.elapsed; });
+  }
+
+  var warnIcon = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5L15 14H1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 6v4" stroke="currentColor" stroke-width="1.6"/><circle cx="8" cy="12" r=".9" fill="currentColor"/></svg>';
+  var chevron = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+
+  function rowHtml(r) {
+    var sel = state.selected.has(r.id), open = state.open === r.id;
+    var cls = [r.flags.length ? "is-flagged" : "", sel ? "is-selected" : "", open ? "is-open" : ""].join(" ");
+    var flagCell = r.flags.length
+      ? '<div class="flag">' + warnIcon + '<span class="visually-hidden">要確認:</span><ul>' + r.flags.map(function (f) { return "<li>" + esc(f) + "</li>"; }).join("") + "</ul></div>"
+      : '<span class="ok">該当なし</span>';
+    var receipt = r.receipt ? "あり" : '<span class="receipt-none">なし</span>';
+    var per = r.perHead ? '<span class="sub">' + r.people + "名 1人 " + yen(r.perHead) + "</span>" : "";
+    var html =
+      '<tr class="' + cls + '" data-id="' + r.id + '">' +
+      '<td class="col-check"><label class="row-check"><input type="checkbox" data-check="' + r.id + '"' + (sel ? " checked" : "") + '><span class="visually-hidden">' + esc(r.name) + " " + r.dateLong + " " + r.cat + " " + yen(r.amount) + " を選択</span></label></td>" +
+      '<td class="c-name"><span class="name">' + esc(r.name) + "</span></td>" +
+      '<td class="c-date date">' + r.dateLabel + "</td>" +
+      '<td class="c-cat">' + r.cat + "</td>" +
+      '<td class="c-amount num"><span class="amount">' + yen(r.amount) + "</span>" + per + "</td>" +
+      '<td class="c-receipt">' + receipt + "</td>" +
+      '<td class="c-elapsed elapsed' + (r.elapsed >= 7 ? " is-old" : "") + '">' + r.elapsed + "日</td>" +
+      '<td class="c-meta">' + r.dateLabel + " 申請 " + r.cat + " 領収書" + (r.receipt ? "あり" : "なし") + " " + r.elapsed + "日経過</td>" +
+      '<td class="c-flag">' + flagCell + "</td>" +
+      '<td class="c-action col-action"><button type="button" class="btn btn-small toggle" data-toggle="' + r.id + '" aria-expanded="' + open + '" aria-controls="d-' + r.id + '">' + (open ? "閉じる" : "詳細") + chevron + "</button></td>" +
+      "</tr>";
+    if (open) html += detailHtml(r);
+    return html;
+  }
+
+  function detailHtml(r) {
+    var err = state.errors[r.id];
+    var rules = r.flags.length ? '<dt>規程の確認</dt><dd class="rule">' + r.flags.map(esc).join("<br>") + "</dd>" : "";
+    var people = r.people ? "<dt>参加人数</dt><dd>" + r.people + "名(1人あたり " + yen(r.perHead) + ")</dd>" : "";
+    return '<tr class="detail" id="d-' + r.id + '"><td colspan="9"><div class="detail-grid">' +
+      "<dl>" +
+      "<dt>申請番号</dt><dd>" + r.id + "</dd>" +
+      "<dt>用途</dt><dd>" + esc(r.purpose) + "</dd>" +
+      "<dt>支払先</dt><dd>" + esc(r.payee) + "</dd>" + people +
+      "<dt>領収書</dt><dd>" + (r.receipt ? "添付あり" : "添付なし") + "</dd>" +
+      "<dt>申請日</dt><dd>" + r.dateLabel + "(" + r.elapsed + "日経過)</dd>" + rules +
+      "</dl>" +
+      '<div class="decide">' +
+      '<div class="decide-approve"><button type="button" class="btn btn-primary" data-approve="' + r.id + '">この申請を承認</button></div>' +
+      '<form class="return-form" data-return="' + r.id + '" novalidate>' +
+      '<label for="reason-' + r.id + '">差し戻しの理由</label>' +
+      '<p class="hint" id="hint-' + r.id + '">' + esc(r.name) + "さんに通知されます。直してほしい点を具体的に書いてください。</p>" +
+      '<textarea id="reason-' + r.id + '" aria-describedby="hint-' + r.id + (err ? " err-" + r.id : "") + '"' + (err ? ' aria-invalid="true"' : "") + "></textarea>" +
+      (err ? '<p class="error" id="err-' + r.id + '">差し戻しの理由を入力してください。</p>' : "") +
+      '<button type="submit" class="btn">差し戻す</button>' +
+      "</form></div></div></td></tr>";
+  }
+
+  function render() {
+    var list = visible();
+    var tbody = $("rows");
+    if (!pending.length) {
+      tbody.innerHTML = '<tr class="empty"><td colspan="9"><p>承認待ちの申請はありません。</p><p class="sub">新しい申請が届くとここに表示されます。</p></td></tr>';
+    } else if (!list.length) {
+      tbody.innerHTML = '<tr class="empty"><td colspan="9"><p>条件に合う承認待ちの申請はありません。</p><button type="button" class="btn" data-reset>絞り込みを解除</button></td></tr>';
+    } else {
+      tbody.innerHTML = list.map(rowHtml).join("");
+    }
+
+    // header checkbox
+    var all = $("check-all");
+    var visSel = list.filter(function (r) { return state.selected.has(r.id); }).length;
+    all.checked = list.length > 0 && visSel === list.length;
+    all.indeterminate = visSel > 0 && visSel < list.length;
+    all.disabled = !list.length;
+
+    // sort indicators
+    document.querySelectorAll("th[data-key]").forEach(function (th) {
+      if (th.dataset.key === state.sort.key) th.setAttribute("aria-sort", state.sort.dir === "asc" ? "ascending" : "descending");
+      else th.removeAttribute("aria-sort");
+    });
+
+    // lead
+    var flagged = pending.filter(function (r) { return r.flags.length; }).length;
+    var people = new Set(pending.map(function (r) { return r.name; })).size;
+    $("lead").innerHTML = pending.length
+      ? people + "名から " + pending.length + "件。うち <strong>要確認 " + flagged + "件</strong>"
+      : "承認待ちの申請はありません。";
+
+    $("f-reset").hidden = !(state.cat || state.person || state.flagOnly);
+    var clean = list.filter(function (r) { return !r.flags.length; });
+    $("select-clean").disabled = !clean.length;
+
+    renderSelection();
+    renderBudget();
+  }
+
+  function renderSelection() {
+    var ids = Array.from(state.selected);
+    var sum = ids.reduce(function (s, id) { return s + byId(id).amount; }, 0);
+    var flagged = ids.filter(function (id) { return byId(id).flags.length; }).length;
+    $("sel-summary").innerHTML = "<b>" + ids.length + "件</b>を選択中" + (ids.length ? "(合計 " + yen(sum) + ")" : "");
+    var w = $("sel-warn");
+    w.hidden = !flagged;
+    w.textContent = flagged ? "要確認の申請 " + flagged + "件を含みます" : "";
+    var b = $("approve-sel");
+    b.disabled = !ids.length;
+    b.textContent = ids.length ? "選択した " + ids.length + "件を承認" : "選択した申請を承認";
+    $("clear-sel").hidden = !ids.length;
+  }
+
+  function renderBudget() {
+    var pend = pending.reduce(function (s, r) { return s + r.amount; }, 0);
+    var a = approvedTotal / BUDGET, p = pend / BUDGET, day = TODAY.getDate() / DAYS_IN_MONTH;
+    $("b-total").textContent = yen(approvedTotal);
+    $("b-of").textContent = "予算 " + yen(BUDGET);
+    $("b-rate").textContent = pct(a);
+    $("b-approved").style.width = Math.min(a, 1) * 100 + "%";
+    $("b-pending").style.left = Math.min(a, 1) * 100 + "%";
+    $("b-pending").style.width = Math.max(0, Math.min(p, 1 - a)) * 100 + "%";
+    $("b-month").style.left = day * 100 + "%";
+    $("b-proj").textContent = pct(a + p);
+    $("b-day").textContent = Math.round(day * 100) + "%";
+    $("b-bar").setAttribute("aria-label", "予算の消化率 " + pct(a) + "。承認待ちを含めると " + pct(a + p) + "。月の経過 " + Math.round(day * 100) + "%");
+  }
+
+  function setStatus(text, undo) {
+    var s = $("status");
+    s.innerHTML = "";
+    var span = document.createElement("span");
+    span.textContent = text;
+    s.appendChild(span);
+    if (undo) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn btn-quiet btn-small";
+      b.textContent = "元に戻す";
+      b.addEventListener("click", undoLast);
+      s.appendChild(b);
+    }
+  }
+
+  function approve(ids) {
+    var items = ids.map(byId).filter(Boolean);
+    if (!items.length) return;
+    items.forEach(function (r) { approvedTotal += r.amount; state.selected.delete(r.id); });
+    pending = pending.filter(function (r) { return ids.indexOf(r.id) < 0; });
+    if (ids.indexOf(state.open) >= 0) state.open = null;
+    state.last = { type: "approve", items: items };
+    render();
+    var sum = items.reduce(function (s, r) { return s + r.amount; }, 0);
+    setStatus(items.length === 1
+      ? items[0].name + "さんの " + items[0].cat + " " + yen(items[0].amount) + " を承認しました。"
+      : items.length + "件(合計 " + yen(sum) + ")を承認しました。", true);
+  }
+
+  function sendBack(id, reason) {
+    var r = byId(id);
+    pending = pending.filter(function (x) { return x.id !== id; });
+    state.selected.delete(id);
+    state.open = null;
+    delete state.errors[id];
+    state.last = { type: "return", items: [r], reason: reason };
+    render();
+    setStatus(r.name + "さんの " + r.cat + " " + yen(r.amount) + " を差し戻しました。", true);
+  }
+
+  function undoLast() {
+    var l = state.last;
+    if (!l) return;
+    l.items.forEach(function (r) {
+      if (l.type === "approve") approvedTotal -= r.amount;
+      pending.push(r);
+    });
+    state.last = null;
+    render();
+    setStatus(l.type === "approve" ? "承認を取り消し、承認待ちに戻しました。" : "差し戻しを取り消し、承認待ちに戻しました。", false);
+  }
+
+  // people filter options
+  (function () {
+    var counts = {};
+    pending.forEach(function (r) { counts[r.name] = (counts[r.name] || 0) + 1; });
+    var sel = $("f-person");
+    Object.keys(counts).forEach(function (n) {
+      var o = document.createElement("option");
+      o.value = n;
+      o.textContent = n + "(" + counts[n] + "件)";
+      sel.appendChild(o);
+    });
+  })();
+
+  function resetFilters() {
+    state.cat = ""; state.person = ""; state.flagOnly = false;
+    $("f-cat").value = ""; $("f-person").value = ""; $("f-flag").checked = false;
+    render();
+  }
+
+  $("f-cat").addEventListener("change", function (e) { state.cat = e.target.value; render(); });
+  $("f-person").addEventListener("change", function (e) { state.person = e.target.value; render(); });
+  $("f-flag").addEventListener("change", function (e) { state.flagOnly = e.target.checked; render(); });
+  $("f-reset").addEventListener("click", resetFilters);
+  $("select-clean").addEventListener("click", function () {
+    visible().forEach(function (r) { if (!r.flags.length) state.selected.add(r.id); });
+    render();
+  });
+  $("check-all").addEventListener("change", function (e) {
+    visible().forEach(function (r) { e.target.checked ? state.selected.add(r.id) : state.selected.delete(r.id); });
+    render();
+  });
+  $("clear-sel").addEventListener("click", function () { state.selected.clear(); render(); });
+  $("approve-sel").addEventListener("click", function () { approve(Array.from(state.selected)); });
+
+  document.querySelectorAll("[data-sort]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var k = b.dataset.sort;
+      state.sort = state.sort.key === k ? { key: k, dir: state.sort.dir === "asc" ? "desc" : "asc" } : { key: k, dir: "desc" };
+      render();
+    });
+  });
+
+  var tbody = $("rows");
+  tbody.addEventListener("change", function (e) {
+    var id = e.target.dataset.check;
+    if (!id) return;
+    e.target.checked ? state.selected.add(id) : state.selected.delete(id);
+    render();
+    var el = tbody.querySelector('[data-check="' + id + '"]');
+    if (el) el.focus();
+  });
+  tbody.addEventListener("click", function (e) {
+    var t = e.target.closest("[data-toggle],[data-approve],[data-reset]");
+    if (!t) return;
+    if (t.hasAttribute("data-reset")) { resetFilters(); return; }
+    if (t.dataset.toggle) {
+      var id = t.dataset.toggle;
+      state.open = state.open === id ? null : id;
+      render();
+      var btn = tbody.querySelector('[data-toggle="' + id + '"]');
+      if (btn) btn.focus();
+      return;
+    }
+    if (t.dataset.approve) approve([t.dataset.approve]);
+  });
+  tbody.addEventListener("submit", function (e) {
+    var f = e.target.closest("[data-return]");
+    if (!f) return;
+    e.preventDefault();
+    var id = f.dataset.return;
+    var ta = f.querySelector("textarea");
+    var reason = ta.value.trim();
+    if (!reason) {
+      state.errors[id] = true;
+      render();
+      var t2 = document.getElementById("reason-" + id);
+      if (t2) t2.focus();
+      return;
+    }
+    sendBack(id, reason);
+  });
+  tbody.addEventListener("input", function (e) {
+    if (e.target.tagName === "TEXTAREA" && e.target.getAttribute("aria-invalid") === "true" && e.target.value.trim()) {
+      var id = e.target.id.replace("reason-", "");
+      delete state.errors[id];
+      e.target.removeAttribute("aria-invalid");
+      var er = document.getElementById("err-" + id);
+      if (er) er.remove();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
