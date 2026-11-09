@@ -29,6 +29,18 @@
 ---
 ## 2026-11-09
 
+### 自作スキルの試験 (maintenance/evals/ui-control-run/) から
+
+原典の更新ではなく、ui-design と visual-slop-review を skill なしの control と比べた試験の結果。n=2・モデル 1 種・採点の観点が skill 側の読んだ資料と同じ、という限界は RESULTS.md にある。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | skill ありの 6 枚中 5 枚が、brief (LP・管理画面・勉強会告知) を問わず濃い緑 (oklch H 150〜160) + 黄の面になった。color-chroma.md の計算例 (H 145 の緑、黄 `#ffd600` に ink) が種になった疑い。計算例の色相を散らすか、「色相はブランド・題材から決め、計算例の色相を流用しない」と書く | RESULTS.md「結論」「スキルを直す案」1、skills/ui-design/references/color-chroma.md |
+| 未対応 | RECOMMENDED | skill | 同じ作り手の別案件が同じ配色・書体・組みになること自体を、visual-slop-review の構造の tell に足す (web-ui.md か prescriptions.md)。単発のレビューでは見えないので、複数案件をまとめて見るときの観点として書く | RESULTS.md「スキルを直す案」2 |
+| 未対応 | RECOMMENDED | skill | 見出しの一部に傍点 (`text-emphasis`) を付けると改行位置が崩れた (「問／いません」)。japanese-web-typography.md に、傍点を使う場面と、付ける語を `auto-phrase` の文節の境界にそろえる注意を足す | RESULTS.md「何が変わったか」日本語の組版、「スキルを直す案」4 |
+| 未対応 | FYI | skill | 左見出し・右本文の 2 段組みが skill 側で繰り返され、採点者も既定寄りと付けた。hallmark の構造選択が 1 つの型に寄っていないかを蒸留版で確かめる | RESULTS.md「スキルを直す案」3 |
+| 未対応 | FYI | 運用 | 「良くなったか」まで言うには、生成側が読まない観点 (人の評価か、AgentCraft の試験と同じ指標) で採点し直す | RESULTS.md「この試験の限界」「スキルを直す案」5 |
+
 ### 再蒸留 (awesome-harness-engineering) から
 
 ~/.claude/CLAUDE.md は Read で照合した (Grep ツールが無い環境)。
@@ -187,7 +199,7 @@ banlist.md と syntax-patterns.md は全文を Read して照合した (Grep ツ
 |---|---|---|---|---|
 | 却下 (この環境は WSL で対象外。~/.claude の設定は Grep ツールが無く未照合) | FYI | 運用 | `/restart` (alias `/update`、v2.1.288+) はインストール済みの更新を適用してセッションを再開する。Pro/Max かつ macOS/Linux の native install が要件で、WSL は対象外 | ccbp: `2cb4da5`、`best-practice/claude-commands.md` #91 |
 | 却下 (このハーネスは `--settings` で skill の可視性を配っていない。未照合) | FYI | skill | `/skills` 画面で可視性を切り替えられない skill に、`--settings` フラグ指定の skill が加わった (plugin skill・`disable-model-invocation: true`・managed の `skillOverrides` と同じ扱い) | ccbp: `2cb4da5`、`best-practice/claude-commands.md` #53 |
-| 未対応 (2026-11-09 見直し: 残す。ui-design と visual-slop-review を同じ brief と control run で試す価値がある) | FYI | skill | AgentCraft の同一 brief 試験で、インストール数上位のデザイン skill 8 個のうち no-skill の control から見た目を動かしたのは 2 個だけだった。自作の ui-design / visual-slop-review を同じ型 (同一 brief・control run) で確かめていない | ahe: `2a035cb`、`README.md` の `Skills & MCP` (README の注記ベース、記事本文は未検証) |
+| 対応済 (2026-11-09。maintenance/evals/ui-control-run/ で試験。3 brief すべてで control から見た目が動いた一方、緑 + 黄への収束が見つかり 2026-11-09 の節に候補を足した) | FYI | skill | AgentCraft の同一 brief 試験で、インストール数上位のデザイン skill 8 個のうち no-skill の control から見た目を動かしたのは 2 個だけだった。自作の ui-design / visual-slop-review を同じ型 (同一 brief・control run) で確かめていない | ahe: `2a035cb`、`README.md` の `Skills & MCP` (README の注記ベース、記事本文は未検証) |
 
 hallmark (`4f6a46c`、theme.mjs が CRLF の frontmatter を受け付ける修正と、sloplint が symlink の循環ディレクトリを重ねて走査しない修正) と smarthr-design-system (`1881998`、lint-staged の設定だけ) は規則・文書に変更が無く、候補なし。
 
