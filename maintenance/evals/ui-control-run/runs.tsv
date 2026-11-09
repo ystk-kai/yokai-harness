@@ -1,0 +1,13 @@
+run	cost_usd	turns	duration_s	files_read
+a-saas-lp-control-1	0.73	1	169	
+a-saas-lp-control-2	0.40	1	336	
+a-saas-lp-skill-1	1.15	11	182	skills/ui-design/SKILL.md, skills/visual-slop-review/SKILL.md, skills/ui-design/references/japanese-web-typography.md, skills/ui-design/references/color-chroma.md, skills/ui-design/references/hallmark.md, skills/visual-slop-review/references/web-ui.md, skills/visual-slop-review/references/prescriptions.md, ^#+ |try|sign up, refs/hallmark/skills/hallmark/references/anatomy.md, (?i)form
+a-saas-lp-skill-2	1.19	12	192	skills/ui-design/SKILL.md, skills/visual-slop-review/SKILL.md, skills/ui-design/references/japanese-web-typography.md, skills/ui-design/references/color-chroma.md, skills/ui-design/references/hallmark.md, skills/visual-slop-review/references/web-ui.md, skills/visual-slop-review/references/prescriptions.md, ^#+ .*(try|Try), (?i)unwired|not wired|no endpoint, ^#+ , refs/hallmark/skills/hallmark/references/patterns.md
+b-admin-control-1	0.67	1	460	
+b-admin-control-2	0.55	1	403	
+b-admin-skill-1	0.83	9	387	skills/ui-design/SKILL.md, skills/visual-slop-review/SKILL.md, skills/ui-design/references/japanese-web-typography.md, skills/ui-design/references/color-chroma.md, skills/ui-design/references/hallmark.md, skills/visual-slop-review/references/web-ui.md, skills/visual-slop-review/references/prescriptions.md, (?i)app screen|scope app|four data states|dashboard
+b-admin-skill-2	1.04	10	454	skills/ui-design/SKILL.md, skills/visual-slop-review/SKILL.md, skills/ui-design/references/japanese-web-typography.md, skills/ui-design/references/color-chroma.md, skills/ui-design/references/hallmark.md, skills/visual-slop-review/references/web-ui.md, skills/visual-slop-review/references/prescriptions.md, app, ^## 9
+c-event-control-1	0.44	1	162	
+c-event-control-2	0.39	1	146	
+c-event-skill-1	0.63	10	107	skills/ui-design/SKILL.md, skills/visual-slop-review/SKILL.md, skills/ui-design/references/japanese-web-typography.md, skills/ui-design/references/hallmark.md, skills/ui-design/references/color-chroma.md, skills/visual-slop-review/references/web-ui.md, skills/visual-slop-review/references/prescriptions.md, (?i)attend, Schedule
+c-event-skill-2	0.65	9	124	skills/ui-design/SKILL.md, skills/visual-slop-review/SKILL.md, skills/ui-design/references/japanese-web-typography.md, skills/ui-design/references/color-chroma.md, skills/ui-design/references/hallmark.md, skills/visual-slop-review/references/web-ui.md, skills/visual-slop-review/references/prescriptions.md, (?i)attend

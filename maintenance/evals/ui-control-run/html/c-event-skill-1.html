@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>福岡 Rust 勉強会 #14「組込み Rust を現場に入れてみた」2026年12月12日(土) 天神</title>
+<meta name="description" content="2026年12月12日(土) 13:30から、天神ラボ 7F で福岡 Rust 勉強会 #14 を開催します。テーマは組込み Rust。参加無料、YouTube Live でも配信します。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · custom · job: attend · surface: PCB solder-mask green field (Committed) + ENIG gold for the primary control · paper near-white C 0.005 toward hue 160 · weakest axis S (no venue photo): answered with plain address and walking time */
+:root {
+  --color-paper: oklch(98.6% 0.005 160);
+  --color-paper-2: oklch(95.6% 0.012 160);
+  --color-ink: oklch(22% 0.02 160);
+  --color-ink-soft: oklch(40% 0.02 160);
+  --color-rule: oklch(86% 0.015 160);
+  --color-field: oklch(41% 0.105 158);
+  --color-field-deep: oklch(33% 0.085 158);
+  --color-on-field: oklch(98.5% 0.008 160);
+  --color-on-field-soft: oklch(89% 0.03 158);
+  --color-silk: oklch(93% 0.01 160 / 0.55);
+  --color-gold: oklch(81% 0.15 82);
+  --color-gold-hover: oklch(86% 0.14 86);
+  --color-gold-ink: oklch(22% 0.03 70);
+  --color-link: oklch(43% 0.12 158);
+  --color-focus: oklch(62% 0.2 255);
+
+  --font-body: -apple-system, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic, Meiryo, "Noto Sans JP", sans-serif;
+  --font-display: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, "Noto Sans JP", sans-serif;
+  --font-code: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --container: 1120px;
+  --gutter: clamp(20px, 4vw, 48px);
+  --radius: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.75;
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+:lang(ja) { font-synthesis-style: none; }
+button, input, select, textarea { font: inherit; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.4; margin: 0; letter-spacing: 0; }
+p { margin: 0; }
+code {
+  font-family: var(--font-code);
+  font-size: 0.92em;
+  text-autospace: no-autospace;
+  overflow-wrap: normal;
+}
+a { color: var(--color-link); text-underline-offset: 0.2em; }
+a:hover { color: var(--color-ink); }
+:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; border-radius: 2px; }
+
+.wrap { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; }
+
+.skip {
+  position: absolute; left: 12px; top: -60px;
+  background: var(--color-paper); color: var(--color-ink);
+  padding: 8px 14px; border-radius: var(--radius); z-index: 20;
+}
+.skip:focus-visible { top: 12px; }
+
+/* ---------- nav ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--color-field-deep);
+  color: var(--color-on-field);
+}
+.nav__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
+.nav__name { font-weight: 700; font-size: 16px; line-height: 1.3; white-space: nowrap; }
+.nav__links { display: flex; align-items: center; gap: 28px; }
+.nav__links a:not(.btn) { color: var(--color-on-field); text-decoration: none; font-size: 15px; white-space: nowrap; }
+.nav__links a:not(.btn):hover { text-decoration: underline; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 0 26px;
+  background: var(--color-gold); color: var(--color-gold-ink);
+  font-weight: 700; font-size: 17px; line-height: 1;
+  text-decoration: none; white-space: nowrap;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 0 var(--color-gold-ink);
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+.btn:hover { background: var(--color-gold-hover); color: var(--color-gold-ink); }
+.btn:active { transform: translateY(2px); box-shadow: none; }
+.btn--small { min-height: 40px; padding: 0 18px; font-size: 15px; }
+.btn:focus-visible { outline-color: var(--color-on-field); }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:active { transform: none; } }
+
+/* ---------- hero ---------- */
+.hero {
+  background: var(--color-field);
+  color: var(--color-on-field);
+  position: relative;
+  padding: 56px 0 64px;
+}
+.hero__board {
+  position: relative;
+  border: 1.5px solid var(--color-silk);
+  border-radius: 14px;
+  padding: clamp(28px, 4vw, 52px);
+}
+.hero__board::before, .hero__board::after {
+  content: ""; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+  border: 1.5px solid var(--color-silk); top: 14px;
+}
+.hero__board::before { left: 14px; }
+.hero__board::after { right: 14px; }
+.hole-b { position: absolute; bottom: 14px; width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--color-silk); }
+.hole-b--l { left: 14px; } .hole-b--r { right: 14px; }
+
+.hero__grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: end; }
+.hero__series { font-size: 18px; color: var(--color-on-field-soft); margin-bottom: 14px; }
+.hero__series b { color: var(--color-on-field); }
+.hero h1 { font-size: clamp(34px, 4.6vw, 58px); line-height: 1.32; word-break: auto-phrase; }
+.hero__lead { margin-top: 20px; font-size: 18px; color: var(--color-on-field-soft); max-width: 34em; }
+
+.facts { margin: 0; display: grid; gap: 0; border-top: 1.5px solid var(--color-silk); }
+.facts > div { display: grid; grid-template-columns: 4.5em minmax(0, 1fr); gap: 12px; padding: 14px 0; border-bottom: 1.5px solid var(--color-silk); }
+.facts dt { font-size: 14px; color: var(--color-on-field-soft); padding-top: 4px; }
+.facts dd { margin: 0; font-size: 17px; line-height: 1.55; }
+.facts .big { font-family: var(--font-display); font-size: clamp(22px, 2.2vw, 28px); line-height: 1.35; display: block; }
+.facts .sub { font-size: 15px; color: var(--color-on-field-soft); }
+
+.hero__action { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+.hero__action p { font-size: 15px; color: var(--color-on-field-soft); }
+
+/* ---------- sections ---------- */
+section { padding: clamp(64px, 8vw, 104px) 0; }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 32px; align-items: start; }
+h2 { font-size: clamp(30px, 3.2vw, 42px); }
+.sec-note { color: var(--color-ink-soft); margin-top: 12px; font-size: 16px; }
+
+/* program */
+.program { list-style: none; margin: 0; padding: 0; }
+.program li {
+  display: grid; grid-template-columns: 6.5em minmax(0, 1fr); gap: 24px;
+  padding: 18px 0; border-top: 1px solid var(--color-rule);
+}
+.program li:last-child { border-bottom: 1px solid var(--color-rule); }
+.program time, .program .len { font-family: var(--font-display); font-size: 20px; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.program .len { font-size: 16px; color: var(--color-ink-soft); padding-top: 4px; font-family: var(--font-body); }
+.program .what { font-size: 17px; line-height: 1.6; }
+.program .what small { display: block; color: var(--color-ink-soft); font-size: 15px; margin-top: 2px; }
+
+.program .talk { padding: 26px 0; }
+.talk .num { font-size: 15px; color: var(--color-link); font-weight: 700; }
+.talk h3 { font-size: clamp(22px, 2.3vw, 28px); line-height: 1.45; margin-top: 4px; }
+.talk h3 code { font-family: var(--font-code); font-weight: 700; font-size: 0.9em; background: var(--color-paper-2); padding: 0 0.25em; border-radius: 3px; }
+.talk .who { margin-top: 8px; color: var(--color-ink-soft); font-size: 16px; }
+
+.program .party { background: var(--color-paper-2); padding-left: 16px; padding-right: 16px; margin-top: 18px; border-top: none; border-radius: var(--radius); }
+.program .party + li { border-top: none; }
+
+/* LT */
+.lt { background: var(--color-paper-2); }
+.lt__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.lt__slots { display: flex; gap: 10px; margin-top: 22px; }
+.lt__slots span {
+  flex: 1; min-height: 56px; display: grid; place-items: center;
+  border: 2px dashed var(--color-field); border-radius: var(--radius);
+  font-size: 15px; color: var(--color-field-deep); font-weight: 700;
+}
+.lt p + p { margin-top: 14px; }
+.lt .plain-link { font-weight: 700; }
+
+/* join */
+.join__cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; margin-top: 44px; border-top: 2px solid var(--color-ink); }
+.join__col { padding: 26px 32px 8px 0; }
+.join__col + .join__col { padding-left: 32px; border-left: 1px solid var(--color-rule); }
+.join__col h3 { font-size: 22px; }
+.cap { font-family: var(--font-display); font-size: 44px; line-height: 1.2; margin: 14px 0 6px; font-variant-numeric: tabular-nums; }
+.cap small { font-size: 18px; margin-left: 4px; }
+.join__col p { color: var(--color-ink); }
+.join__col p + p { margin-top: 8px; }
+.join__col .soft { color: var(--color-ink-soft); font-size: 16px; }
+.join__party { margin-top: 36px; padding: 22px 26px; border: 1px solid var(--color-rule); border-radius: var(--radius); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 28px; align-items: baseline; }
+.join__party h3 { font-size: 20px; }
+.join__party p { font-size: 16px; }
+
+/* audience */
+.who-for { padding-top: 0; }
+.who-for__box { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 32px; border-top: 1px solid var(--color-rule); padding-top: clamp(48px, 6vw, 72px); }
+.who-for__text { font-size: 20px; line-height: 1.8; max-width: 32em; }
+.who-for__text strong { font-weight: 700; }
+.who-for__text p + p { margin-top: 12px; font-size: 17px; color: var(--color-ink-soft); }
+
+/* access */
+.access { background: var(--color-field-deep); color: var(--color-on-field); }
+.access a { color: var(--color-on-field); }
+.access__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 32px; }
+.access__place { font-family: var(--font-display); font-size: clamp(26px, 2.8vw, 34px); line-height: 1.4; }
+.access__addr { margin-top: 10px; font-size: 18px; }
+.access__walk { margin-top: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.access__walk .min { font-family: var(--font-display); font-size: 48px; line-height: 1; }
+.access__walk .min small { font-size: 20px; margin-left: 2px; }
+.access__walk p { color: var(--color-on-field-soft); }
+.access__org { margin-top: 40px; padding-top: 24px; border-top: 1.5px solid var(--color-silk); color: var(--color-on-field-soft); font-size: 16px; }
+.access__org b { color: var(--color-on-field); }
+
+/* closing */
+.closing { text-align: left; }
+.closing__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 40px; }
+.closing h2 { font-size: clamp(26px, 2.8vw, 36px); }
+.closing p { margin-top: 8px; color: var(--color-ink-soft); }
+.closing .btn { min-height: 56px; padding: 0 34px; font-size: 18px; }
+
+footer { border-top: 1px solid var(--color-rule); padding: 24px 0 32px; font-size: 14px; color: var(--color-ink-soft); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .hero__grid, .sec-head, .lt__grid, .who-for__box, .access__grid { grid-template-columns: minmax(0, 1fr); }
+  .sec-head { gap: 20px; }
+}
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .nav__links a:not(.btn) { display: none; }
+  .nav__name { font-size: 14px; white-space: normal; }
+  .hero { padding: 28px 0 40px; }
+  .hero__board { padding: 36px 20px 32px; }
+  .program li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .join__cols { grid-template-columns: minmax(0, 1fr); }
+  .join__col { padding: 22px 0 8px; }
+  .join__col + .join__col { padding-left: 0; border-left: 0; border-top: 1px solid var(--color-rule); margin-top: 18px; }
+  .join__party { grid-template-columns: minmax(0, 1fr); }
+  .lt__slots { gap: 6px; }
+  .closing .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#program">本文へ移動</a>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <span class="nav__name">福岡 Rust 勉強会 #14</span>
+    <nav class="nav__links" aria-label="ページ内">
+      <a href="#program">プログラム</a>
+      <a href="#join">参加方法</a>
+      <a href="#access">会場</a>
+      <a class="btn btn--small" href="https://example.connpass.com/event/000000/">参加登録</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero__board">
+        <span class="hole-b hole-b--l" aria-hidden="true"></span>
+        <span class="hole-b hole-b--r" aria-hidden="true"></span>
+        <div class="hero__grid">
+          <div>
+            <p class="hero__series"><b>福岡 Rust 勉強会 #14</b> のテーマ</p>
+            <h1>組込み Rust を<br>現場に入れてみた</h1>
+            <p class="hero__lead">工場のセンサー、受託開発のファームウェア、大学の研究。組込みの現場に Rust を持ち込んだ 3 人が、やってみて分かったことを話します。</p>
+            <div class="hero__action">
+              <a class="btn" href="https://example.connpass.com/event/000000/">connpass で参加登録</a>
+              <p>参加無料。YouTube Live でも配信します。</p>
+            </div>
+          </div>
+          <dl class="facts">
+            <div>
+              <dt>日時</dt>
+              <dd><span class="big">2026年12月12日(土)</span>13:30〜17:30<span class="sub">(受付 13:00〜)</span></dd>
+            </div>
+            <div>
+              <dt>会場</dt>
+              <dd><span class="big">天神ラボ 7F</span><span class="sub">西鉄福岡(天神)駅から徒歩 3 分</span></dd>
+            </div>
+            <div>
+              <dt>定員</dt>
+              <dd>会場 60 名、オンライン配信は定員なし</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="program" aria-labelledby="program-h">
+    <div class="wrap sec-head">
+      <div>
+        <h2 id="program-h">プログラム</h2>
+        <p class="sec-note">発表は各 30 分。<br>終了後に懇親会があります。</p>
+      </div>
+      <ol class="program">
+        <li>
+          <time datetime="2026-12-12T13:00">13:00</time>
+          <div class="what">受付開始</div>
+        </li>
+        <li>
+          <time datetime="2026-12-12T13:30">13:30</time>
+          <div class="what">開会</div>
+        </li>
+        <li class="talk">
+          <span class="len">30 分</span>
+          <div>
+            <span class="num">発表 1</span>
+            <h3><code>no_std</code> で書く工場の温度センサー</h3>
+            <p class="who">製造業の社内エンジニア</p>
+          </div>
+        </li>
+        <li class="talk">
+          <span class="len">30 分</span>
+          <div>
+            <span class="num">発表 2</span>
+            <h3>C のファームウェアを少しずつ Rust に置き換えた 1 年</h3>
+            <p class="who">組込み受託開発会社のエンジニア</p>
+          </div>
+        </li>
+        <li class="talk">
+          <span class="len">30 分</span>
+          <div>
+            <span class="num">発表 3</span>
+            <h3><code>embassy</code> で非同期の組込み開発</h3>
+            <p class="who">大学院生</p>
+          </div>
+        </li>
+        <li>
+          <span class="len">5 分 × 4 本</span>
+          <div class="what">LT<small>話す人は当日まで募集しています</small></div>
+        </li>
+        <li>
+          <time datetime="2026-12-12T17:30">17:30</time>
+          <div class="what">終了</div>
+        </li>
+        <li class="party">
+          <time datetime="2026-12-12T18:00">18:00</time>
+          <div class="what">懇親会<small>会費 3,000 円、先着 30 名</small></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="lt" aria-labelledby="lt-h">
+    <div class="wrap lt__grid">
+      <div>
+        <h2 id="lt-h">LT で話しませんか</h2>
+        <div class="lt__slots" aria-label="LT 枠 4 本">
+          <span>5 分</span><span>5 分</span><span>5 分</span><span>5 分</span>
+        </div>
+      </div>
+      <div>
+        <p>5 分のライトニングトークを 4 本募集しています。締め切りは当日です。</p>
+        <p>組込みでなくてもかまいません。Rust で試したこと、つまずいたこと、作っているものなど、短い話をお待ちしています。</p>
+        <p><a class="plain-link" href="https://example.connpass.com/event/000000/">connpass の LT 枠から申し込む</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="join" aria-labelledby="join-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="join-h">参加方法</h2>
+        <p class="sec-note" style="margin-top:6px">参加費は無料です。会場とオンラインのどちらでも参加できます。</p>
+      </div>
+      <div class="join__cols">
+        <div class="join__col">
+          <h3>会場で参加する</h3>
+          <p class="cap">60<small>名</small></p>
+          <p>天神ラボ 7F で発表を聞けます。発表者や参加者と直接話せるのは会場だけです。</p>
+          <p class="soft">connpass で会場参加枠に登録してください。</p>
+        </div>
+        <div class="join__col">
+          <h3>オンラインで見る</h3>
+          <p class="cap">定員なし</p>
+          <p>YouTube Live で配信します。福岡以外の方もどうぞ。</p>
+          <p class="soft">配信 URL は connpass のイベントページでお知らせします。</p>
+        </div>
+      </div>
+      <div class="join__party">
+        <h3>懇親会</h3>
+        <p>18:00 から。会費 3,000 円、先着 30 名です。参加される方は connpass で懇親会の枠にもご登録ください。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="who-for" aria-labelledby="who-h">
+    <div class="wrap who-for__box">
+      <h2 id="who-h">対象</h2>
+      <div class="who-for__text">
+        <p><strong>Rust を触ったことがある人</strong>が対象です。組込みの経験は問いません。</p>
+        <p>マイコンを触ったことがなくても、発表を聞けば組込みで Rust がどう使われているかが分かる内容にしています。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="access" class="access" aria-labelledby="access-h">
+    <div class="wrap access__grid">
+      <h2 id="access-h">会場</h2>
+      <div>
+        <p class="access__place">天神ラボ 7F</p>
+        <p class="access__addr">福岡市中央区天神 2 丁目</p>
+        <div class="access__walk">
+          <span class="min">3<small>分</small></span>
+          <p>西鉄福岡(天神)駅から徒歩</p>
+        </div>
+        <p class="access__org">主催 <b>福岡 Rust 勉強会</b><br>有志のコミュニティで、4 名で運営しています。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing" aria-labelledby="closing-h">
+    <div class="wrap closing__inner">
+      <div>
+        <h2 id="closing-h">12月12日(土)、天神で会いましょう</h2>
+        <p>会場参加は 60 名まで。登録は connpass から。</p>
+      </div>
+      <a class="btn" href="https://example.connpass.com/event/000000/">connpass で参加登録</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">福岡 Rust 勉強会 #14「組込み Rust を現場に入れてみた」</div>
+</footer>
+</body>
+</html>

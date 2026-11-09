@@ -1,0 +1,13 @@
+file	bytes	fonts	gfonts	colors	purple_blue	gradients	emoji	radius_max_px	box_shadow	backdrop_blur	italic	serif_jp	palt/feature	line_break_rule	grid_repeat3
+a-saas-lp-control-1	46223	Inter|Noto Sans JP|inherit	Inter|Noto Sans JP	39	0	5	0	999.0	12	1	3	3	0	0	4
+a-saas-lp-control-2	44723	Inter|Noto Sans JP|inherit	Inter|Noto Sans JP	38	0	6	0	999.0	10	1	1	12	1	0	2
+a-saas-lp-skill-1	38276	-apple-system|BIZ UDPGothic	BIZ UDPGothic	21	1	1	0	34.0	2	0	6	2	0	9	1
+a-saas-lp-skill-2	35531	-apple-system|Zen Kaku Gothic New	Zen Kaku Gothic New	15	1	0	0	28.0	2	0	4	2	0	5	1
+b-admin-control-1	51621	Noto Sans JP	Noto Sans JP	55	0	2	0	999.0	10	0	1	1	0	0	1
+b-admin-control-2	49475	Noto Sans JP	Noto Sans JP|Roboto Mono	57	0	3	0	999.0	8	0	0	1	0	0	0
+b-admin-skill-1	35838	-apple-system		17	1	3	0	8.0	6	0	0	1	0	3	0
+b-admin-skill-2	43498	-apple-system		19	0	4	0	3.0	3	0	0	1	0	4	0
+c-event-control-1	42745	Noto Sans JP	JetBrains Mono|Noto Sans JP	57	0	12	0	999.0	12	2	1	1	2	0	1
+c-event-control-2	37492	Noto Sans JP	JetBrains Mono|Noto Sans JP	40	0	4	0	999.0	6	2	1	1	2	1	1
+c-event-skill-1	20204	-apple-system|BIZ UDPGothic|ui-monospace	BIZ UDPGothic	15	1	0	0	14.0	2	0	0	2	0	6	0
+c-event-skill-2	21389	-apple-system|Zen Kaku Gothic New|ui-monospace	Zen Kaku Gothic New	15	1	0	0	2.0	0	0	0	2	2	5	0

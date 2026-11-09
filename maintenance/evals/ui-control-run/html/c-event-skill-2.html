@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>福岡 Rust 勉強会 #14「組込み Rust を現場に入れてみた」2026年12月12日(土) 天神</title>
+<meta name="description" content="2026年12月12日(土) 13:30〜17:30、天神ラボ 7F で開催。製造業・受託開発・大学院の 3 人が組込み Rust の実践を話します。参加費無料、会場 60 名とオンライン配信。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · custom · job: attend · paper: white C0.005 H160 · field: solder-mask green (posture: Committed) · accent: signal yellow, primary control only · display: Zen Kaku Gothic New 700 (headings only), body: system Japanese gothic · signature: copper traces running from the hero into the register button · weakest axis E (no venue photo or map given) — answered by putting the station and walk time in the hero instead of drawing a fake map */
+
+:root {
+  --color-paper: oklch(98.6% 0.005 160);
+  --color-paper-2: oklch(95.4% 0.012 160);
+  --color-ink: oklch(21% 0.025 160);
+  --color-ink-soft: oklch(43% 0.02 160);
+  --color-rule: oklch(84% 0.02 160);
+  --color-field: oklch(39% 0.105 157);
+  --color-field-deep: oklch(31% 0.08 157);
+  --color-on-field: oklch(98.6% 0.005 160);
+  --color-on-field-soft: oklch(88% 0.045 157);
+  --color-copper: oklch(72% 0.13 62);
+  --color-copper-dim: oklch(56% 0.1 62);
+  --color-accent: oklch(88% 0.175 95);
+  --color-accent-hover: oklch(93% 0.15 98);
+  --color-focus: oklch(62% 0.2 255);
+  --color-chip: oklch(19% 0.01 160);
+  --color-silk: oklch(96% 0.005 160);
+
+  --font-body: -apple-system, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic, Meiryo, "Noto Sans JP", sans-serif;
+  --font-display: "Zen Kaku Gothic New", -apple-system, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic, Meiryo, "Noto Sans JP", sans-serif;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+  --space-5: 64px;
+  --space-6: 104px;
+  --radius: 6px;
+  --container: 1120px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+:lang(ja) { font-synthesis-style: none; }
+button, input, select, textarea { font: inherit; }
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0;
+  font-feature-settings: "palt";
+  word-break: auto-phrase;
+}
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+.skip {
+  position: absolute;
+  left: var(--space-2);
+  top: -100px;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: var(--space-1) var(--space-2);
+  z-index: 10;
+}
+.skip:focus-visible { top: var(--space-2); }
+
+/* ---------- header ---------- */
+.site-head {
+  background: var(--color-paper);
+  border-bottom: 1px solid var(--color-rule);
+}
+.site-head .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 68px;
+}
+.site-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.site-nav ul {
+  display: flex;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav ul a {
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
+  padding-block: var(--space-1);
+  color: var(--color-ink-soft);
+}
+.site-nav ul a:hover { color: var(--color-ink); text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 var(--space-3);
+  background: var(--color-accent);
+  color: var(--color-ink);
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 120ms ease-out;
+}
+.btn:hover { background: var(--color-accent-hover); }
+.btn--small { min-height: 40px; font-size: 15px; padding: 0 var(--space-2); }
+.btn--large { min-height: 60px; font-size: 19px; padding: 0 var(--space-4); }
+.on-field .btn { border-color: var(--color-field-deep); }
+.on-field :focus-visible { outline-color: var(--color-accent); }
+
+/* ---------- hero ---------- */
+.hero {
+  background: var(--color-field);
+  color: var(--color-on-field);
+  position: relative;
+}
+.hero .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-4);
+  align-items: center;
+  padding-block: var(--space-5) var(--space-5);
+}
+.hero h1 {
+  font-size: 56px;
+  line-height: 1.32;
+}
+.hero h1 .series {
+  display: block;
+  font-size: 24px;
+  line-height: 1.4;
+  margin-bottom: var(--space-2);
+  color: var(--color-on-field-soft);
+}
+.hero-when {
+  margin-top: var(--space-4);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.4;
+}
+.hero-when small {
+  font-size: 20px;
+  font-weight: 700;
+}
+.hero-where {
+  margin-top: var(--space-1);
+  font-size: 18px;
+  color: var(--color-on-field-soft);
+}
+.hero-action {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.hero-action p {
+  font-size: 16px;
+  color: var(--color-on-field-soft);
+  line-height: 1.6;
+}
+.hero-action strong { color: var(--color-on-field); }
+
+.board { width: 100%; height: auto; display: block; }
+.board .trace { fill: none; stroke: var(--color-copper); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.board .trace--thin { stroke-width: 3; stroke: var(--color-copper-dim); }
+.board .pad { fill: var(--color-copper); }
+.board .via { fill: var(--color-field); stroke: var(--color-copper); stroke-width: 4; }
+.board .chip { fill: var(--color-chip); }
+.board .pin { fill: var(--color-on-field-soft); }
+.board .silk { fill: var(--color-silk); font-family: var(--font-display); font-weight: 700; }
+.board .silk-line { fill: none; stroke: var(--color-on-field-soft); stroke-width: 2; }
+.board .dot { fill: var(--color-silk); }
+
+/* ---------- sections ---------- */
+section { padding-block: var(--space-6) 0; }
+.sec-head {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--space-4);
+  align-items: end;
+  margin-bottom: var(--space-4);
+}
+h2 {
+  font-size: 44px;
+  line-height: 1.4;
+}
+.sec-head p {
+  color: var(--color-ink-soft);
+  max-width: 34em;
+}
+
+/* talks */
+.talks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 3px solid var(--color-field);
+}
+.talk {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--color-rule);
+}
+.talk-order {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--color-field);
+}
+.talk h3 {
+  font-size: 30px;
+  line-height: 1.45;
+}
+.talk h3 code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  font-weight: 700;
+  text-autospace: no-autospace;
+}
+.talk-by {
+  margin-top: var(--space-1);
+  color: var(--color-ink-soft);
+}
+.talk-len {
+  font-size: 15px;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+}
+
+.lt {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  background: var(--color-paper-2);
+  margin-top: var(--space-3);
+  border-radius: var(--radius);
+  padding-inline: 0 var(--space-4);
+}
+.lt-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.2;
+  color: var(--color-field);
+  text-align: center;
+}
+.lt h3 { font-size: 24px; line-height: 1.5; }
+.lt p { margin-top: var(--space-1); color: var(--color-ink-soft); max-width: 38em; }
+
+/* join */
+.audience {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.6;
+  max-width: 22em;
+  margin-bottom: var(--space-5);
+}
+.audience-mark {
+  text-emphasis: filled;
+  -webkit-text-emphasis: filled;
+  color: var(--color-field);
+}
+.ways {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+}
+.way {
+  border-top: 3px solid var(--color-ink);
+  padding-top: var(--space-3);
+}
+.way h3 { font-size: 26px; line-height: 1.45; }
+.way-cap {
+  margin-top: var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.3;
+  color: var(--color-field);
+}
+.way-cap span { font-size: 20px; color: var(--color-ink); }
+.way p.note { margin-top: var(--space-2); color: var(--color-ink-soft); max-width: 30em; }
+.fee {
+  margin-top: var(--space-4);
+  font-size: 18px;
+}
+.fee strong { font-size: 22px; }
+
+/* day */
+.day {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--space-4);
+}
+.day dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  row-gap: 0;
+}
+.day dt, .day dd {
+  margin: 0;
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-rule);
+}
+.day dt {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+.day dd strong { display: block; font-size: 20px; line-height: 1.5; }
+.day dd span { color: var(--color-ink-soft); }
+.day dd.party {
+  background: var(--color-paper-2);
+  padding-inline: var(--space-3);
+}
+.day dt.party {
+  background: var(--color-paper-2);
+  padding-left: var(--space-2);
+}
+
+/* venue */
+.venue {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--space-4);
+}
+.venue-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.4;
+}
+.venue-addr { margin-top: var(--space-1); font-size: 18px; }
+.walk {
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 560px;
+}
+.walk-end {
+  font-weight: 700;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.walk-line {
+  flex: 1;
+  min-width: 48px;
+  height: 0;
+  border-top: 4px dotted var(--color-field);
+  position: relative;
+}
+.walk-line span {
+  position: absolute;
+  left: 50%;
+  top: -34px;
+  transform: translateX(-50%);
+  font-size: 15px;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+}
+
+/* closing */
+.closing {
+  margin-top: var(--space-6);
+  background: var(--color-field);
+  color: var(--color-on-field);
+  padding-block: var(--space-5);
+}
+.closing .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.closing h2 { font-size: 40px; }
+.closing p { margin-top: var(--space-1); color: var(--color-on-field-soft); }
+
+.site-foot {
+  background: var(--color-field-deep);
+  color: var(--color-on-field-soft);
+  padding-block: var(--space-4);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.site-foot strong { color: var(--color-on-field); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); }
+  .board { max-width: 420px; }
+  .hero .board-wrap { order: -1; }
+  .sec-head, .day, .venue { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+  .site-nav ul { display: none; }
+}
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .wrap { padding-inline: 20px; }
+  .hero .wrap { padding-block: var(--space-4); }
+  .hero .board-wrap { display: none; }
+  .hero h1 { font-size: 34px; }
+  .hero h1 .series { font-size: 18px; }
+  .hero-when { font-size: 22px; }
+  .hero-when small { font-size: 16px; }
+  .btn--large { min-height: 56px; font-size: 17px; padding: 0 var(--space-3); width: 100%; }
+  section { padding-block: var(--space-5) 0; }
+  h2 { font-size: 30px; }
+  .talk { grid-template-columns: 44px minmax(0, 1fr); gap: var(--space-2); padding-block: var(--space-3); }
+  .talk-order { font-size: 34px; }
+  .talk h3 { font-size: 21px; }
+  .talk-len { grid-column: 2; }
+  .lt { grid-template-columns: minmax(0, 1fr); padding: var(--space-3); }
+  .lt-mark { text-align: left; font-size: 24px; }
+  .lt h3 { font-size: 20px; }
+  .audience { font-size: 22px; margin-bottom: var(--space-4); }
+  .ways { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .way h3 { font-size: 22px; }
+  .way-cap { font-size: 32px; }
+  .day dl { grid-template-columns: 76px minmax(0, 1fr); }
+  .day dt { font-size: 20px; }
+  .day dd strong { font-size: 18px; }
+  .venue-name { font-size: 28px; }
+  .closing h2 { font-size: 28px; }
+  .closing .btn { width: 100%; }
+  .site-name { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="site-name" href="#top">福岡 Rust 勉強会</a>
+    <nav class="site-nav" aria-label="ページ内">
+      <ul>
+        <li><a href="#talks">発表</a></li>
+        <li><a href="#join">参加方法</a></li>
+        <li><a href="#day">当日の流れ</a></li>
+        <li><a href="#venue">会場</a></li>
+      </ul>
+      <a class="btn btn--small" href="https://example.connpass.com/event/000000/">参加登録</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="hero on-field" id="top">
+    <div class="wrap">
+      <div>
+        <h1><span class="series">福岡 Rust 勉強会 #14</span>組込み Rust を<br>現場に入れてみた</h1>
+        <p class="hero-when">2026年12月12日(土)<br>13:30〜17:30 <small>受付 13:00〜</small></p>
+        <p class="hero-where">天神ラボ 7F　西鉄福岡(天神)駅から徒歩 3 分</p>
+        <div class="hero-action">
+          <a class="btn btn--large" href="https://example.connpass.com/event/000000/">connpass で参加登録する</a>
+          <p><strong>参加費は無料</strong><br>会場 60 名、YouTube Live でも配信します</p>
+        </div>
+      </div>
+      <div class="board-wrap" aria-hidden="true">
+        <svg class="board" viewBox="0 0 440 400" focusable="false">
+          <path class="trace--thin trace" d="M20 60 H120 L150 90 V150"/>
+          <path class="trace--thin trace" d="M20 340 H96 L130 306 V250"/>
+          <path class="trace--thin trace" d="M420 40 H330 L300 70 V130"/>
+          <path class="trace" d="M150 150 V120"/>
+          <path class="trace" d="M190 130 V70 L220 40 H300"/>
+          <path class="trace" d="M230 130 V110 L250 90 H360 L390 120 V200"/>
+          <path class="trace" d="M310 200 H390"/>
+          <path class="trace" d="M310 240 H360 L400 280 V360"/>
+          <path class="trace" d="M190 270 V320 L160 350 H40"/>
+          <path class="trace" d="M270 270 V330 L300 360 H340"/>
+          <circle class="via" cx="150" cy="120" r="9"/>
+          <circle class="via" cx="300" cy="40" r="9"/>
+          <circle class="via" cx="390" cy="200" r="9"/>
+          <circle class="via" cx="400" cy="360" r="9"/>
+          <circle class="via" cx="40" cy="350" r="9"/>
+          <circle class="via" cx="340" cy="360" r="9"/>
+          <rect class="pad" x="141" y="130" width="18" height="22" rx="2"/>
+          <rect class="pad" x="181" y="130" width="18" height="22" rx="2"/>
+          <rect class="pad" x="221" y="130" width="18" height="22" rx="2"/>
+          <rect class="pad" x="261" y="130" width="18" height="22" rx="2"/>
+          <rect class="pad" x="308" y="191" width="22" height="18" rx="2"/>
+          <rect class="pad" x="308" y="231" width="22" height="18" rx="2"/>
+          <rect class="pad" x="181" y="248" width="18" height="22" rx="2"/>
+          <rect class="pad" x="261" y="248" width="18" height="22" rx="2"/>
+          <rect class="chip" x="130" y="148" width="180" height="104" rx="4"/>
+          <circle class="dot" cx="148" cy="166" r="5"/>
+          <text class="silk" x="220" y="200" text-anchor="middle" font-size="34">#14</text>
+          <text class="silk" x="220" y="230" text-anchor="middle" font-size="15">FUKUOKA RUST</text>
+          <rect class="silk-line" x="60" y="190" width="40" height="22" rx="2"/>
+          <text class="silk" x="80" y="232" text-anchor="middle" font-size="12">U14</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <section id="talks" aria-labelledby="talks-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="talks-h">発表</h2>
+        <p>工場のセンサー、受託のファームウェア、研究室の非同期処理。組込み Rust を実際に使った 3 人が、それぞれの現場の話をします。</p>
+      </div>
+      <ol class="talks">
+        <li class="talk">
+          <span class="talk-order" aria-hidden="true">1</span>
+          <div>
+            <h3><code>no_std</code> で書く工場の温度センサー</h3>
+            <p class="talk-by">製造業の社内エンジニア</p>
+          </div>
+          <span class="talk-len">30 分</span>
+        </li>
+        <li class="talk">
+          <span class="talk-order" aria-hidden="true">2</span>
+          <div>
+            <h3>C のファームウェアを少しずつ Rust に置き換えた 1 年</h3>
+            <p class="talk-by">組込み受託開発会社のエンジニア</p>
+          </div>
+          <span class="talk-len">30 分</span>
+        </li>
+        <li class="talk">
+          <span class="talk-order" aria-hidden="true">3</span>
+          <div>
+            <h3>embassy で非同期の組込み開発</h3>
+            <p class="talk-by">大学院生</p>
+          </div>
+          <span class="talk-len">30 分</span>
+        </li>
+      </ol>
+      <div class="lt">
+        <p class="lt-mark">LT</p>
+        <div>
+          <h3>5 分 × 4 本、当日まで募集しています</h3>
+          <p>組込みに限らず、Rust の話なら歓迎です。応募の方法は connpass のイベントページをご覧ください。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join" aria-labelledby="join-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="join-h">参加方法</h2>
+      </div>
+      <p class="audience">Rust を触ったことがあれば、<span class="audience-mark">組込みの経験は問いません</span>。</p>
+      <div class="ways">
+        <div class="way">
+          <h3>会場で聞く</h3>
+          <p class="way-cap">60 <span>名まで</span></p>
+          <p class="note">天神ラボ 7F。発表者に直接質問でき、終了後の懇親会にも参加できます。</p>
+        </div>
+        <div class="way">
+          <h3>オンラインで聞く</h3>
+          <p class="way-cap">定員なし</p>
+          <p class="note">YouTube Live で配信します。どちらの参加方法も connpass で登録してください。</p>
+        </div>
+      </div>
+      <p class="fee">参加費 <strong>無料</strong></p>
+    </div>
+  </section>
+
+  <section id="day" aria-labelledby="day-h">
+    <div class="wrap day">
+      <h2 id="day-h">当日の流れ</h2>
+      <dl>
+        <dt>13:00</dt>
+        <dd><strong>受付開始</strong></dd>
+        <dt>13:30</dt>
+        <dd><strong>開始</strong><span>発表 3 本と LT 4 本</span></dd>
+        <dt>17:30</dt>
+        <dd><strong>終了</strong></dd>
+        <dt class="party">18:00</dt>
+        <dd class="party"><strong>懇親会</strong><span>会費 3,000 円、先着 30 名</span></dd>
+      </dl>
+    </div>
+  </section>
+
+  <section id="venue" aria-labelledby="venue-h">
+    <div class="wrap venue">
+      <h2 id="venue-h">会場</h2>
+      <div>
+        <p class="venue-name">天神ラボ 7F</p>
+        <p class="venue-addr">福岡市中央区天神 2 丁目の貸し会議室</p>
+        <div class="walk">
+          <span class="walk-end">西鉄福岡(天神)駅</span>
+          <span class="walk-line" aria-hidden="true"><span>徒歩 3 分</span></span>
+          <span class="walk-end">天神ラボ</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="closing on-field">
+    <div class="wrap">
+      <div>
+        <h2>会場の席は 60</h2>
+        <p>12月12日(土) 13:30 から。オンライン配信は定員なしです。</p>
+      </div>
+      <a class="btn btn--large" href="https://example.connpass.com/event/000000/">connpass で参加登録する</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>主催 <strong>福岡 Rust 勉強会</strong><br>福岡で Rust を書く人の有志コミュニティです。4 名で運営しています。</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>承認待ち一覧｜経費精算システム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f4f7;
+    --surface:#ffffff;
+    --line:#e2e5eb;
+    --line-strong:#cfd4dc;
+    --text:#1c2333;
+    --muted:#5d6678;
+    --faint:#8a92a3;
+    --primary:#1f4fd1;
+    --primary-hover:#173fae;
+    --primary-soft:#eaf0ff;
+    --danger:#b42318;
+    --danger-bg:#fdeceb;
+    --danger-line:#f3b8b2;
+    --warn:#9a5b00;
+    --warn-bg:#fff5e0;
+    --ok:#1d7a4c;
+    --ok-bg:#e8f5ee;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(20,30,50,.06),0 1px 3px rgba(20,30,50,.04);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Sans","Yu Gothic UI",sans-serif;
+    background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer}
+  .num{font-variant-numeric:tabular-nums}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+  :focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+  /* ---------- ヘッダー ---------- */
+  .topbar{background:#18213a;color:#fff}
+  .topbar-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;gap:24px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+  .brand-mark{width:26px;height:26px;border-radius:6px;background:#3d6cf0;display:grid;place-items:center}
+  .topnav{display:flex;gap:4px;flex:1;overflow-x:auto}
+  .topnav a{color:#c3cbe0;text-decoration:none;padding:6px 12px;border-radius:6px;font-size:13px;white-space:nowrap}
+  .topnav a[aria-current="page"]{background:rgba(255,255,255,.12);color:#fff}
+  .user{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#c3cbe0;white-space:nowrap}
+  .user b{color:#fff;font-weight:500;font-size:13px}
+  .user-ico{width:30px;height:30px;border-radius:50%;background:#2c3757;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px}
+
+  main{max-width:1200px;margin:0 auto;padding:24px 24px 64px}
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+  .page-head h1{font-size:22px;margin:0;font-weight:700;letter-spacing:.02em}
+  .page-head p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .today-log{font-size:12.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+  .today-log b{color:var(--text);font-weight:700}
+
+  /* ---------- サマリー ---------- */
+  .summary{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;margin-bottom:18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px}
+  .card-label{font-size:12.5px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:6px}
+  .card-value{font-size:26px;font-weight:700;letter-spacing:.01em;margin-top:2px;line-height:1.3}
+  .card-value small{font-size:13px;font-weight:500;color:var(--muted);margin-left:6px}
+  .card-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .budget-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .rate{text-align:right}
+  .rate .card-value{color:var(--primary)}
+  .bar{position:relative;height:12px;border-radius:999px;background:#edf0f5;margin:14px 0 8px;overflow:visible}
+  .bar-fill{position:absolute;top:0;bottom:0;left:0;border-radius:999px 0 0 999px;background:var(--primary);transition:width .4s ease}
+  .bar-pend{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,#9db4f2 0 5px,#c4d3fa 5px 10px);transition:left .4s ease,width .4s ease}
+  .bar-mark{position:absolute;top:-5px;bottom:-5px;width:2px;background:#1c2333}
+  .bar-mark span{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  .lg-a{background:var(--primary)}
+  .lg-p{background:repeating-linear-gradient(135deg,#9db4f2 0 3px,#c4d3fa 3px 6px)}
+  .lg-m{background:#1c2333;width:2px!important}
+  .card.flagcard{border-color:var(--danger-line);background:linear-gradient(0deg,#fff,#fff8f7)}
+  .flagcard .card-value{color:var(--danger)}
+  .link-btn{margin-top:8px;background:none;border:0;padding:0;color:var(--primary);font-weight:500;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+  .link-btn[aria-pressed="true"]{color:var(--danger)}
+
+  /* ---------- フィルター ---------- */
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .filters{display:flex;align-items:center;gap:14px 20px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .f-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .f-label{font-size:12.5px;color:var(--muted);font-weight:500;white-space:nowrap}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line-strong);background:#fff;border-radius:999px;padding:4px 12px;font-size:13px;display:inline-flex;align-items:center;gap:6px;transition:background .15s,border-color .15s}
+  .chip:hover{border-color:var(--primary)}
+  .chip[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+  .chip .cnt{font-size:11.5px;opacity:.75}
+  select.sel{border:1px solid var(--line-strong);border-radius:8px;padding:5px 30px 5px 10px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235d6678' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;appearance:none;-webkit-appearance:none;font-size:13px;min-width:120px}
+  .toggle{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none}
+  .toggle input{width:16px;height:16px;accent-color:var(--danger)}
+  .f-spacer{flex:1}
+  .reset{background:none;border:0;color:var(--muted);font-size:12.5px;text-decoration:underline;text-underline-offset:3px;padding:0}
+
+  /* ---------- 一括操作バー ---------- */
+  .bulkbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 18px;background:#f8f9fb;border-bottom:1px solid var(--line)}
+  .bulkbar.active{background:var(--primary-soft);border-bottom-color:#c9d6fb}
+  .bulk-info{font-size:13px;color:var(--muted)}
+  .bulk-info b{color:var(--text);font-size:15px}
+  .bulk-warn{font-size:12.5px;color:var(--danger);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+  .btn{border-radius:8px;padding:7px 14px;font-size:13px;font-weight:500;border:1px solid var(--line-strong);background:#fff;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
+  .btn:hover:not(:disabled){border-color:#9aa3b5;background:#fafbfc}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn-primary:hover:not(:disabled){background:var(--primary-hover);border-color:var(--primary-hover)}
+  .btn-danger-o{color:var(--danger);border-color:var(--danger-line)}
+  .btn-danger-o:hover:not(:disabled){background:var(--danger-bg)!important;border-color:var(--danger)!important}
+  .btn-danger{background:var(--danger);border-color:var(--danger);color:#fff}
+  .btn-danger:hover:not(:disabled){background:#931c13}
+  .btn-sm{padding:4px 10px;font-size:12.5px}
+  .btn-ghost{border-color:transparent;background:transparent;color:var(--muted)}
+  .btn-ghost:hover:not(:disabled){background:#eef0f4;border-color:transparent}
+
+  /* ---------- テーブル ---------- */
+  .tbl-wrap{overflow-x:auto}
+  table.tbl{width:100%;border-collapse:collapse;min-width:1080px}
+  .tbl th{font-size:12px;font-weight:500;color:var(--muted);text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);background:#fff;white-space:nowrap}
+  .tbl td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .tbl th.r,.tbl td.r{text-align:right}
+  .tbl th:first-child,.tbl td:first-child{padding-left:18px}
+  .tbl th:last-child,.tbl td:last-child{padding-right:18px}
+  .c-chk{width:40px}
+  .c-chk input{width:17px;height:17px;accent-color:var(--primary);cursor:pointer;vertical-align:middle}
+  tr.row{transition:background .15s}
+  tr.row:hover{background:#fafbfd}
+  tr.row.is-flag{background:#fffafa}
+  tr.row.is-flag:hover{background:#fff4f3}
+  tr.row.is-flag td:first-child{box-shadow:inset 4px 0 0 var(--danger)}
+  tr.row.is-sel,tr.row.is-sel:hover{background:#eef3ff}
+  tr.row.is-open td{border-bottom-color:transparent}
+  .who{display:flex;align-items:center;gap:10px;white-space:nowrap}
+  .avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:700;color:#fff;flex:none}
+  .who small{display:block;color:var(--faint);font-size:11.5px;line-height:1.2}
+  .date{white-space:nowrap}
+  .cat{display:inline-block;font-size:12px;font-weight:500;padding:2px 9px;border-radius:5px;white-space:nowrap;border:1px solid}
+  .cat-交通費{color:#1f5c99;background:#ebf3fc;border-color:#c6dcf3}
+  .cat-接待交際費{color:#8a3c8f;background:#f8edf9;border-color:#e6cbe8}
+  .cat-消耗品費{color:#3c6b2c;background:#eef6ea;border-color:#cfe4c6}
+  .cat-出張旅費{color:#8a5a12;background:#fbf3e6;border-color:#ecd7b3}
+  .desc{color:var(--text);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .amt{font-weight:700;font-size:14.5px;white-space:nowrap}
+  .amt small{display:block;font-weight:400;font-size:11.5px;color:var(--muted)}
+  .amt small.bad{color:var(--danger);font-weight:500}
+  .rcpt{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;white-space:nowrap}
+  .rcpt.yes{color:var(--ok)}
+  .rcpt.no{color:var(--faint)}
+  .rcpt.no.bad{color:var(--danger);font-weight:500}
+  .elapsed{white-space:nowrap}
+  .elapsed.stale{color:var(--warn);font-weight:700}
+  .elapsed .stale-tag{display:inline-block;font-size:11px;font-weight:500;background:var(--warn-bg);color:var(--warn);border-radius:4px;padding:0 6px;margin-left:4px}
+  .flags{display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+  .flag{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:500;color:var(--danger);background:var(--danger-bg);border:1px solid var(--danger-line);border-radius:5px;padding:1px 7px;white-space:nowrap}
+  .okmark{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--ok);white-space:nowrap}
+  .acts{display:flex;gap:6px;justify-content:flex-end}
+  .expander svg{transition:transform .2s}
+  .expander[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+  tr.detail td{background:#fbfcfe;padding:0 18px 16px 58px;border-bottom:1px solid var(--line)}
+  tr.detail.is-flag td{background:#fffafa;box-shadow:inset 4px 0 0 var(--danger)}
+  .dbox{display:grid;grid-template-columns:1.3fr 1fr auto;gap:20px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:14px 16px}
+  .dbox dl{margin:0;display:grid;grid-template-columns:max-content 1fr;gap:5px 14px;font-size:13px}
+  .dbox dt{color:var(--muted)}
+  .dbox dd{margin:0}
+  .dcheck h4{margin:0 0 6px;font-size:12.5px;color:var(--muted);font-weight:500}
+  .dcheck ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:13px}
+  .dcheck li{display:flex;gap:6px;align-items:flex-start}
+  .dcheck li.ng{color:var(--danger)}
+  .dcheck li.ok{color:var(--ok)}
+  .dcheck li svg{flex:none;margin-top:3px}
+  .dacts{display:flex;flex-direction:column;gap:8px;justify-content:flex-start}
+
+  .empty{padding:56px 20px;text-align:center;color:var(--muted)}
+  .empty b{display:block;color:var(--text);font-size:15px;margin:10px 0 4px}
+  .tbl-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 18px;font-size:12.5px;color:var(--muted)}
+
+  /* ---------- モーダル ---------- */
+  .modal-bg{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+  .modal-bg.open{display:flex;animation:fade .15s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:#fff;border-radius:12px;width:100%;max-width:520px;box-shadow:0 20px 50px rgba(0,0,0,.25);max-height:calc(100vh - 32px);display:flex;flex-direction:column}
+  .modal-h{padding:18px 22px 6px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .modal-h h2{margin:0;font-size:17px}
+  .modal-b{padding:8px 22px 4px;overflow:auto}
+  .modal-f{padding:14px 22px 18px;display:flex;justify-content:flex-end;gap:8px}
+  .x{background:none;border:0;padding:4px;border-radius:6px;color:var(--muted);line-height:0}
+  .x:hover{background:#f0f2f5}
+  .target{background:#f6f7f9;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:center}
+  .target .amt{grid-row:span 2}
+  .target small{color:var(--muted)}
+  .field-label{display:flex;align-items:center;gap:6px;font-weight:500;font-size:13px;margin-bottom:6px}
+  .req{font-size:11px;color:#fff;background:var(--danger);border-radius:4px;padding:0 6px;font-weight:500}
+  textarea{width:100%;min-height:110px;border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;resize:vertical;font-size:13.5px;line-height:1.6}
+  textarea:focus{outline:2px solid var(--primary);outline-offset:0;border-color:transparent}
+  textarea.invalid{border-color:var(--danger)}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px;display:flex;justify-content:space-between}
+  .hint .err{color:var(--danger);font-weight:500}
+  .quick{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+  .quick button{border:1px dashed var(--line-strong);background:#fff;border-radius:6px;font-size:12px;padding:3px 9px;color:var(--muted)}
+  .quick button:hover{border-color:var(--primary);color:var(--primary)}
+  .clist{list-style:none;margin:0 0 12px;padding:0;border:1px solid var(--line);border-radius:8px;max-height:260px;overflow:auto}
+  .clist li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:13px}
+  .clist li:last-child{border-bottom:0}
+  .clist li.f{background:#fffafa}
+  .clist .flag{margin-left:6px}
+  .ctotal{display:flex;justify-content:space-between;font-size:14px;font-weight:700;padding:0 2px 6px}
+  .cwarn{background:var(--danger-bg);border:1px solid var(--danger-line);color:var(--danger);border-radius:8px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;display:flex;gap:8px}
+
+  /* ---------- トースト ---------- */
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#1c2333;color:#fff;padding:11px 18px;border-radius:10px;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;display:flex;align-items:center;gap:8px;max-width:calc(100% - 32px)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- レスポンシブ ---------- */
+  @media (max-width:1000px){
+    .summary{grid-template-columns:1fr 1fr}
+    .summary .budget{grid-column:1/-1}
+    .dbox{grid-template-columns:1fr 1fr}
+    .dacts{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}
+  }
+  @media (max-width:760px){
+    .topbar-inner{padding:0 14px;gap:12px}
+    .topnav,.user span{display:none}
+    main{padding:16px 12px 48px}
+    .page-head h1{font-size:19px}
+    .card-value{font-size:22px}
+    .filters{padding:12px 14px}
+    .f-spacer{display:none}
+    .bulkbar{padding:10px 14px}
+    .bulkbar .btn-primary{width:100%;justify-content:center}
+    table.tbl{min-width:0}
+    .tbl thead{display:none}
+    .tbl,.tbl tbody{display:block}
+    tr.row{display:grid;grid-template-columns:32px 1fr auto;gap:6px 10px;padding:14px 14px 12px;border-bottom:1px solid var(--line);position:relative}
+    tr.row.is-open{border-bottom:0}
+    tr.row.is-flag{box-shadow:inset 4px 0 0 var(--danger)}
+    tr.row.is-flag td:first-child{box-shadow:none}
+    .tbl td{display:block;padding:0!important;border:0}
+    .tbl td.c-chk{grid-row:1;grid-column:1;padding-top:6px!important}
+    .tbl td.c-who{grid-row:1;grid-column:2}
+    .tbl td.c-amt{grid-row:1;grid-column:3;text-align:right}
+    .tbl td.c-cat,.tbl td.c-date,.tbl td.c-rcpt,.tbl td.c-elapsed{grid-column:2/4;display:inline-block}
+    .tbl td.c-desc,.tbl td.c-flags,.tbl td.c-act{grid-column:2/4}
+    .meta-line{display:flex}
+    .tbl td[data-label]::before{content:attr(data-label)"：";color:var(--faint);font-size:11.5px;margin-right:2px}
+    .tbl td.c-who::before,.tbl td.c-amt::before,.tbl td.c-desc::before,.tbl td.c-flags::before,.tbl td.c-cat::before{content:none}
+    .desc{max-width:none;white-space:normal}
+    .acts{justify-content:flex-start;margin-top:4px}
+    tr.detail{display:block}
+    tr.detail[hidden]{display:none}
+    tr.detail td{display:block;padding:0 14px 14px 14px!important;border-bottom:1px solid var(--line)}
+    .dbox{grid-template-columns:1fr}
+    .dacts .btn{flex:1;justify-content:center}
+    .tbl-foot{padding:10px 14px}
+    .target{grid-template-columns:auto 1fr}
+    .target .amt{grid-row:auto;grid-column:1/-1}
+  }
+  @media (max-width:520px){
+    .summary{grid-template-columns:1fr}
+    .rate{text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="#fff" stroke-width="1.4"/><path d="M5 5.5h6M5 8h6M5 10.5h3.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </span>
+      経費精算
+    </div>
+    <nav class="topnav" aria-label="メインメニュー">
+      <a href="#" aria-current="page">承認待ち</a>
+      <a href="#">承認履歴</a>
+      <a href="#">部署の経費レポート</a>
+      <a href="#">経費規程</a>
+    </nav>
+    <div class="user">
+      <span>営業第二課 課長<br><b>森田 浩一</b></span>
+      <div class="user-ico" aria-hidden="true">森</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <div>
+      <h1>承認待ち一覧</h1>
+      <p>営業第二課・基準日 2026年11月9日（月）　規程チェックで問題が見つからない申請はまとめて承認できます。</p>
+    </div>
+    <div class="today-log" id="todayLog" aria-live="polite">本日の処理：承認 <b>0</b> 件／差し戻し <b>0</b> 件</div>
+  </div>
+
+  <section class="summary" aria-label="今月の経費状況">
+    <div class="card budget">
+      <div class="budget-top">
+        <div>
+          <div class="card-label">今月の部署経費合計（承認済み）</div>
+          <div class="card-value num" id="sumApproved">¥0</div>
+          <div class="card-sub num" id="sumBudget">月次予算 ¥0</div>
+        </div>
+        <div class="rate">
+          <div class="card-label" style="justify-content:flex-end">予算消化率</div>
+          <div class="card-value num" id="rateNow">0%</div>
+          <div class="card-sub num" id="rateWith">承認待ちを含めると 0%</div>
+        </div>
+      </div>
+      <div class="bar" role="img" id="budgetBar" aria-label="">
+        <div class="bar-fill" id="barFill"></div>
+        <div class="bar-pend" id="barPend"></div>
+        <div class="bar-mark" id="barMark"><span>月の経過 30%</span></div>
+      </div>
+      <div class="legend">
+        <span><i class="lg-a"></i>承認済み</span>
+        <span><i class="lg-p"></i>承認待ち</span>
+        <span><i class="lg-m"></i>今日時点の月の経過（9/30日）</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">承認待ち</div>
+      <div class="card-value num" id="pendCount">0<small>件</small></div>
+      <div class="card-sub num" id="pendAmount">合計 ¥0</div>
+      <div class="card-sub" id="pendOld"></div>
+    </div>
+
+    <div class="card flagcard">
+      <div class="card-label">
+        <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l7 12.5H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6.2v3.6M8 11.6v.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        規程違反の疑い
+      </div>
+      <div class="card-value num" id="flagCount">0<small>件</small></div>
+      <div class="card-sub">内容を確認してから承認・差し戻ししてください</div>
+      <button class="link-btn" id="flagJump" aria-pressed="false">疑いのある申請だけ表示</button>
+    </div>
+  </section>
+
+  <section class="panel" aria-label="承認待ちの申請">
+    <div class="filters">
+      <div class="f-group" role="group" aria-labelledby="catLbl">
+        <span class="f-label" id="catLbl">費目</span>
+        <div class="chips" id="catChips"></div>
+      </div>
+      <div class="f-group">
+        <label class="f-label" for="personSel">申請者</label>
+        <select class="sel" id="personSel"></select>
+      </div>
+      <label class="toggle"><input type="checkbox" id="flagOnly">疑いのある申請のみ</label>
+      <div class="f-spacer"></div>
+      <div class="f-group">
+        <label class="f-label" for="sortSel">並び順</label>
+        <select class="sel" id="sortSel">
+          <option value="flag">疑いのある申請を先頭</option>
+          <option value="elapsed">経過日数が長い順</option>
+          <option value="amount">金額が大きい順</option>
+          <option value="name">申請者順</option>
+        </select>
+      </div>
+      <button class="reset" id="resetBtn" type="button">条件をクリア</button>
+    </div>
+
+    <div class="bulkbar" id="bulkbar">
+      <div class="bulk-info num" id="bulkInfo">申請を選択してください</div>
+      <span class="bulk-warn" id="bulkWarn" hidden></span>
+      <div class="f-spacer"></div>
+      <button class="btn btn-ghost btn-sm" id="selClean" type="button">
+        <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        問題のない申請をすべて選択
+      </button>
+      <button class="btn btn-ghost btn-sm" id="selClear" type="button" disabled>選択を解除</button>
+      <button class="btn btn-primary" id="bulkApprove" type="button" disabled>選択した申請を承認</button>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th class="c-chk"><input type="checkbox" id="chkAll" aria-label="表示中の申請をすべて選択"></th>
+            <th>申請者</th>
+            <th>申請日</th>
+            <th>費目</th>
+            <th>内容</th>
+            <th class="r">金額</th>
+            <th>領収書</th>
+            <th>経過日数</th>
+            <th>規程チェック</th>
+            <th class="r"><span class="sr-only">操作</span></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="tbl-foot">
+      <span id="footCount"></span>
+      <span>規程チェック：接待交際費は1人あたり ¥5,000 まで／¥10,000 以上は領収書が必須／申請から14日以上は「滞留」と表示</span>
+    </div>
+  </section>
+</main>
+
+<!-- 差し戻しモーダル -->
+<div class="modal-bg" id="rejectModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rejectTitle">
+    <div class="modal-h">
+      <h2 id="rejectTitle">申請を差し戻す</h2>
+      <button class="x" data-close aria-label="閉じる"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="modal-b">
+      <div class="target" id="rejectTarget"></div>
+      <label class="field-label" for="rejectReason">差し戻しの理由 <span class="req">必須</span></label>
+      <textarea id="rejectReason" placeholder="申請者が何を直せばよいか分かるように書いてください"></textarea>
+      <div class="hint"><span id="reasonErr"></span><span id="reasonLen">0 / 400</span></div>
+      <div class="quick" id="quickReasons" aria-label="よく使う理由（クリックで入力）"></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn" data-close type="button">キャンセル</button>
+      <button class="btn btn-danger" id="rejectSubmit" type="button" disabled>差し戻す</button>
+    </div>
+  </div>
+</div>
+
+<!-- 一括承認確認モーダル -->
+<div class="modal-bg" id="approveModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="approveTitle">
+    <div class="modal-h">
+      <h2 id="approveTitle">申請を承認しますか？</h2>
+      <button class="x" data-close aria-label="閉じる"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="modal-b" id="approveBody"></div>
+    <div class="modal-f">
+      <button class="btn" data-close type="button">キャンセル</button>
+      <button class="btn btn-primary" id="approveSubmit" type="button">承認する</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  const TODAY = new Date(2026,10,9);
+  const MONTH_DAYS = 30;
+  const BUDGET = 2000000;
+  const CATS = ['交通費','接待交際費','消耗品費','出張旅費'];
+  const WD = ['日','月','火','水','木','金','土'];
+
+  const items = [
+    {id:'EX-2611-0142', name:'佐藤 健太', date:'2026-11-06', cat:'交通費', amount:3420, receipt:true, desc:'顧客訪問（品川⇔横浜）', payee:'JR東日本', note:'株式会社ミナト精機 定例打合せ'},
+    {id:'EX-2611-0118', name:'鈴木 美咲', date:'2026-11-02', cat:'接待交際費', amount:38500, receipt:true, persons:4, desc:'ABC商事様 会食', payee:'割烹 しの田（銀座）', note:'参加者：ABC商事 2名、当社 2名（鈴木・森田）'},
+    {id:'EX-2610-0397', name:'高橋 翔', date:'2026-10-30', cat:'出張旅費', amount:46800, receipt:true, desc:'大阪出張（新幹線・宿泊1泊）', payee:'JR東海／ホテル大阪ベイ', note:'関西支店との合同提案準備'},
+    {id:'EX-2611-0131', name:'田中 里奈', date:'2026-11-05', cat:'消耗品費', amount:12800, receipt:false, desc:'プリンタートナー 2本', payee:'オフィスサプライ東京', note:'領収書は後日提出予定とのコメントあり'},
+    {id:'EX-2611-0150', name:'伊藤 大輔', date:'2026-11-07', cat:'交通費', amount:1280, receipt:false, desc:'客先訪問（渋谷⇔新宿・IC利用）', payee:'東京メトロ', note:'ICカード利用履歴で申請'},
+    {id:'EX-2610-0371', name:'渡辺 由香', date:'2026-10-27', cat:'接待交際費', amount:18000, receipt:true, persons:4, desc:'北斗物流様 打合せ後の会食', payee:'ビストロ ル・ポン', note:'参加者：北斗物流 2名、当社 2名'},
+    {id:'EX-2611-0125', name:'山本 拓海', date:'2026-11-04', cat:'出張旅費', amount:28600, receipt:false, desc:'名古屋出張（新幹線往復）', payee:'JR東海', note:'EX予約のため紙の領収書なし'},
+    {id:'EX-2611-0158', name:'中村 彩', date:'2026-11-08', cat:'消耗品費', amount:4980, receipt:true, desc:'展示会用 クリアファイル 200枚', payee:'文具のヤマダ', note:'11/20 展示会配布用'},
+    {id:'EX-2610-0344', name:'小林 誠', date:'2026-10-24', cat:'交通費', amount:15200, receipt:true, desc:'深夜帰宅タクシー（障害対応）', payee:'日本交通', note:'顧客システム障害対応で終電後に帰宅'},
+    {id:'EX-2611-0144', name:'加藤 優子', date:'2026-11-06', cat:'接待交際費', amount:32400, receipt:false, persons:3, desc:'新光電機様 会食', payee:'焼肉 炎家（品川）', note:'参加者：新光電機 2名、当社 1名'},
+    {id:'EX-2611-0122', name:'佐藤 健太', date:'2026-11-03', cat:'消耗品費', amount:2640, receipt:true, desc:'USB-C 変換アダプタ', payee:'家電のカワシマ', note:'客先プレゼン用'},
+    {id:'EX-2611-0109', name:'吉田 隼人', date:'2026-11-01', cat:'出張旅費', amount:62300, receipt:true, desc:'福岡出張（航空券・宿泊2泊）', payee:'ANA／博多グランドホテル', note:'九州エリア新規開拓'}
+  ].map(it => ({...it, status:'pending'}));
+
+  const state = {
+    selected:new Set(), expanded:new Set(),
+    cat:'all', person:'all', flagOnly:false, sort:'flag',
+    approvedTotal:584300, doneA:0, doneR:0, rejectId:null, approveIds:[]
+  };
+
+  const $ = s => document.querySelector(s);
+  const yen = n => '¥' + n.toLocaleString('ja-JP');
+  const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); };
+  const elapsed = it => Math.round((TODAY - parse(it.date)) / 86400000);
+  const fdate = s => { const d = parse(s); return `${d.getMonth()+1}/${String(d.getDate()).padStart(2,'0')}（${WD[d.getDay()]}）`; };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const perHead = it => it.persons ? Math.round(it.amount / it.persons) : null;
+
+  function checks(it){
+    const r = [];
+    if (it.cat === '接待交際費' && it.persons && perHead(it) > 5000)
+      r.push({short:'1人あたり上限超過', long:`1人あたり ${yen(perHead(it))}（上限 ¥5,000 を ${yen(perHead(it)-5000)} 超過）`});
+    if (!it.receipt && it.amount >= 10000)
+      r.push({short:'領収書なし（1万円以上）', long:'¥10,000 以上の申請に領収書が添付されていません'});
+    return r;
+  }
+  const isFlag = it => checks(it).length > 0;
+
+  const COLORS = ['#3b6fd8','#c2185b','#2e7d32','#ef6c00','#6a1b9a','#00838f','#5d4037','#ad1457','#283593','#558b2f'];
+  function avColor(name){ let h=0; for (const c of name) h = (h*31 + c.charCodeAt(0)) >>> 0; return COLORS[h % COLORS.length]; }
+
+  const pending = () => items.filter(i => i.status === 'pending');
+  function visible(){
+    let list = pending().filter(i =>
+      (state.cat === 'all' || i.cat === state.cat) &&
+      (state.person === 'all' || i.name === state.person) &&
+      (!state.flagOnly || isFlag(i)));
+    const s = state.sort;
+    list.sort((a,b) => {
+      if (s === 'flag') return (isFlag(b)-isFlag(a)) || (elapsed(b)-elapsed(a));
+      if (s === 'elapsed') return elapsed(b)-elapsed(a);
+      if (s === 'amount') return b.amount-a.amount;
+      return a.name.localeCompare(b.name,'ja') || elapsed(b)-elapsed(a);
+    });
+    return list;
+  }
+
+  const ICON_CHECK = '<svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const ICON_WARN = '<svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l7 12.5H1z" fill="currentColor"/><path d="M8 6.2v3.6M8 11.6v.2" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  const ICON_DOWN = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function rowHTML(it){
+    const f = checks(it), flag = f.length > 0, sel = state.selected.has(it.id), open = state.expanded.has(it.id);
+    const el = elapsed(it), stale = el >= 14;
+    const ph = perHead(it);
+    const rcptBad = !it.receipt && it.amount >= 10000;
+    return `
+    <tr class="row${flag?' is-flag':''}${sel?' is-sel':''}${open?' is-open':''}" data-id="${it.id}">
+      <td class="c-chk"><input type="checkbox" data-act="sel" ${sel?'checked':''} aria-label="${esc(it.name)}さんの申請（${esc(it.desc)}）を選択"></td>
+      <td class="c-who"><div class="who"><span class="avatar" style="background:${avColor(it.name)}" aria-hidden="true">${esc(it.name[0])}</span><div>${esc(it.name)}<small>${it.id}</small></div></div></td>
+      <td class="c-date date num" data-label="申請日">${fdate(it.date)}</td>
+      <td class="c-cat"><span class="cat cat-${it.cat}">${it.cat}</span></td>
+      <td class="c-desc"><div class="desc" title="${esc(it.desc)}">${esc(it.desc)}</div></td>
+      <td class="c-amt r"><div class="amt num">${yen(it.amount)}${ph ? `<small class="${ph>5000?'bad':''}">${it.persons}名・${yen(ph)}/人</small>` : ''}</div></td>
+      <td class="c-rcpt" data-label="領収書">${it.receipt
+        ? `<span class="rcpt yes">${ICON_CHECK}あり</span>`
+        : `<span class="rcpt no${rcptBad?' bad':''}">${rcptBad?ICON_WARN:'—'} なし</span>`}</td>
+      <td class="c-elapsed" data-label="経過"><span class="elapsed num${stale?' stale':''}">${el}日${stale?'<span class="stale-tag">滞留</span>':''}</span></td>
+      <td class="c-flags">${flag
+        ? `<div class="flags">${f.map(x=>`<span class="flag">${ICON_WARN}${x.short}</span>`).join('')}</div>`
+        : `<span class="okmark">${ICON_CHECK}問題なし</span>`}</td>
+      <td class="c-act"><div class="acts">
+        <button class="btn btn-sm expander" data-act="toggle" aria-expanded="${open}" aria-controls="d-${it.id}">詳細 ${ICON_DOWN}</button>
+        <button class="btn btn-sm btn-danger-o" data-act="reject">差し戻し</button>
+      </div></td>
+    </tr>
+    <tr class="detail${flag?' is-flag':''}" id="d-${it.id}" ${open?'':'hidden'}>
+      <td colspan="10">
+        <div class="dbox">
+          <dl>
+            <dt>申請番号</dt><dd class="num">${it.id}</dd>
+            <dt>内容</dt><dd>${esc(it.desc)}</dd>
+            <dt>支払先</dt><dd>${esc(it.payee)}</dd>
+            <dt>申請者メモ</dt><dd>${esc(it.note)}</dd>
+            ${it.persons ? `<dt>人数</dt><dd>${it.persons}名（1人あたり ${yen(ph)}）</dd>` : ''}
+          </dl>
+          <div class="dcheck">
+            <h4>規程チェックの結果</h4>
+            <ul>
+              ${flag
+                ? f.map(x=>`<li class="ng">${ICON_WARN}<span>${x.long}</span></li>`).join('')
+                : `<li class="ok">${ICON_CHECK}<span>規程上の問題は見つかりませんでした</span></li>`}
+              ${stale ? `<li class="ng" style="color:var(--warn)">${ICON_WARN}<span>申請から ${el} 日経過しています</span></li>` : ''}
+            </ul>
+          </div>
+          <div class="dacts">
+            <button class="btn btn-primary btn-sm" data-act="approve1">${ICON_CHECK}この申請を承認</button>
+            <button class="btn btn-sm btn-danger-o" data-act="reject">差し戻す</button>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }
+
+  function renderSummary(){
+    const p = pending();
+    const pendSum = p.reduce((s,i)=>s+i.amount,0);
+    const flagN = p.filter(isFlag).length;
+    const oldN = p.filter(i=>elapsed(i)>=14).length;
+    const rNow = state.approvedTotal / BUDGET * 100;
+    const rWith = (state.approvedTotal + pendSum) / BUDGET * 100;
+    const mProg = 9 / MONTH_DAYS * 100;
+    $('#sumApproved').textContent = yen(state.approvedTotal);
+    $('#sumBudget').textContent = `月次予算 ${yen(BUDGET)}　残り ${yen(BUDGET - state.approvedTotal)}`;
+    $('#rateNow').textContent = rNow.toFixed(1) + '%';
+    $('#rateWith').textContent = `承認待ちを含めると ${rWith.toFixed(1)}%`;
+    $('#barFill').style.width = Math.min(rNow,100) + '%';
+    $('#barPend').style.left = Math.min(rNow,100) + '%';
+    $('#barPend').style.width = Math.max(0, Math.min(rWith,100) - Math.min(rNow,100)) + '%';
+    $('#barMark').style.left = mProg + '%';
+    $('#budgetBar').setAttribute('aria-label', `予算消化率 ${rNow.toFixed(1)}%、承認待ちを含めると ${rWith.toFixed(1)}%。月の経過は ${Math.round(mProg)}%`);
+    $('#pendCount').innerHTML = `${p.length}<small>件</small>`;
+    $('#pendAmount').textContent = `合計 ${yen(pendSum)}`;
+    $('#pendOld').innerHTML = oldN ? `<span style="color:var(--warn);font-weight:500">うち ${oldN} 件が14日以上滞留</span>` : '滞留している申請はありません';
+    $('#flagCount').innerHTML = `${flagN}<small>件</small>`;
+    $('#flagJump').setAttribute('aria-pressed', state.flagOnly);
+    $('#flagJump').textContent = state.flagOnly ? 'すべての申請を表示' : '疑いのある申請だけ表示';
+    $('#todayLog').innerHTML = `本日の処理：承認 <b>${state.doneA}</b> 件／差し戻し <b>${state.doneR}</b> 件`;
+  }
+
+  function renderFilters(){
+    const p = pending();
+    const base = p.filter(i => (state.person==='all'||i.name===state.person) && (!state.flagOnly||isFlag(i)));
+    const chips = [['all','すべて',base.length], ...CATS.map(c=>[c,c,base.filter(i=>i.cat===c).length])];
+    $('#catChips').innerHTML = chips.map(([v,l,n]) =>
+      `<button type="button" class="chip" data-cat="${v}" aria-pressed="${state.cat===v}">${l}<span class="cnt">${n}</span></button>`).join('');
+    const names = [...new Set(items.map(i=>i.name))].sort((a,b)=>a.localeCompare(b,'ja'));
+    if (state.person !== 'all' && !p.some(i=>i.name===state.person)) state.person = 'all';
+    $('#personSel').innerHTML = `<option value="all">すべて（${p.length}件）</option>` +
+      names.map(n => { const c = p.filter(i=>i.name===n).length; return c ? `<option value="${esc(n)}" ${state.person===n?'selected':''}>${esc(n)}（${c}件）</option>` : ''; }).join('');
+    $('#flagOnly').checked = state.flagOnly;
+    $('#sortSel').value = state.sort;
+  }
+
+  function renderTable(){
+    const list = visible();
+    const ids = new Set(list.map(i=>i.id));
+    for (const id of [...state.selected]) if (!ids.has(id)) state.selected.delete(id);
+    const tb = $('#tbody');
+    if (!list.length){
+      const none = pending().length === 0;
+      tb.innerHTML = `<tr><td colspan="10" class="empty" style="display:block;text-align:center">
+        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="${none?'#e8f5ee':'#eef0f4'}"/><path d="${none?'M12 20.5l5.5 5.5L28 15':'M14 16h12M14 21h12M14 26h7'}" fill="none" stroke="${none?'#1d7a4c':'#8a92a3'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <b>${none ? '承認待ちの申請はすべて処理しました' : '条件に合う申請はありません'}</b>
+        ${none ? 'お疲れさまでした。' : '絞り込み条件を変えてみてください。'}</td></tr>`;
+    } else {
+      tb.innerHTML = list.map(rowHTML).join('');
+    }
+    const all = $('#chkAll');
+    const selN = list.filter(i=>state.selected.has(i.id)).length;
+    all.checked = list.length>0 && selN === list.length;
+    all.indeterminate = selN>0 && selN<list.length;
+    all.disabled = !list.length;
+    const total = pending().length;
+    $('#footCount').textContent = list.length === total ? `${total} 件を表示` : `${total} 件中 ${list.length} 件を表示`;
+  }
+
+  function renderBulk(){
+    const sel = pending().filter(i=>state.selected.has(i.id));
+    const sum = sel.reduce((s,i)=>s+i.amount,0);
+    const fl = sel.filter(isFlag).length;
+    const cleanAvail = visible().filter(i=>!isFlag(i)).length;
+    $('#bulkbar').classList.toggle('active', sel.length>0);
+    $('#bulkInfo').innerHTML = sel.length ? `<b>${sel.length}</b> 件を選択中　合計 <b>${yen(sum)}</b>` : '承認する申請を選択してください';
+    const w = $('#bulkWarn');
+    w.hidden = !fl;
+    w.innerHTML = fl ? `${ICON_WARN}疑いのある申請 ${fl} 件を含みます` : '';
+    $('#bulkApprove').disabled = !sel.length;
+    $('#bulkApprove').textContent = sel.length ? `選択した ${sel.length} 件を承認` : '選択した申請を承認';
+    $('#selClear').disabled = !sel.length;
+    $('#selClean').disabled = !cleanAvail;
+  }
+
+  function render(){ renderFilters(); renderTable(); renderSummary(); renderBulk(); }
+
+  // ---------- トースト ----------
+  let tt;
+  function toast(msg){
+    const t = $('#toast');
+    t.innerHTML = ICON_CHECK + '<span>' + msg + '</span>';
+    t.classList.add('show');
+    clearTimeout(tt); tt = setTimeout(()=>t.classList.remove('show'), 3200);
+  }
+
+  // ---------- モーダル ----------
+  let lastFocus = null;
+  function openModal(m, focusEl){
+    lastFocus = document.activeElement;
+    m.classList.add('open'); m.setAttribute('aria-hidden','false');
+    setTimeout(()=> (focusEl || m.querySelector('button')).focus(), 30);
+  }
+  function closeModal(m){
+    m.classList.remove('open'); m.setAttribute('aria-hidden','true');
+    if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  }
+  document.querySelectorAll('.modal-bg').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-close]')) closeModal(m); });
+    m.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal(m);
+      if (e.key === 'Tab'){
+        const f = [...m.querySelectorAll('button:not(:disabled),textarea,input')];
+        if (!f.length) return;
+        if (e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length-1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length-1]){ e.preventDefault(); f[0].focus(); }
+      }
+    });
+  });
+
+  // 差し戻し
+  const QUICK = ['領収書を添付してください','参加者の氏名・所属を記載してください','1人あたりの上限を超えています。事前承認の有無を記載してください','金額の内訳を明記してください','経路・区間を記載してください'];
+  $('#quickReasons').innerHTML = QUICK.map(q=>`<button type="button">${q}</button>`).join('');
+  function openReject(id){
+    const it = items.find(i=>i.id===id); if (!it) return;
+    state.rejectId = id;
+    const f = checks(it);
+    $('#rejectTarget').innerHTML = `
+      <span class="avatar" style="background:${avColor(it.name)};grid-row:span 2" aria-hidden="true">${esc(it.name[0])}</span>
+      <div><b>${esc(it.name)}</b>　<span class="cat cat-${it.cat}">${it.cat}</span></div>
+      <div class="amt num">${yen(it.amount)}</div>
+      <small>${fdate(it.date)} 申請・${esc(it.desc)}</small>
+      ${f.length ? `<div style="grid-column:1/-1;margin-top:6px" class="flags">${f.map(x=>`<span class="flag">${ICON_WARN}${x.long}</span>`).join('')}</div>` : ''}`;
+    const ta = $('#rejectReason');
+    ta.value = ''; ta.classList.remove('invalid');
+    $('#reasonErr').textContent = ''; updateReason();
+    openModal($('#rejectModal'), ta);
+  }
+  function updateReason(){
+    const ta = $('#rejectReason');
+    if (ta.value.length > 400) ta.value = ta.value.slice(0,400);
+    const ok = ta.value.trim().length > 0;
+    $('#reasonLen').textContent = `${ta.value.length} / 400`;
+    $('#rejectSubmit').disabled = !ok;
+    if (ok){ ta.classList.remove('invalid'); $('#reasonErr').textContent = ''; }
+  }
+  $('#rejectReason').addEventListener('input', updateReason);
+  $('#rejectReason').addEventListener('blur', () => {
+    const ta = $('#rejectReason');
+    if (!ta.value.trim() && $('#rejectModal').classList.contains('open')){
+      ta.classList.add('invalid'); $('#reasonErr').innerHTML = '<span class="err">理由を入力してください</span>';
+    }
+  });
+  $('#quickReasons').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const ta = $('#rejectReason');
+    ta.value = ta.value.trim() ? ta.value.replace(/\s*$/,'') + '\n' + b.textContent : b.textContent;
+    updateReason(); ta.focus();
+  });
+  $('#rejectSubmit').addEventListener('click', () => {
+    const reason = $('#rejectReason').value.trim();
+    if (!reason) return;
+    const it = items.find(i=>i.id===state.rejectId);
+    it.status = 'rejected'; it.rejectReason = reason;
+    state.selected.delete(it.id); state.expanded.delete(it.id);
+    state.doneR++;
+    closeModal($('#rejectModal'));
+    render();
+    toast(`${esc(it.name)}さんの申請を差し戻しました`);
+  });
+
+  // 承認
+  function openApprove(ids){
+    const list = items.filter(i=>ids.includes(i.id));
+    if (!list.length) return;
+    state.approveIds = ids;
+    const sum = list.reduce((s,i)=>s+i.amount,0);
+    const fl = list.filter(isFlag).length;
+    $('#approveTitle').textContent = list.length === 1 ? 'この申請を承認しますか？' : `${list.length} 件の申請を承認しますか？`;
+    $('#approveBody').innerHTML = `
+      ${fl ? `<div class="cwarn">${ICON_WARN}<span>規程違反の疑いがある申請が <b>${fl} 件</b> 含まれています。内容を確認済みの場合のみ承認してください。</span></div>` : ''}
+      <ul class="clist">${list.map(i=>`<li class="${isFlag(i)?'f':''}"><span>${esc(i.name)}　<span class="cat cat-${i.cat}">${i.cat}</span>${isFlag(i)?`<span class="flag">${ICON_WARN}要確認</span>`:''}</span><span class="num" style="font-weight:700">${yen(i.amount)}</span></li>`).join('')}</ul>
+      <div class="ctotal"><span>承認する金額の合計</span><span class="num">${yen(sum)}</span></div>
+      <div class="card-sub num">承認後の予算消化率：${(state.approvedTotal/BUDGET*100).toFixed(1)}% → <b style="color:var(--text)">${((state.approvedTotal+sum)/BUDGET*100).toFixed(1)}%</b></div>`;
+    $('#approveSubmit').textContent = list.length === 1 ? '承認する' : `${list.length} 件を承認する`;
+    openModal($('#approveModal'), $('#approveSubmit'));
+  }
+  $('#approveSubmit').addEventListener('click', () => {
+    const list = items.filter(i=>state.approveIds.includes(i.id) && i.status==='pending');
+    let sum = 0;
+    list.forEach(i => { i.status='approved'; sum+=i.amount; state.selected.delete(i.id); state.expanded.delete(i.id); });
+    state.approvedTotal += sum; state.doneA += list.length;
+    closeModal($('#approveModal'));
+    render();
+    toast(`${list.length} 件（${yen(sum)}）を承認しました`);
+  });
+
+  // ---------- イベント ----------
+  $('#tbody').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    const tr = e.target.closest('tr');
+    if (!tr) return;
+    const row = tr.classList.contains('detail') ? tr.previousElementSibling : tr;
+    const id = row && row.dataset.id; if (!id) return;
+    const act = btn ? btn.dataset.act : null;
+    if (act === 'sel'){
+      btn.checked ? state.selected.add(id) : state.selected.delete(id);
+      row.classList.toggle('is-sel', btn.checked);
+      renderTable(); renderBulk(); return;
+    }
+    if (act === 'toggle'){
+      state.expanded.has(id) ? state.expanded.delete(id) : state.expanded.add(id);
+      const open = state.expanded.has(id);
+      btn.setAttribute('aria-expanded', open);
+      row.classList.toggle('is-open', open);
+      document.getElementById('d-'+id).hidden = !open;
+      return;
+    }
+    if (act === 'reject'){ openReject(id); return; }
+    if (act === 'approve1'){ openApprove([id]); return; }
+  });
+
+  $('#chkAll').addEventListener('change', e => {
+    const list = visible();
+    list.forEach(i => e.target.checked ? state.selected.add(i.id) : state.selected.delete(i.id));
+    renderTable(); renderBulk();
+  });
+  $('#selClean').addEventListener('click', () => {
+    state.selected.clear();
+    visible().filter(i=>!isFlag(i)).forEach(i=>state.selected.add(i.id));
+    renderTable(); renderBulk();
+  });
+  $('#selClear').addEventListener('click', () => { state.selected.clear(); renderTable(); renderBulk(); });
+  $('#bulkApprove').addEventListener('click', () => openApprove(pending().filter(i=>state.selected.has(i.id)).map(i=>i.id)));
+
+  $('#catChips').addEventListener('click', e => {
+    const c = e.target.closest('[data-cat]'); if (!c) return;
+    state.cat = c.dataset.cat; render();
+  });
+  $('#personSel').addEventListener('change', e => { state.person = e.target.value; render(); });
+  $('#flagOnly').addEventListener('change', e => { state.flagOnly = e.target.checked; render(); });
+  $('#sortSel').addEventListener('change', e => { state.sort = e.target.value; render(); });
+  $('#flagJump').addEventListener('click', () => {
+    state.flagOnly = !state.flagOnly;
+    if (state.flagOnly){ state.cat='all'; state.person='all'; }
+    render();
+  });
+  $('#resetBtn').addEventListener('click', () => {
+    state.cat='all'; state.person='all'; state.flagOnly=false; state.sort='flag'; render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
