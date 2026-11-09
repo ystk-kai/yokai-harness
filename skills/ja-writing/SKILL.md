@@ -36,7 +36,7 @@ compatibility: Requires git and network access to clone/update the reference rep
 
 | カテゴリ | 原典 | 蒸留版 | 使いどころ |
 |---|---|---|---|
-| AI 臭スキル (主) | `natural-japanese/` | [references/natural-japanese.md](references/natural-japanese.md) | 「足さない」を最上位に置く書き方・直し方の規律。文書種別 5 本 (議事録・調査レポート・社内ガイド・メモ・スライド) の必須要素と AI がやりがちな失敗。lint の閾値を人間コーパスで校正した結論 (どの検出が人間側にも発火するか) |
+| AI 臭スキル (主) | `natural-japanese/` | [references/natural-japanese.md](references/natural-japanese.md) | 「足さない」を最上位に置く書き方・直し方の規律。文書種別 5 本 (議事録・調査レポート・社内ガイド・メモ・スライド) の必須要素と AI がやりがちな失敗。lint の閾値を人間コーパスで校正した結論 (どの検出が人間側にも発火するか)。同梱の `critical-thinking` (v2.0.0〜) は稟議書・提案書などの論旨を決裁者の目で検査して直す別スキル (矛盾・根拠のない主張・前提の問い直し) |
 | AI 臭スキル (主) | `yomiyasu/` | [references/yomiyasu.md](references/yomiyasu.md) | 意味の保持と情報の不増補を最優先にした推敲規律。研究を引いた原則 14 項、slop 語彙 9 分類、v2 の文脈からの事実の補い (6 条件付き)・書き手と読み手に合わせた直し方・言い直しテスト、v2.1 の許可・能力・保証を言い切りの強さに含める規則と読み違いの型 (目的語の抜け・主題の掛かる範囲・前置きのない強調構文)、ドメイン別 (技術 / 業務 / エッセイ) の差、表記規則 (ダッシュ・括弧・和欧間スペース・コロン・太字が表示されない書き方) |
 | 構文・読解負荷 | `meiseki/` | [references/meiseki.md](references/meiseki.md) | 高負荷構文カタログ A–H (二重否定・係り受け・名詞化・段落の冗長)、やさしい日本語 YA–YH、読解負荷スコア。声を足さずに説明文を明晰化する側の規律。同梱の prh 辞書 2 本と textlint 設定の実例 |
 | 機械規則 | `textlint-rule-preset-ja-technical-writing/` | [references/textlint-rule-preset-ja-technical-writing.md](references/textlint-rule-preset-ja-technical-writing.md) | 技術文書の 23 ルールと既定値・理由・変更履歴。文長 100 字・読点 3 個・漢字連続 6 字などの数値の出典 |
@@ -74,6 +74,11 @@ compatibility: Requires git and network access to clone/update the reference rep
 - レビュー・書き直しの**手順**を回すのは `ja-slop-review`。`natural-japanese` プラグインが有効でも、既存文書の修正には使わない
   (上記の試行で、修正時に書き手の言い回しと言い切りの強さを変えた)。このスキルは規則の**出所と根拠の索引**で、
   `ja-slop-review` の代わりには起動しない
+- 同じプラグインの `critical-thinking` は、この方針を通らずに既存文書を直す経路になる。直す工程 (`fix`・全工程 `full`・
+  `rebuild`・`short` / `detail`) はどれも最後に直した文書を `natural-japanese` で推敲し、`fix`・`full`・`rebuild` は
+  言い切りの強さも根拠に合わせて動かす (原典 skills/critical-thinking/SKILL.md「指摘を反映して直すよう頼まれたとき」2・8 と、
+  ほかの工程がそれを参照する箇所)。書き手の言い回しを保ちたい文書では検査 (`logic` / `somosomo`) だけを使い、
+  行番号つきの問いを受けて直すところは `ja-slop-review` で行う
 - `ja-slop-review` の各規則が原典のどこから来たか / 原典にあって欠けているものは [MAPPING.md](MAPPING.md) にある
   (自作の対応表。原典の SHA ではなく `ja-slop-review` 側の変更で古くなる)
 - 日本語を含む UI の書体・組版・図解の描出は `ui-design` (`japanese-web-typography.md` / `japanese-diagram-rendering.md`)。
