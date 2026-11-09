@@ -66,7 +66,7 @@ MAPPING.md は critical-thinking を扱っておらず、natural-japanese の規
 
 | 状態 | 深刻度 | 対象 | 内容 | 根拠 |
 |---|---|---|---|---|
-| 未対応 (2026-11-09 見直し: 残す。auto-memory を transcript から作り直す仕組みを設計するときの材料) | FYI | 運用 | dreaming: 終わったセッションの transcript から、次のセッションが読む記憶を夜間に作る型。transcript は未信頼入力として扱う。analyzer には file tool だけを持たせ、network は渡さない。記憶は使う側に read-only で mount する。完了は自己申告でなく、全 transcript に analyzer が走ったかで確かめる。auto-memory を transcript から作り直す仕組みを設計するときの材料 | managed_agents/CMA_dreaming_with_a_dynamic_workflow.ipynb (`d4bd2fb`) |
+| 対応済 (2026-11-09。maintenance/memory-dreaming/DESIGN.md に設計のみ。MEMORY.md は毎セッション読み込まれるので自動では書き換えず、人が採否を決める候補を出す形にした) | FYI | 運用 | dreaming: 終わったセッションの transcript から、次のセッションが読む記憶を夜間に作る型。transcript は未信頼入力として扱う。analyzer には file tool だけを持たせ、network は渡さない。記憶は使う側に read-only で mount する。完了は自己申告でなく、全 transcript に analyzer が走ったかで確かめる。auto-memory を transcript から作り直す仕組みを設計するときの材料 | managed_agents/CMA_dreaming_with_a_dynamic_workflow.ipynb (`d4bd2fb`) |
 
 ### 再蒸留 (hallmark / claude-code-best-practice) から
 
