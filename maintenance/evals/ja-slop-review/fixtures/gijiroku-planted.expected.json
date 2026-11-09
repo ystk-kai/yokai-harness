@@ -1,0 +1,95 @@
+{
+  "file": "gijiroku-planted.md",
+  "kind": "planted",
+  "doc_type": "議事録",
+  "note": "最初の実行より前に書いた。結果を見て欠陥も残す箇所も足さない。quote は素材の文字列そのまま(機械的な照合に使う)。",
+  "defects": [
+    {
+      "id": "D1",
+      "rule": "banlist Tier1 装飾絵文字",
+      "quote": "## 🚀 今回の議題",
+      "description": "見出しの頭に均等に撒いた絵文字 (🚀📌✨🎯)",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D2",
+      "rule": "banlist Tier1 情報を運ばない進行宣言 / syntax §5",
+      "quote": "それぞれ順に見ていきましょう",
+      "description": "情報のない進行宣言。議事録の常体からも浮く",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D3",
+      "rule": "syntax §1 false agency",
+      "quote": "課題が浮き彫りになった",
+      "description": "人の判断を抽象名詞の動作にしている。誰が何をしたか (山口さんの集計) は次の文にある",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D4",
+      "rule": "banlist Tier1 全角ダッシュ",
+      "quote": "場合がある──この点は",
+      "description": "業務文の全角ダッシュ。2 文に分ければ直る",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D5",
+      "rule": "banlist Tier1 根拠なし強評価",
+      "quote": "非常に有効なアプローチであり、大きなメリットが期待できる",
+      "description": "根拠のない強い評価。材料に効果の数字はない",
+      "accept": [
+        "fixed",
+        "asked"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D6",
+      "rule": "banlist Tier1 Markdown 残骸 (表示されない太字)",
+      "quote": "**「決定事項」**を",
+      "description": "`**` の内側が記号で外側が文字なので太字にならない",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    }
+  ],
+  "keep": [
+    {
+      "id": "K1",
+      "rule": "syntax §3 意味を絞る打ち消し",
+      "quote": "問い合わせの件数ではなく、1件あたりの対応時間で測る",
+      "why": "実際に選んだ測り方。対比が決定の中身"
+    },
+    {
+      "id": "K2",
+      "rule": "SKILL 手順0 確信度 (〜場合がある)",
+      "quote": "返信が遅れる場合がある",
+      "why": "「場合がある」を落として言い切りにしない"
+    },
+    {
+      "id": "K3",
+      "rule": "SKILL 手順0 確信度 (許可)",
+      "quote": "来週から使ってよい",
+      "why": "許可を「使う」「使える」に替えない"
+    },
+    {
+      "id": "K4",
+      "rule": "SKILL 手順7 概数の印",
+      "quote": "うち約40件が",
+      "why": "「約」を落とさない"
+    }
+  ]
+}

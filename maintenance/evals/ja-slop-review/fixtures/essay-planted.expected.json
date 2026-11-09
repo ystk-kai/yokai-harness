@@ -1,0 +1,94 @@
+{
+  "file": "essay-planted.md",
+  "kind": "planted",
+  "doc_type": "随筆 (AI 臭の強いもの)",
+  "note": "最初の実行より前に書いた。結果を見て欠陥も残す箇所も足さない。quote は素材の文字列そのまま(機械的な照合に使う)。",
+  "defects": [
+    {
+      "id": "D1",
+      "rule": "syntax §4 フック→反転の出だし",
+      "quote": "しかし──本当に大切なのは、歩くことそのものではない。",
+      "description": "煽りから逆張りへ返す型の出だし。本文はこの主張を支えていない",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D2",
+      "rule": "syntax §11 体験の壮大化",
+      "quote": "一日を設計する装置になった",
+      "description": "日常の習慣を「装置」と呼んでいる。実際の大きさ (段取りを並べる) は次の文にある",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D3",
+      "rule": "banlist Tier2 偏愛語・必殺技造語",
+      "quote": "思考の解像度が上がり、私はある種の境地に達したのだと思う",
+      "description": "「解像度」「境地」で中身のない到達を言っている",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D4",
+      "rule": "syntax §11 劇的な断片化",
+      "quote": "シンプル。それだけ。それが本質。",
+      "description": "山場の断片の連なり",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D5",
+      "rule": "syntax §11 全方位肯定",
+      "quote": "朝型にも夜型にも、それぞれに独自の良さがある",
+      "description": "立場を避けてすべてを褒める段落",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D6",
+      "rule": "banlist Tier1 表層の定型句 (いかがでしたでしょうか)",
+      "quote": "いかがでしたでしょうか。",
+      "description": "記事の締めの定型句",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    }
+  ],
+  "keep": [
+    {
+      "id": "K1",
+      "rule": "syntax §13 随筆の比喩 (次の文が説明している)",
+      "quote": "川沿いの道は、季節の目盛りのようなものだ。",
+      "why": "次の文が中身を説明しているので残す"
+    },
+    {
+      "id": "K2",
+      "rule": "document-types 正直な留保",
+      "quote": "散歩のおかげかどうかは分からない。",
+      "why": "本物の不確かさ。消さない"
+    },
+    {
+      "id": "K3",
+      "rule": "SKILL 手順0 事実を変えない",
+      "quote": "三日目には雨を理由に休んだ",
+      "why": "書き手の具体的な体験"
+    },
+    {
+      "id": "K4",
+      "rule": "SKILL 手順0 事実を変えない",
+      "quote": "同じ時期に、夜のラーメンもやめたからだ。",
+      "why": "留保の根拠"
+    }
+  ]
+}

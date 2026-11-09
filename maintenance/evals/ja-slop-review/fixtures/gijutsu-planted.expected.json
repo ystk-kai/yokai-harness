@@ -1,0 +1,110 @@
+{
+  "file": "gijutsu-planted.md",
+  "kind": "planted",
+  "doc_type": "技術文書",
+  "note": "最初の実行より前に書いた。結果を見て欠陥も残す箇所も足さない。quote は素材の文字列そのまま(機械的な照合に使う)。",
+  "defects": [
+    {
+      "id": "D1",
+      "rule": "syntax §13 分野の呼び名からずれた 1 語",
+      "quote": "外部からの入口は",
+      "description": "公開エンドポイントを比喩の「入口」で書いている",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D2",
+      "rule": "syntax §8 敬体と常体の混在",
+      "quote": "の 1 つだけである",
+      "description": "敬体の文書に常体の文末 (「である」「とは限らない」) が混ざる",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D3",
+      "rule": "syntax §12 名詞化",
+      "quote": "バリデーションの実施を行います",
+      "description": "動詞を名詞にして「行う」を足している",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D4",
+      "rule": "syntax §12 二重否定",
+      "quote": "二重に登録されないとは限らない",
+      "description": "二重否定。真偽を変えずに「二重に登録されることがある」の向きへ畳む。「登録されない」にしたら害",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D5",
+      "rule": "syntax §12 中身を詰め込んだ括弧",
+      "quote": "2 つ(接続のタイムアウトは 30 秒。失敗時の再試行は 3 回まで)あります",
+      "description": "句点を含む文を括弧に詰めている",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D6",
+      "rule": "syntax §1 コードの擬人化",
+      "quote": "データの整合性を守る門番として、不正な注文を静かに見張っています",
+      "description": "コードに意図と感情を持たせている。実際の振る舞い (検証で落ちた注文をエラーログに書く) は同じ段落にある",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D7",
+      "rule": "banlist Tier1 全角ダッシュ",
+      "quote": "見張っています──そのため",
+      "description": "技術文書の全角ダッシュ",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    }
+  ],
+  "keep": [
+    {
+      "id": "K1",
+      "rule": "syntax §1 設計の用語 (委譲する)",
+      "quote": "`CsvValidator` に委譲します",
+      "why": "設計の用語は残す"
+    },
+    {
+      "id": "K2",
+      "rule": "SKILL 手順0 確信度 (許可)",
+      "quote": "運用担当が変更してよい",
+      "why": "許可を「変更できる」に替えない"
+    },
+    {
+      "id": "K3",
+      "rule": "SKILL 手順7 相関を因果にしない",
+      "quote": "関連があると考えています",
+      "why": "相関を「原因」にしない。「考えています」の留保も残す"
+    },
+    {
+      "id": "K4",
+      "rule": "syntax §13 定着した言い方 (キャッシュが効く)",
+      "quote": "キャッシュが効いている間は",
+      "why": "定着した言い方は残す"
+    },
+    {
+      "id": "K5",
+      "rule": "SKILL 手順0 確信度 (〜場合がある)",
+      "quote": "気づかないまま残る場合があります",
+      "why": "「場合がある」を落とさない"
+    }
+  ]
+}

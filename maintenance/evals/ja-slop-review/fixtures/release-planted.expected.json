@@ -1,0 +1,85 @@
+{
+  "file": "release-planted.md",
+  "kind": "planted",
+  "doc_type": "社内告知 (リリースのお知らせ)",
+  "note": "最初の実行より前に書いた。結果を見て欠陥も残す箇所も足さない。quote は素材の文字列そのまま(機械的な照合に使う)。",
+  "defects": [
+    {
+      "id": "D1",
+      "rule": "syntax §2 命題型見出しの積み重ね",
+      "quote": "## エクスポートが品質を守る",
+      "description": "同じ形の断定見出しが 3 つ続き、本文より強いことを言う (3 つのうち 2 つ以上を本文の語で短い名前にしたら fixed)",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D2",
+      "rule": "syntax §12 前置きのない「〜のは、A、B、C。」",
+      "quote": "今回のリリースで増えたのは、検索、CSV エクスポート、承認の通知。",
+      "description": "前置きのない分裂文で名詞の列挙で終わる。敬体の文書に常体の形",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D3",
+      "rule": "syntax §3 偽の対句",
+      "quote": "これは単なる機能追加ではない。チームの文化そのものだ。",
+      "description": "中身のない「X ではない。Y だ」。敬体の文書に常体",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D4",
+      "rule": "banlist Tier2 ビジネスジャーゴン・便利語",
+      "quote": "全社のワークフローをアラインし、バックオフィスの価値を最大化していきます。",
+      "description": "中身のないジャーゴンの決意表明",
+      "accept": [
+        "fixed",
+        "asked"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D5",
+      "rule": "banlist Tier2 冗長語尾 (〜することができます)",
+      "quote": "検索することができるようになりました",
+      "description": "冗長語尾が 3 回。AI らしさではなく冗長さなので任意",
+      "accept": [
+        "fixed"
+      ],
+      "optional": true
+    }
+  ],
+  "keep": [
+    {
+      "id": "K1",
+      "rule": "SKILL 手順0 確信度 (能力)",
+      "quote": "エクスポートは管理者だけが実行できます",
+      "why": "能力の言い方を替えない"
+    },
+    {
+      "id": "K2",
+      "rule": "SKILL 手順0 確信度 (許可)",
+      "quote": "変更してよい",
+      "why": "許可を「変更できる」に替えない"
+    },
+    {
+      "id": "K3",
+      "rule": "SKILL 手順0 事実を変えない",
+      "quote": "旧画面は12月26日まで使えます",
+      "why": "期限と能力"
+    },
+    {
+      "id": "K4",
+      "rule": "banlist Tier2 英語直訳の例外 (バージョンの表記)",
+      "quote": "システムを v2.4 に更新しました",
+      "why": "バージョン番号の表記を替えない"
+    }
+  ]
+}
