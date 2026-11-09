@@ -35,10 +35,10 @@
 
 | 状態 | 深刻度 | 対象 | 内容 | 根拠 |
 |---|---|---|---|---|
-| 未対応 | FYI | CLAUDE.md | 会話の途中で与えた安全ルールは `/compact` で大半が消える (1 回で 53%、5 回で 10% が残る。4 モデル系列・試したすべての要約戦略で同じ)。安全上重要なルールは会話中の指示で済ませず、CLAUDE.md や hook に置く。このハーネスは安全ルールを ~/.claude/CLAUDE.md に書き、PreToolUse hook でも拒否しているので当たらない。会話中の指示だけに頼るルールを新しく作るときの判断材料 | README.md `### Context Delivery & Compaction` (Compaction Cliff, arXiv 2608.22752、`ee8d47c`) |
-| 未対応 | FYI | subagent | context 方針の効果はモデルによって逆転する (sub-agent への isolation は Qwen3.5 で +19%、GLM-4.7 ではマイナス)。別のモデル構成で効いた方針を流用せず、backbone ごとに確かめる | 同節 (arXiv 2606.29718、`4c8acef`) |
-| 未対応 | FYI | 運用 | 長い search 型タスクでは、window が埋まる前から premature termination (解ける問題を諦める) が増える。効くのは token 数より内容の noise で、compaction と trimming の併用がいちばん釣り合いがよかった | 同上 |
-| 未対応 | FYI | hook | mu: loop 上の定型判断 (context に入れる tool 出力、command のリスクと承認、prompt injection の検出、done が検証済みか) を 40 の判断点で小型の judge model に任せる設計例。承認判定を主モデルと別に置くときの参考 | README.md `### Demo Harnesses` (`f8ae2d2`) |
+| 却下 (2026-11-09 見直し: このハーネスは安全ルールを CLAUDE.md と PreToolUse hook に置いており当たらない) | FYI | CLAUDE.md | 会話の途中で与えた安全ルールは `/compact` で大半が消える (1 回で 53%、5 回で 10% が残る。4 モデル系列・試したすべての要約戦略で同じ)。安全上重要なルールは会話中の指示で済ませず、CLAUDE.md や hook に置く。このハーネスは安全ルールを ~/.claude/CLAUDE.md に書き、PreToolUse hook でも拒否しているので当たらない。会話中の指示だけに頼るルールを新しく作るときの判断材料 | README.md `### Context Delivery & Compaction` (Compaction Cliff, arXiv 2608.22752、`ee8d47c`) |
+| 却下 (2026-11-09 見直し: subagent は Claude だけで、backbone を切り替える構成を持たない) | FYI | subagent | context 方針の効果はモデルによって逆転する (sub-agent への isolation は Qwen3.5 で +19%、GLM-4.7 ではマイナス)。別のモデル構成で効いた方針を流用せず、backbone ごとに確かめる | 同節 (arXiv 2606.29718、`4c8acef`) |
+| 却下 (2026-11-09 見直し: context 方針を自前で組む search 型の長いループを持たない) | FYI | 運用 | 長い search 型タスクでは、window が埋まる前から premature termination (解ける問題を諦める) が増える。効くのは token 数より内容の noise で、compaction と trimming の併用がいちばん釣り合いがよかった | 同上 |
+| 却下 (2026-11-09 見直し: 承認判定は permission と PreToolUse hook で足りており、判定モデルを別に置く予定がない) | FYI | hook | mu: loop 上の定型判断 (context に入れる tool 出力、command のリスクと承認、prompt injection の検出、done が検証済みか) を 40 の判断点で小型の judge model に任せる設計例。承認判定を主モデルと別に置くときの参考 | README.md `### Demo Harnesses` (`f8ae2d2`) |
 
 ### 再蒸留 (claude-code-best-practice / skills / natural-japanese / smarthr-design-system / design.md) から
 
@@ -56,9 +56,9 @@ ja-writing/SKILL.md と ja-slop-review/SKILL.md は全文を Read して照合�
 | 対応済 (2026-11-09。分担節に critical-thinking の経路と「検査だけ使い直しは ja-slop-review」を、表の natural-japanese 行に critical-thinking を追記) | RECOMMENDED | skill | ja-writing/SKILL.md「別スキルとの分担」は「`natural-japanese` プラグインが有効でも、既存文書の修正には使わない」としている。ところが同じプラグインに入った critical-thinking は、直す工程の最後 (手順 8) で、直した既存文書に natural-japanese をかける。critical-thinking を使うと、この方針を通らずに natural-japanese が既存文書を直す。分担節にこの経路を書き足し、参照リポジトリ表の natural-japanese 行の使いどころにも critical-thinking (稟議書などの論旨の検査と直し) を足す | skills/critical-thinking/SKILL.md「指摘を反映して直すよう頼まれたとき」8 (`9104690`) |
 | 対応済 (2026-11-09。手順 0 に 1 項目追加、MAPPING.md も更新) | RECOMMENDED | skill | ja-slop-review/SKILL.md 手順 0 (修正時の制約) に「改訂の経緯を書かない」を足す。本文の「第1版では〜としていた」に加え、冒頭の版番号・改訂日・「指摘を反映」の注記も経緯に当たる。理由は「読む人は改訂の前を知らない」。足さないことを決める歯止めなので、書き手の言い回しや言い切りの強さは変えない | skills/critical-thinking/SKILL.md「指摘を反映して直す」6 |
 | 却下 (ja-slop-review 手順 0 の「確信度をどちらにも変えない」と衝突する) | FYI | skill | critical-thinking の直す工程は、言い切りの強さを根拠に合わせて動かす。根拠のない言い切りは仮定の形にし、根拠があるのに弱腰な文は言い切りに戻す | skills/critical-thinking/SKILL.md「指摘を反映して直す」2 |
-| 未対応 | FYI | skill | 問いの扱いは ja-slop-review の 2026-11-02 の規則と同じ向き (文書の中で答えが出ることは聞かずに直す、聞くのは 3 つまで、本文に【要確認】を置かない)。違いは 1 点で、文書の 2 か所で値が食い違うときだけ、最初の箇所に「(…確認中)」を 1 回書く。中身の矛盾を扱う規則で文体の範囲の外なので、今は取り込まない | skills/critical-thinking/SKILL.md「指摘を反映して直す」3 (`fae628a`) |
-| 未対応 | FYI | 運用 | 長い工程の最後の推敲は、直した文書だけを渡した別のサブエージェントに任せ、段落ごとの確認を最後まで書き出させる。同じ文脈で続けると、長い工程の最後では手順が省かれるため | skills/critical-thinking/SKILL.md「指摘を反映して直す」8 |
-| 未対応 | FYI | 運用 | スキル評価の組み方 (ct-eval)。仕込んだ欠陥の一覧は最初の実行より前に書き、結果を見て足さない。判定は生成と別のモデルにする。3 回中 2 回以上で見つかったかで合否を決める。欠陥の無い素材で誤検知の基準線を取る。CI には入れず手で回す | dev/ct-eval/README.md |
+| 却下 (2026-11-09 見直し: 登録時の判断どおり中身の矛盾は文体の範囲外。ja-slop-review の問いの規則で足りる) | FYI | skill | 問いの扱いは ja-slop-review の 2026-11-02 の規則と同じ向き (文書の中で答えが出ることは聞かずに直す、聞くのは 3 つまで、本文に【要確認】を置かない)。違いは 1 点で、文書の 2 か所で値が食い違うときだけ、最初の箇所に「(…確認中)」を 1 回書く。中身の矛盾を扱う規則で文体の範囲の外なので、今は取り込まない | skills/critical-thinking/SKILL.md「指摘を反映して直す」3 (`fae628a`) |
+| 却下 (2026-11-09 見直し: 検査から直しまでを一つの文脈で長く続ける工程を持たない。ja-slop-review は単発で回す) | FYI | 運用 | 長い工程の最後の推敲は、直した文書だけを渡した別のサブエージェントに任せ、段落ごとの確認を最後まで書き出させる。同じ文脈で続けると、長い工程の最後では手順が省かれるため | skills/critical-thinking/SKILL.md「指摘を反映して直す」8 |
+| 未対応 (2026-11-09 見直し: 残す。ja-slop-review の評価を組むときに使う。今は評価の仕組みを持たない) | FYI | 運用 | スキル評価の組み方 (ct-eval)。仕込んだ欠陥の一覧は最初の実行より前に書き、結果を見て足さない。判定は生成と別のモデルにする。3 回中 2 回以上で見つかったかで合否を決める。欠陥の無い素材で誤検知の基準線を取る。CI には入れず手で回す | dev/ct-eval/README.md |
 
 MAPPING.md は critical-thinking を扱っておらず、natural-japanese の規則にも変化が無いため影響なし。
 
@@ -66,7 +66,7 @@ MAPPING.md は critical-thinking を扱っておらず、natural-japanese の規
 
 | 状態 | 深刻度 | 対象 | 内容 | 根拠 |
 |---|---|---|---|---|
-| 未対応 | FYI | 運用 | dreaming: 終わったセッションの transcript から、次のセッションが読む記憶を夜間に作る型。transcript は未信頼入力として扱う。analyzer には file tool だけを持たせ、network は渡さない。記憶は使う側に read-only で mount する。完了は自己申告でなく、全 transcript に analyzer が走ったかで確かめる。auto-memory を transcript から作り直す仕組みを設計するときの材料 | managed_agents/CMA_dreaming_with_a_dynamic_workflow.ipynb (`d4bd2fb`) |
+| 未対応 (2026-11-09 見直し: 残す。auto-memory を transcript から作り直す仕組みを設計するときの材料) | FYI | 運用 | dreaming: 終わったセッションの transcript から、次のセッションが読む記憶を夜間に作る型。transcript は未信頼入力として扱う。analyzer には file tool だけを持たせ、network は渡さない。記憶は使う側に read-only で mount する。完了は自己申告でなく、全 transcript に analyzer が走ったかで確かめる。auto-memory を transcript から作り直す仕組みを設計するときの材料 | managed_agents/CMA_dreaming_with_a_dynamic_workflow.ipynb (`d4bd2fb`) |
 
 ### 再蒸留 (hallmark / claude-code-best-practice) から
 
@@ -91,9 +91,9 @@ README の注記ベースで、リンク先の本文は未読。
 
 | 状態 | 深刻度 | 対象 | 内容 | 根拠 |
 |---|---|---|---|---|
-| 未対応 | FYI | 運用 | SLCR: 完了を agent の「done」の自己申告で決めず、要件ごとの acceptance criteria を test / linter / ast-grep rule に対応づけて CI で充足を判定する。agent には spec 全体でなく、その要件に要る依存と用語集の slice だけを渡す。受け入れ条件を機械判定に寄せるときの参照先 | ahe: `ba2e4fe`、`README.md` の `Verification & CI Integration` |
-| 未対応 | FYI | settings | Microsandbox: local-first で組み込める microVM runtime。secret を VM に入れず sandbox 内のコードから読めない。手元のマシンで hardware isolation が要るときの選択肢 | ahe: `c4912ff`、`README.md` の `Security, Sandbox & Permissions` |
-| 未対応 | FYI | CLAUDE.md | Most Capable Agent System Prompt: プロジェクト状態をファイル (`AGENTS.md` / `plan.md` / `tasks.md` / `FAILURE.md`) で持ち、最初の milestone で goal → 検証済みの結果 → 記録した lesson の閉ループを 1 本通させる。失敗の記録を専用ファイルに分ける型 | ahe: `a019448`、`README.md` の `Generators & Meta-Harnesses` |
+| 却下 (2026-11-09 見直し: このリポジトリは文書とスクリプトで、要件ごとの受け入れ条件を CI で判定する開発対象がない) | FYI | 運用 | SLCR: 完了を agent の「done」の自己申告で決めず、要件ごとの acceptance criteria を test / linter / ast-grep rule に対応づけて CI で充足を判定する。agent には spec 全体でなく、その要件に要る依存と用語集の slice だけを渡す。受け入れ条件を機械判定に寄せるときの参照先 | ahe: `ba2e4fe`、`README.md` の `Verification & CI Integration` |
+| 却下 (2026-11-09 見直し: 手元で microVM の隔離が要る用途がない) | FYI | settings | Microsandbox: local-first で組み込める microVM runtime。secret を VM に入れず sandbox 内のコードから読めない。手元のマシンで hardware isolation が要るときの選択肢 | ahe: `c4912ff`、`README.md` の `Security, Sandbox & Permissions` |
+| 却下 (2026-11-09 見直し: プロジェクト状態の管理は CLAUDE.md と auto-memory で行っており、plan.md や FAILURE.md の型に移す理由がない) | FYI | CLAUDE.md | Most Capable Agent System Prompt: プロジェクト状態をファイル (`AGENTS.md` / `plan.md` / `tasks.md` / `FAILURE.md`) で持ち、最初の milestone で goal → 検証済みの結果 → 記録した lesson の閉ループを 1 本通させる。失敗の記録を専用ファイルに分ける型 | ahe: `a019448`、`README.md` の `Generators & Meta-Harnesses` |
 
 deja-vu の Context Delivery からの削除 (`c4912ff`) は蒸留版が元々 Memory 側に索引しており候補なし。
 
@@ -110,11 +110,11 @@ Grep ツールが無く grep コマンドも使えない環境のため、照合
 
 | 状態 | 深刻度 | 対象 | 内容 | 根拠 |
 |---|---|---|---|---|
-| 未対応 | FYI | 運用 | claude-agent-sdk 0.2 以降は `setting_sources` を書かないと全ソース (user / project / local の設定と CLAUDE.md) を読む。SDK で無人エージェントを組むときは `setting_sources=[]` などを明示する。このハーネスに SDK を使うコードは無い | cookbooks: `785d7a0`、`claude_agent_sdk/` |
-| 未対応 | FYI | skill | Anthropic SDK 2.0 で `tool_runner(..., compaction_control={...})` が廃止され、`betas=["compact-2026-09-04"]` と `runner.compact_before_next_turn()` に置き換わった。Skills / Files API は GA で `client.skills.*` / `client.files.*` に移り、`skills-2025-10-02` header は不要。旧書式のコード例を持つ skill を作るときは新書式で書く。蒸留版の記述は今回直した | cookbooks: `785d7a0`、`tool_use/automatic-context-compaction.ipynb`、`skills/README.md` |
-| 未対応 | FYI | 運用 | レイテンシを詰めるときは、先に eval と品質バーを固定して p50 / p90 で測り、モデルより先にループ (呼び出し回数・出力長) を直す。停止機構 (`max_tokens`・turn cap・timeout) と、モデルに見せる signal (task budget・時計・最終呼び出しの通知) は別物として両方張る。API ループを持たないこのハーネスには当たらない | cookbooks: `41ce172`、`latency_optimization/latency_optimization.ipynb` |
-| 未対応 | FYI | subagent | subagent を同時に起動すると、共有 context を各 agent が cache 無しで読む。pre-warm するか、1 体目の streaming 開始を待ってから残りを送る | cookbooks: `latency_optimization/latency_optimization.ipynb` |
-| 未対応 | FYI | 運用 | claude-agent-sdk 0.2 で `Task` tool が `Agent` に改名された (旧名も受け付ける) | cookbooks: `785d7a0` |
+| 却下 (2026-11-09 見直し: grep で SDK を使うコードが無いことを確認。当たらない) | FYI | 運用 | claude-agent-sdk 0.2 以降は `setting_sources` を書かないと全ソース (user / project / local の設定と CLAUDE.md) を読む。SDK で無人エージェントを組むときは `setting_sources=[]` などを明示する。このハーネスに SDK を使うコードは無い | cookbooks: `785d7a0`、`claude_agent_sdk/` |
+| 却下 (2026-11-09 見直し: grep で skill に旧書式のコード例が無いことを確認。蒸留版は直し済み) | FYI | skill | Anthropic SDK 2.0 で `tool_runner(..., compaction_control={...})` が廃止され、`betas=["compact-2026-09-04"]` と `runner.compact_before_next_turn()` に置き換わった。Skills / Files API は GA で `client.skills.*` / `client.files.*` に移り、`skills-2025-10-02` header は不要。旧書式のコード例を持つ skill を作るときは新書式で書く。蒸留版の記述は今回直した | cookbooks: `785d7a0`、`tool_use/automatic-context-compaction.ipynb`、`skills/README.md` |
+| 却下 (2026-11-09 見直し: API ループを持たない。登録時の判断どおり) | FYI | 運用 | レイテンシを詰めるときは、先に eval と品質バーを固定して p50 / p90 で測り、モデルより先にループ (呼び出し回数・出力長) を直す。停止機構 (`max_tokens`・turn cap・timeout) と、モデルに見せる signal (task budget・時計・最終呼び出しの通知) は別物として両方張る。API ループを持たないこのハーネスには当たらない | cookbooks: `41ce172`、`latency_optimization/latency_optimization.ipynb` |
+| 却下 (2026-11-09 見直し: Claude Code の Agent tool では起動順や pre-warm を制御しない) | FYI | subagent | subagent を同時に起動すると、共有 context を各 agent が cache 無しで読む。pre-warm するか、1 体目の streaming 開始を待ってから残りを送る | cookbooks: `latency_optimization/latency_optimization.ipynb` |
+| 却下 (2026-11-09 見直し: grep で skill・instructions・settings の hook matcher に Task の名指しが無いことを確認) | FYI | 運用 | claude-agent-sdk 0.2 で `Task` tool が `Agent` に改名された (旧名も受け付ける) | cookbooks: `785d7a0` |
 
 latency notebook (約 55K トークン) は Read で開けなかったため、委譲先が読み取り専用の補助で中身を抽出した。蒸留版のレイテンシ節の数値は、その抽出結果に基づく。
 
@@ -122,9 +122,9 @@ latency notebook (約 55K トークン) は Read で開けなかったため、�
 
 | 状態 | 深刻度 | 対象 | 内容 | 根拠 |
 |---|---|---|---|---|
-| 未対応 | FYI | 運用 | Happier: Claude Code / Codex などの tool 承認と permission プロンプトに、電話・Web から E2E 暗号化で応答できる。承認の面を端末から外すときの材料 | ahe: `5c21c8c` / `a683ecf`、`README.md` の `Human-in-the-Loop` |
-| 未対応 | FYI | hook | HOL Guard: shell / file / MCP / package 操作を、実行前に action policy と人の承認で止める Apache-2.0 の gate (対応 agent のみ)。自前の PreToolUse hook による実行前 gate と比べる参照。README の注記は 1 文で中身は未読 | ahe: `bb63647`、`README.md` の `Security` |
-| 未対応 | FYI | 運用 | Sage の RSI ループ: タスク実行・評価・package tuning を分け、固定の validation で候補を選び、採用はユーザーの明示判断に残す。自己改善ループに人の採用ゲートを置く型 | ahe: `2625d84`、`README.md` の `Generators & Meta-Harnesses` |
+| 却下 (2026-11-09 見直し: 承認を端末の外から返す運用をしていない) | FYI | 運用 | Happier: Claude Code / Codex などの tool 承認と permission プロンプトに、電話・Web から E2E 暗号化で応答できる。承認の面を端末から外すときの材料 | ahe: `5c21c8c` / `a683ecf`、`README.md` の `Human-in-the-Loop` |
+| 却下 (2026-11-09 見直し: 実行前の gate は自前の PreToolUse hook で足りている) | FYI | hook | HOL Guard: shell / file / MCP / package 操作を、実行前に action policy と人の承認で止める Apache-2.0 の gate (対応 agent のみ)。自前の PreToolUse hook による実行前 gate と比べる参照。README の注記は 1 文で中身は未読 | ahe: `bb63647`、`README.md` の `Security` |
+| 却下 (2026-11-09 見直し: このハーネスの自己更新は既にこの台帳で人が採否を決める形になっている) | FYI | 運用 | Sage の RSI ループ: タスク実行・評価・package tuning を分け、固定の validation で候補を選び、採用はユーザーの明示判断に残す。自己改善ループに人の採用ゲートを置く型 | ahe: `2625d84`、`README.md` の `Generators & Meta-Harnesses` |
 
 ACP (Agent Client Protocol、`ff3e288`) は editor と agent の間のプロトコルで、ハーネスの設定を直す根拠にならないので候補なし。
 
@@ -187,7 +187,7 @@ banlist.md と syntax-patterns.md は全文を Read して照合した (Grep ツ
 |---|---|---|---|---|
 | 却下 (この環境は WSL で対象外。~/.claude の設定は Grep ツールが無く未照合) | FYI | 運用 | `/restart` (alias `/update`、v2.1.288+) はインストール済みの更新を適用してセッションを再開する。Pro/Max かつ macOS/Linux の native install が要件で、WSL は対象外 | ccbp: `2cb4da5`、`best-practice/claude-commands.md` #91 |
 | 却下 (このハーネスは `--settings` で skill の可視性を配っていない。未照合) | FYI | skill | `/skills` 画面で可視性を切り替えられない skill に、`--settings` フラグ指定の skill が加わった (plugin skill・`disable-model-invocation: true`・managed の `skillOverrides` と同じ扱い) | ccbp: `2cb4da5`、`best-practice/claude-commands.md` #53 |
-| 未対応 | FYI | skill | AgentCraft の同一 brief 試験で、インストール数上位のデザイン skill 8 個のうち no-skill の control から見た目を動かしたのは 2 個だけだった。自作の ui-design / visual-slop-review を同じ型 (同一 brief・control run) で確かめていない | ahe: `2a035cb`、`README.md` の `Skills & MCP` (README の注記ベース、記事本文は未検証) |
+| 未対応 (2026-11-09 見直し: 残す。ui-design と visual-slop-review を同じ brief と control run で試す価値がある) | FYI | skill | AgentCraft の同一 brief 試験で、インストール数上位のデザイン skill 8 個のうち no-skill の control から見た目を動かしたのは 2 個だけだった。自作の ui-design / visual-slop-review を同じ型 (同一 brief・control run) で確かめていない | ahe: `2a035cb`、`README.md` の `Skills & MCP` (README の注記ベース、記事本文は未検証) |
 
 hallmark (`4f6a46c`、theme.mjs が CRLF の frontmatter を受け付ける修正と、sloplint が symlink の循環ディレクトリを重ねて走査しない修正) と smarthr-design-system (`1881998`、lint-staged の設定だけ) は規則・文書に変更が無く、候補なし。
 
