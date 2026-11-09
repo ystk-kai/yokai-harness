@@ -1,0 +1,84 @@
+{
+  "file": "mail-planted.md",
+  "kind": "planted",
+  "doc_type": "業務メール",
+  "note": "最初の実行より前に書いた。結果を見て欠陥も残す箇所も足さない。quote は素材の文字列そのまま(機械的な照合に使う)。",
+  "defects": [
+    {
+      "id": "D1",
+      "rule": "banlist Tier1 表層の定型句 (近年〜)",
+      "quote": "近年、不正ログインへの対策の重要性がますます高まっています。",
+      "description": "中身のない書き出しの定型句",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D2",
+      "rule": "banlist Tier1 装飾絵文字",
+      "quote": "✨ パスワードはそのまま使えます。",
+      "description": "箇条の頭に均等に撒いた絵文字",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D3",
+      "rule": "banlist Tier1 仮置きの残り",
+      "quote": "〇〇月〇〇日(木)",
+      "description": "入れる値 (11月20日) が件名と本文にある",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D4",
+      "rule": "banlist Tier1 根拠なし強評価",
+      "quote": "画期的な新機能",
+      "description": "根拠のない強い評価",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    },
+    {
+      "id": "D5",
+      "rule": "banlist Tier1 文末の付け足し「と言えるでしょう」",
+      "quote": "安全になると言えるでしょう",
+      "description": "「と言える」だけ外して「でしょう」は残す",
+      "accept": [
+        "fixed"
+      ],
+      "optional": false
+    }
+  ],
+  "keep": [
+    {
+      "id": "K1",
+      "rule": "SKILL 手順0 好みで言い換えない",
+      "quote": "お知らせいたします",
+      "why": "SKILL.md が例に挙げている言い換え禁止の形"
+    },
+    {
+      "id": "K2",
+      "rule": "SKILL 手順0 確信度 (〜場合がある)",
+      "quote": "ログインできない場合があります",
+      "why": "「場合がある」を落とさない"
+    },
+    {
+      "id": "K3",
+      "rule": "SKILL 手順7 概数の印",
+      "quote": "約3時間",
+      "why": "「約」を落とさない"
+    },
+    {
+      "id": "K4",
+      "rule": "SKILL 手順0 好みで言い換えない",
+      "quote": "お気軽にサポート窓口までお問い合わせください",
+      "why": "読み手が分かる定型の挨拶は好みで替えない"
+    }
+  ]
+}
