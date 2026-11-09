@@ -27,6 +27,13 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-10
+
+### 再蒸留 (claude-code-best-practice / smarthr-design-system) から
+
+今回は取り込み候補なし。claude-code-best-practice の 10 commit は v2.1.319 のままのバッジ更新・drift-check の記録・workflow 表の ★ 数で、表本体の変更は commands 表の 3 行 (`/advisor` は `-p` と Remote Control でもモデル名か `off` で変更できる、`/rename` の制限は claude.ai と desktop app からの改名にもかかる、`/heapdump` の `.heapsnapshot` は共有しない) だけ。どれも対話コマンドの説明で、settings・skill・subagent・hook の書き方には関わらない。subagents の ON HOLD 4 件と skills の削除候補 4 件は前回と同じ。smarthr-design-system の 16 commit は情報設計のアウトプット (ビューの呼び出し関係) の加筆と依存の更新で、ライティングガイドライン (`src/content/articles/products/contents/`) の外。
+
+---
 ## 2026-11-09
 
 ### 自作スキルの試験 (maintenance/evals/ui-control-run/) から
