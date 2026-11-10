@@ -27,6 +27,24 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-11
+
+### 再蒸留 (awesome-harness-engineering) から
+
+README の注記ベースで、論文と repo の本文は未読。~/.claude/settings.json は Read で照合した (Grep ツールが無い環境)。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | hook / 運用 | 永続メモリに untrusted な内容が書き込まれると、後のセッションで悪性挙動が出る (Claude Code で cross-session の攻撃成功率 最大 81.7%、通常の性能は変わらないので気づけない)。汚染後は prompt 側の防御がほぼ効かず、信頼境界は書き込み経路 (記憶の根拠の provenance 確認、memory write の人による承認) に置く。このハーネスの auto-memory (`~/.claude/projects/<slug>/memory/`) は毎セッション読み込まれるのに、エージェントの Write を止める hook が無い (settings.json の PreToolUse は Bash と Bash\|Glob\|Grep だけ)。定時の refs-update は原典 clone という外部の文を読み続ける実行でもある。maintenance/memory-dreaming/DESIGN.md は夜間の候補生成を人の採否に絞っているが、会話中の memory write は対象外。memory ディレクトリへの Write / Edit を止めるか確認する PreToolUse hook、または無人実行では memory に書かない規約を検討する | ahe: `f930e11`、`README.md` の `### Memory & State` (arXiv 2609.13889)。同節の LangChain Agent Builder (全 memory write を HITL 承認) |
+| 未対応 | FYI | hook | claude-bulkhead: 同じマシンで並走する Claude Code セッション同士の事故 (名前指定の process kill、port 衝突、RAM 不足時の重いコマンド、他セッションが編集中の tree での `git add -A`、ディスク全体の走査) を PreToolUse hook で止め、理由と安全な代案を返す。`git add -A` とディスク走査は既存の commit-guard・fs-scan-guard が止めており、残るのは kill・port・RAM。コマンド文字列の解析なので security boundary ではないと原典自身が書く。並列セッションを増やすときの参照 | ahe: `c977733` / `76b21e9`、`README.md` の `## Security, Sandbox & Permissions` |
+
+Orchestrator (`9214067`、CI 失敗・レビューコメント・merge conflict を PR を持つ worker へ戻す) は蒸留版に索引しただけで候補なし。
+
+### 再蒸留 (claude-code-best-practice / smarthr-design-system) から
+
+今回は取り込み候補なし。claude-code-best-practice の 12 commit は 11-10 の v2.1.322 定期 run で、commands 表の説明文同期 3 件 (`/usage` が gateway 経由の spend を出す、`/review` の経緯文の削除、`/list-agents` の版要件の削除)、README の Projects 行・Mods・Claude Tag リンクの追加、skills の削除候補 4 件・subagents の ON HOLD 4 件・`/autocompact` の ON HOLD 継続、★ 数の更新だけ。smarthr-design-system の 17 commit はデザイントークン (フォントサイズ・行送り・影) の説明の追加と見直し、2 カラム実装例の影のはみ出し修正、チェックリストから h2 見出しへのリンクずれ修正で、ライティングガイドラインの規則は変わらない。蒸留版は内容への影響なしとして SHA だけを進めた。
+
+---
 ## 2026-11-10
 
 ### 再蒸留 (claude-code-best-practice / smarthr-design-system) から
