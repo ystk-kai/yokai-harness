@@ -1,7 +1,7 @@
 ---
 source: https://github.com/Nutlope/hallmark
-distilled_commit: 407fa689f4a276f2fd389208d271d0fef08f5058
-distilled_at: 2026-11-06
+distilled_commit: 04977e15f3dfd6ee4b74c887dac3eb52665d6c92
+distilled_at: 2026-11-12
 ---
 
 # hallmark 蒸留版
@@ -78,10 +78,11 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 | レビュー用プロンプト | skills/hallmark/references/review-hero.md, review-finish.md | subagent が読む側。入力の限定と最初の語の選択肢 |
 | 静的 + render の linter | skills/hallmark/scripts/sloplint.mjs, sloplint-render.mjs | 依存ゼロ、Node 18+。`--genre`/`--scope page|component|app`/`--stage hero|page`/`--render`/`--url`/`--tier floor`/`--before`/`--kept`/`--json`。JSX/TSX/Vue/Svelte/Astro の Tailwind クラスも読む。引数で渡したパスが読めなければ `sloplint: cannot read` を出して exit 2 で止まる (走査中の下位パスは飛ばすだけ)。走査中は node_modules・dot folder・dist/build/coverage を飛ばすが、dot folder と dist 等は引数で直接渡せば読む (親ディレクトリと並べて渡しても読む。node_modules だけは渡しても読まない) |
 | テーマ操作 CLI | skills/hallmark/scripts/theme.mjs | `deal` / `draw` (`--material photo|product|words --job <10 職務>`) / `scaffold` (tokens.css・base.css・stamp 雛形。`<slug>` か `--custom`/`--brand`。`--scope app` の `app` は slug ではなく flag の値として読む) / `check` (axes・face・hue の重複) / `photos` / `log` / `index` / `list` / `validate`。`--prompt` (旧 `--brief` は alias)。`deal --reroll <n>` はカタログを配り切った時点で reroll を止め、配る手が残らなければ `nothing left to deal` で exit 1。テーマの検査は CRLF 改行のテーマファイルも LF と同じに扱う (commit 9cbc89c) |
-| 実製品のスクリーンショット | skills/hallmark/scripts/capture.mjs | URL・HTML・dev server を 1440×900 と 390×844 で撮る。`--cdp` で Electron 等に接続。ブラウザ枠は描かない。URL 対象で HTTP が非 2xx (304 を除く) の route はエラーページを撮らずに skip し、1 枚も撮れなければ exit 1 |
+| 実製品のスクリーンショット | skills/hallmark/scripts/capture.mjs | URL・HTML・dev server を 1440×900 と 390×844 で撮る。`--cdp` で Electron 等に接続。ブラウザ枠は描かない。URL 対象で HTTP が非 2xx (304 を除く) の route はエラーページを撮らずに skip し、1 枚も撮れなければ exit 1。route の slug が衝突したら上書きせず `-2`, `-3` を付けて両方残す。各ファイルの寸法と貼り付け用 `<img>` を出力し、その `src` は Windows でもスラッシュ区切り |
 | 編集時 Floor 検査 hook | skills/hallmark/scripts/lint-hook.mjs, install-hook.mjs | PostToolUse (`Write|Edit|MultiEdit`) で Hallmark の成果物だけ `--tier floor` で検査し FAIL を additionalContext で返す。install-hook は `.claude/settings.json` (または `--global` で user settings) に書き込む |
 | 参照整合の検査 | skills/hallmark/scripts/refcheck.mjs | references 内のリンク・gate 番号 (退役番号の一文を含む)・テーマ・SKILL.md frontmatter (description は 1 行の二重引用符・1,024 字以内) を検査 |
 | 配布形態 | .claude-plugin/plugin.json, .claude-plugin/marketplace.json, skills/hallmark/agents/openai.yaml, skills/hallmark/scripts/install.mjs | Claude Code plugin (skill だけを同梱)、Codex 用 metadata (`allow_implicit_invocation: true`)、clone からの検証付きコピー |
+| 本体への寄稿規約 | CONTRIBUTING.md, AGENTS.md | Hallmark 自体を直す人・agent 向け (ページを作るときは SKILL.md 側)。CI と同じ 4 検査 (refcheck・theme validate・index 差分・`node --test`)、バグは main で再現 → main で落ちるテストを足す、1 PR 1 変更・依存追加なし、新 gate は gates.md 1 行 + sloplint `TIERS` (不一致は refcheck が落とし、`TIERS` に無い gate は Floor 扱い)、sloplint 変更は `site` に対する `--json` を main と比較、em/en dash 禁止、パスは `node:path` で組み HTML 向けはスラッシュ。ブラウザテストは CI では常に skip |
 | 未実装の方向性 | ROADMAP.md | 新しい生成既定値 (cream/off-white 単独・pill ボタン・黒地 + acid accent・hairline broadsheet) の扱い、3 harness の適合試験、テーマ別 motion token、多ページ一貫性、hook の既定有効化 |
 
 ## 蒸留の範囲外
@@ -91,6 +92,6 @@ AI コーディングアシスタント向けの anti-AI-slop デザインスキ
 - **21 macrostructure の個別仕様**: index から 1 ファイルずつ。全読みは原典自身が禁じている。nav/footer の archetype (v1 の component cookbook と `components/` 50 件) は削除され、chrome は `layout.md` と `theme.mjs draw` の側に移った。
 - **sloplint の実装詳細** (4,426 行 + render 1,283 行): 判定ロジックの確認が要るときだけ読む。tier 表は gates.md から導出されるので、規則の正は gates.md。
 - **写真ライブラリの中身**: skills/hallmark/scripts/photos.json (1 行の JSON)。画像ファイルは含まない。
-- **サイト (`site/`)・eval (`eval/`)・テーマの picture とスクリーンショット (`docs/screenshots/`)**: デモと評価用で、スキルの規則ではない。
+- **サイト (`site/`)・eval (`eval/`)・テーマの picture とスクリーンショット (`docs/screenshots/`)**: デモと評価用で、スキルの規則ではない。`.github/` の issue/PR テンプレート・CODE_OF_CONDUCT・SECURITY・CI workflow も寄稿手続きで、規則ではない。
 - **v1 から消えたもの** (旧蒸留版の索引先): `references/slop-test.md`・`anti-patterns.md`・`component-cookbook.md`・`components/`・`custom-theme.md`・`typography.md`・`color.md`・`layout-and-space.md`・`motion.md`・`copy.md`・`hero-enrichment.md`・`custom-craft.md`・`assets.md`・`imagery-kit.md`・`structure.md`・`study.md`・`verbs/`・`floating-nav.md`、`docs/recipes.md`・`docs/study-examples.md`、`site/examples/`・`site/_tests/`。**study verb は廃止**され、verb は redesign と audit だけ。
 - **バージョン表記の食い違い**: commit 履歴には v2.2〜v2.4 の表記があるが、現行の SKILL.md・plugin.json・package.json は `2.0.0` (リリース時に振り直し)。stamp と Picks block の版は SKILL.md を正とする。

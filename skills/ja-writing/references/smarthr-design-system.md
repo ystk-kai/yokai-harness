@@ -1,7 +1,7 @@
 ---
 source: https://github.com/kufu/smarthr-design-system
-distilled_commit: 671518a9827de4d1c94fa120b62252317890eb7c
-distilled_at: 2026-11-11
+distilled_commit: dbe1aae040e605f106abbff404e476f931ab9715
+distilled_at: 2026-11-12
 ---
 
 # smarthr-design-system 蒸留版 (ライティングガイドライン)
@@ -49,7 +49,7 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 
 14. **ai/ は「AI で文章を書く方法」ではなく「AI 機能についての書き方」**。規定は 2 つだけ: (a) AI 機能の命名 — 個別機能は「AI + 目的 + 機能」型で、ロボットや人の役割を想起させる名前は使わない (UI 上は名前ではなく「by AI」ラベルで示す)。AI が中心価値の新規アプリは逆に役割を想起させる名前を許す。(b) AI 機能のヘルプページ — 学習利用の有無を明記する、品質と動作の期待値を合わせる注意書きを類似機能間で同じ表現にそろえる、有効化が同意とみなされる機能には注意書きを置く (C/ai/index.mdx, ai-name.mdx, ai-help.mdx)。
 
-15. **textlint との関係は「この repo 自身の MDX を lint している」まで**。ガイドライン本文は textlint-rule-preset-smarthr に言及していない。repo の `package.json` が `textlint-rule-preset-smarthr` (^1.38.2) と `textlint-rule-prh` を devDependency に持ち、`.textlintrc` で preset の一部ルール (句点混在・文長・全角半角間スペース・括弧周りスペース) を無効化し、`dict/prh-books.yml` (蒸留時点では中身はコメントアウトのみ) を読む。ガイドライン本文中の NG 例は `{/* textlint-disable */}` コメントで lint から除外している。各ガイドライン規則と preset のルールの対応表は原典に無い (AGENTS.md, package.json, .textlintrc)。
+15. **textlint との関係は「この repo 自身の MDX を lint している」まで**。ガイドライン本文は textlint-rule-preset-smarthr に言及していない。repo の `package.json` が `textlint-rule-preset-smarthr` (^1.38.3) と `textlint-rule-prh` を devDependency に持ち、`.textlintrc` で preset の一部ルール (句点混在・文長・全角半角間スペース・括弧周りスペース) を無効化し、`dict/prh-books.yml` (蒸留時点では中身はコメントアウトのみ) を読む。ガイドライン本文中の NG 例は `{/* textlint-disable */}` コメントで lint から除外している。各ガイドライン規則と preset のルールの対応表は原典に無い (AGENTS.md, package.json, .textlintrc)。
 
 ## 索引テーブル
 

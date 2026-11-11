@@ -27,6 +27,43 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-12
+
+### 再蒸留 (yomiyasu) から
+
+v3.0.0 で SKILL.md が書き直され (46,311 字 → 15,656 字)、節がまとめられた。ja-slop-review は yomiyasu の節名を引いていないので壊れた所は無い。ja-slop-review の SKILL.md は Read で照合した (Grep ツールが無い環境)。手順 0 に「好みで言い換えない」はあるが、案ごとに読みやすくなった点を確かめる条件と、置換でまとめて直すことを禁じる条件は無い。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | 直す箇所を減らす歯止め。文書でふつうに使う漢語 (確認する・使用する・停止する・動作する・現在・報告書の「発生」) は和語に替えない。和語に替えてよいのは、中身のない硬い漢語・決まり文句・比喩・名詞化のように、ほかの規則で直す所だけ。ja-slop-review の syntax-patterns §13 は「和語に開きすぎる」語の組み合わせだけを扱い、この線引きが無い | yomiyasu `2318a6d`: SKILL.md § 直訳語、漢語の詰まり、連用形名詞、references/slop-catalog.md § 7、CHANGELOG.md § 3.0.0 |
+| 未対応 | RECOMMENDED | skill | 見出しを直すときの歯止め。見出しの語を本文へ移すときに語を落とさない (「独自の設定ファイルを増やさず」→「独自のファイルを増やさない」は範囲が広がる)。「まとめ」「はじめに」のように節の役割を示す語は外さない。syntax-patterns §2 に足す | SKILL.md § 案内用の見出し、CHANGELOG.md § 3.0.0「きっかけ」 |
+| 未対応 | RECOMMENDED | skill | 歯止め。読み手にとって何が読みやすくなったか言えない案は採らず、原文を残す。ja-slop-review の手順 6 に足す | SKILL.md Step 2 の 2、CHANGELOG.md § 3.0.0「変えたこと」 |
+| 未対応 | RECOMMENDED | skill | 歯止め。本文を sed などの置換や正規表現でまとめて直さず、前後を読んで 1 か所ずつ直す (2.5.0 は 12 本中 3 本で、太字のラベルと読点を置換でまとめて直していた)。ja-slop-review の手順 6 に足す | SKILL.md Step 2 の 4、CHANGELOG.md § 3.0.0「きっかけ」 |
+| 未対応 | FYI | skill | 英語の術語の直訳語に、型 4 の追加 (枝→ブランチ、題→タイトル、罫→罫線) と型 5 (背景実行・基準線・時間窓・根因・生成器・見張り・台本・偽緑など) が足された。文字どおりの使い方は除外する (木の枝、舞台の台本など)。人の文に当てて新しい指摘が 0 件だったと原典は書くが、それは lint の絞り込み条件で測った結果。手で直すときに書き手の言い回しを変えないかは例で確かめていないので FYI に留める | references/calques.md § 1・3・4、CHANGELOG.md § 3.0.0 G1 |
+| 未対応 | FYI | skill | 「前提が崩れる」「基盤が崩れる」は、前提の中身が前後の文にあるときだけ、それで書き直す。中身が無ければ原文を残して尋ねる。手で直す運用で確かめていない | references/slop-catalog.md § 10 |
+| 未対応 | FYI | skill | 2 文の否定対比を 1 文にまとめるとき「なく」のあとに読点を足さない決まりは、3.0.0 でも効かなかった (原文に無い「ではなく、」を 4 か所と 3 か所作った)。ja-slop-review の「推敲で読点を足さない」も指示だけでは効かないおそれがある | CHANGELOG.md § 3.0.0「限界」、docs/limitations.md |
+| 未対応 | FYI | 運用 | 規則の多いスキルを、スキルなし・数行の指示と比べた結果。3.0.0 は意味をよく保つが、AI の判定の読みやすさではスキルなしに 1 勝 23 敗、費用は約 3 倍。ja-slop-review の control run で、比べる相手に「数行の指示」を加える材料 | CHANGELOG.md § 3.0.0「確かめのあとの仕上げで測ったこと」「限界」 |
+| 未対応 | FYI | skill | lint・diff・check のスクリプトは、作業フォルダの外と点で始まるパス (`.env`、`.git/config`) を読まずに止まるようになった。推敲する文書に紛れ込んだ指示で鍵を読ませない防ぎ方で、`allowed-tools` で確認なしに動かす自作スクリプトにも使える | CHANGELOG.md § 3.0.0「互換性のない変更」、docs/tools.md § 読まないファイル |
+| 未対応 | FYI | 運用 | MAPPING.md が引く yomiyasu の節名 (§ 擬人化の解消、§ コピー調の抑制 など) は 3.0.0 でまとめられた。MAPPING は SHA 付きの記録なので今も正しいが、次に yomiyasu から取り込むときは新しい節名で書く | CHANGELOG.md § 3.0.0「互換性のない変更」 |
+
+ほかに、3.0.0 で SKILL.md から外れた「委譲する」の例とダッシュの例外 (ja-slop-review は残している歯止めなので変えない)、太字のラベルを文に入れるときの歯止め (ja-slop-review にラベルを外す規則が無く付ける先が無い)、「繰り返し使っていることを定着した呼び名の根拠にしない」(原典の測定で効き目が見えない) も読んだが、台帳には載せない。
+
+### 再蒸留 (claude-code-best-practice) から
+
+二次資料の `best-practice/claude-settings.md` が 11-11 の v2.1.322 drift audit で入れた行が根拠。採用前に公式 docs で確かめる。~/.claude/settings.json と settings.local.json は Read で照合した。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | 運用 / settings | `permissions.denyInsteadOfPrompting: true` (v2.1.319 以降、user / managed / `--settings` で効く) は、許可プロンプト待ちになる呼び出しを即 deny にしてターンを止めない。無人の定時実行 (refs-update) は許可外の操作が確認待ちで止まって失敗する作りなので、その run だけ `--settings` で有効にすると、止まらずに deny を受けて別の手で続けられる。今の settings には設定が無い | ccbp `bc64a60`: `best-practice/claude-settings.md` Permission Keys、`changelog/best-practice/claude-settings/changelog.md` 2026-11-11 #3 |
+| 未対応 | FYI | settings | `skipDangerousModePermissionPrompt` は top-level のキーで、`permissions.` の下に置くと無視される (原典は 11-11 まで誤った位置で載せていた)。このハーネスの user settings は top-level に置いており当たらない | 同 Permission Keys、changelog 2026-11-11 #7 |
+| 未対応 | FYI | settings / 運用 | `permissions.blockWritesOutsideWorkingDirectories: true` (v2.1.314 以降) は、どの permission mode でも Write / Edit / NotebookEdit で作業ディレクトリの外へ書くことを拒否する。無人実行の書き込み先を絞る手として使える | 同 Permission Keys |
+| 未対応 | FYI | subagent | subagent のモデルと effort を外から決める env が 3 つある: `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` (agent 定義の `model:` より優先)、`CLAUDE_CODE_SUBAGENT_EFFORT` (定義に `effort` が無い subagent に効く)、`CLAUDE_CODE_FORK_SUBAGENT` (fork は既定で有効、`0` で無効)。subagent 定義の `model:` / `effort:` が効いているかを点検するときの材料 | 同 Common Environment Variables |
+
+### 再蒸留 (awesome-harness-engineering / hallmark / smarthr-design-system) から
+
+台帳に載せる候補なし。awesome-harness-engineering の 6 commit は、本番ハーネス 11 本のソースを解剖した論文 (arXiv 2609.00006、方針が prompt の散文から configuration へ移るという縦断データ)、LightAgent の LightDAG (アプリ側の verifier で完了を gate する)、MCP stdio の latency 計測、agentcraft.dev へのリンクの追加。どれも既存の項目と同じ向きで、手を動かす対象は無い。hallmark の 8 commit は capture の修正 (slug が衝突しても上書きしない、Windows でも img src をスラッシュ区切り)、寄稿規約と AGENTS.md の追加、CI。AGENTS.md は開発者向けの指示と、利用者の agent が読む `skills/hallmark/` を分けている。配布するスキルを持つリポジトリの書き方の型として FYI に留める。smarthr-design-system の 1 commit は `textlint-rule-preset-smarthr` を ^1.38.3 に上げただけで、蒸留版はバージョン表記と SHA だけを直した。
+
+---
 ## 2026-11-11
 
 ### 再蒸留 (awesome-harness-engineering) から
