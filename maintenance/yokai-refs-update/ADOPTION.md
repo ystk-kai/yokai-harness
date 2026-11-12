@@ -27,6 +27,22 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-13
+
+### 再蒸留 (awesome-harness-engineering) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | 保存した計画が古くなるのは、記憶が古いときだけでなく、計画を計算した入力が動いたときでもある (derivation currency)。計画には入力のバージョンを一緒に記録し、実行の前にその入力が今も最新かを確かめる。このハーネスの蒸留版は `distilled_commit` で入力を記録し `check-freshness.sh` が HEAD と比べるので、すでにこの形になっている。一方 `skills/ja-writing/MAPPING.md` は冒頭で「鮮度チェックには乗らない」とし、この台帳の未対応行も根拠 SHA を本文に書くだけで、入力が動いたかを機械的には確かめない。いま手を入れる対象ではない。派生物を足すときの設計判断の材料にとどめる | README.md `### Planning & Task Decomposition` の "Fresh Memory, Stale Plans" (arXiv 2609.03340、`f3f1e3d`) |
+| 未対応 | FYI | 運用 | README 冒頭に「Sponsor this list」(掲載の申込 issue form) が付いた。今後のエントリには掲載料を払った製品が混ざりうるので、このリストを根拠に取り込み候補を立てるときは README の注記だけで判断せず一次資料を確かめる (蒸留版の項目 16 に注記した) | README.md 13 行目、`802d77c` |
+
+Kraft (仕様・計画・最終レビューで人の承認を待つ YAML chain の orchestrator) と Sipar (tool の出力にラベルを付け、検査を通るまで shell・file 書き込み・URL に使わせない agent 言語) は索引のカテゴリ説明に足した。どちらもこのハーネスの hook・settings の書き方を変える根拠にはならないので、候補には載せない。
+
+### 再蒸留 (yomiyasu・claude-code-best-practice・smarthr-design-system) から
+
+今回は取り込み候補なし。yomiyasu v3.1.0 の変更は、Codex にスキルのフォルダを写して入れたときの名前 (`yomiyasu:yomiyasu` → `yomiyasu`) と apm への対応だけで、推敲の手順 (SKILL.md と references) は 3.0.1 から変わっていない。`skills/ja-writing/MAPPING.md` と `~/.claude/CLAUDE.md` は Read で照合し、`yomiyasu:yomiyasu` の名前を引いている所は無かった (この環境には Grep ツールが無く、リポジトリ全体の全文検索はしていない)。claude-code-best-practice の 11-12 の run は、どれも前日の ON HOLD と INVALID を繰り越しただけだった。smarthr-design-system は smarthr-ui v102.0.0 への追従だけだった。
+
+---
 ## 2026-11-12
 
 ### 再蒸留 (yomiyasu) から

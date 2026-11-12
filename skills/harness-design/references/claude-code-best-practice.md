@@ -1,7 +1,7 @@
 ---
 source: https://github.com/shanraisshan/claude-code-best-practice
-distilled_commit: bc64a60aa85e5f329702f8ae468311341d2e16a6
-distilled_at: 2026-11-12
+distilled_commit: 47551398f0afeeaec7ff21ae06159d60d0f72278
+distilled_at: 2026-11-13
 ---
 
 # claude-code-best-practice 蒸留版
@@ -162,7 +162,7 @@ Claude Code の実践知を集めたリポジトリ (shanraisshan) の蒸留。�
       `permissionMode` に公式の `manual` (`default` の alias、v2.1.200+) が無く、`Explore` の model は `haiku`
       (公式は「親から継承」、Claude API では Opus 上限)、`model` 例は `claude-opus-4-6` のまま (公式は `fable` /
       `claude-opus-5`)、`prompt` は公式の `--agents` CLI JSON 側にしか無い。
-    - 10-31・11-01 時点で skills・commands・subagents のバッジは揃って v2.1.316 だが subagents 側の ON HOLD 4 件と watch item、skills 側の削除候補 4 件は 1 つも解消していない (11-01 の skills run は「25 vs 公式で [Skill] タグ付きの 20」と数え方を書き足した。10-31 の skills run は「no drift・公式と完全同期」と書きつつ削除候補 4 件を保留。11-03・11-04 にバッジが v2.1.317 → v2.1.318 へ揃って進んでも同じ 8 件が残る。11-04 の skills run は「No new bundled skills or frontmatter fields in v2.1.307–v2.1.318」。11-05 の subagents run も v2.1.318 のまま同じ 4 件を ON HOLD で再掲しただけ。11-07〜11-09 に 3 表のバッジが v2.1.319 へ進んでも skills は「no drift」で削除候補 4 件、subagents は同じ 4 件を ON HOLD のまま再掲。11-10 に 3 表とも v2.1.322 へ進んでも同じ 8 件が残り、11-11 も skills は「no new drift」、subagents は同じ 4 件を再掲) — **バッジの更新は表本体が直ったことを意味しない**。
+    - 10-31・11-01 時点で skills・commands・subagents のバッジは揃って v2.1.316 だが subagents 側の ON HOLD 4 件と watch item、skills 側の削除候補 4 件は 1 つも解消していない (11-01 の skills run は「25 vs 公式で [Skill] タグ付きの 20」と数え方を書き足した。10-31 の skills run は「no drift・公式と完全同期」と書きつつ削除候補 4 件を保留。11-03・11-04 にバッジが v2.1.317 → v2.1.318 へ揃って進んでも同じ 8 件が残る。11-04 の skills run は「No new bundled skills or frontmatter fields in v2.1.307–v2.1.318」。11-05 の subagents run も v2.1.318 のまま同じ 4 件を ON HOLD で再掲しただけ。11-07〜11-09 に 3 表のバッジが v2.1.319 へ進んでも skills は「no drift」で削除候補 4 件、subagents は同じ 4 件を ON HOLD のまま再掲。11-10 に 3 表とも v2.1.322 へ進んでも同じ 8 件が残り、11-11 も skills は「no new drift」、subagents は同じ 4 件を再掲。11-12 もバッジの日付だけが進み、skills と commands は「no drift」、subagents は同じ 4 件を再掲) — **バッジの更新は表本体が直ったことを意味しない**。
     - **ON HOLD は解消されずに静かに消えることがある**。commands 側の `/cost` (cache miss 表示)・`/reload-plugins`
       (headless 対応)・`/effort` (既定保存と `s` キー) は 09-05 を最後に changelog から落ちたが公式 docs 表には
       入っておらず、以降の run は「fully in sync」と宣言。**「最新 run に出ていない = 解決した」ではない**。
@@ -227,7 +227,7 @@ Claude Code の実践知を集めたリポジトリ (shanraisshan) の蒸留。�
 - **公式 slash command・CLI フラグ・env vars の全リスト** — `best-practice/claude-commands.md` と `claude-cli-startup-flags.md` を引く。
 - **tips 全文** — カテゴリ別一覧は `README.md` の TIPS AND TRICKS 節。各 tip に一次ソースリンク付き。
 - **★ 数とバッジ日付** — 日次 refresh で書き換わる。蒸留版は数値を持たない。バッジは「その表がまだ追われているか」の
-  指標としてのみ使う (項目 12)。2026-11-11 時点で skills / commands / subagents / settings すべて v2.1.322 (settings は 10-13 以来 4 週ぶり)。
+  指標としてのみ使う (項目 12)。2026-11-12 時点で skills / commands / subagents / settings すべて v2.1.322 (settings は 11-11 に 10-13 以来 4 週ぶりに追従)。
 - **コミュニティワークフローの詳細比較・skill/agent コレクション集** — `README.md` の
   DEVELOPMENT WORKFLOWS / SKILL COLLECTIONS / AGENT COLLECTIONS 表。★ 数だけでなく**ステップ列も行の並び順も
   個数も日次で書き換わる** (gstack skills は 53/48/65/32/58/54/55 と揺れ、BMAD agents は 0 と 5 を往復、10-17 run は 11 workflow 中 9 個、10-18 run は 8 個のステップ列が前回と食い違い chain reset で ON HOLD、10-23 run も 7 個、10-24 run も 7 個が chain reset。10-23 に現行と一致した Superpowers・Matt Pocock も 10-24 は別のステップ数の版が出た) ため蒸留版は
@@ -245,5 +245,5 @@ Claude Code の実践知を集めたリポジトリ (shanraisshan) の蒸留。�
 - 注意: 原典が張る公式 docs の URL・anchor・機能名も動く。Rules の anchor は 09-18 に `#organize-rules-with-clauderules` →
   `#organize-rules-with-claude/rules/` へ変わった (が 10-27・10-30・10-31・11-01 run は旧 `#organize-rules-with-clauderules` を有効と記録し、11-04・11-06〜11-09 run はまた新 anchor を有効と記録、11-11 run は再び旧 anchor を有効と記録しており run ごとに食い違う)、Plugins 行の 3 URL は 10-14 に `/plugins/` 配下 (`overview`・`anthropic-marketplaces`・`create-marketplace`) へ移った、TIPS 表の commands
   3 リンクは `docs/en/skills` のまま、Code Review 行の Local `/code-review` は 10-22 に `/en/commands` → `/en/code-review-local` へ。README の "No Flicker Mode" (公式は "Fullscreen rendering")・"Claude Code Web"
-  (v2.1.281 で設定ラベルが "Cloud sessions")・"Routines" (公式は "scheduled tasks (formerly routines)"、10-22 ON HOLD) も未追従。CONCEPTS の Settings 行に公式キー索引 `docs/en/settings-reference` へのリンクが無い点は 10-25 に NEW ON HOLD、Output Styles が Settings の補助リンク止まりで独立行が無い点は 10-26 に NEW ON HOLD。長期 ON HOLD だった Projects (09-18〜)・Mods (10-02〜)・Claude Tag (08-08〜) は 11-10 に README へ入った (Hot に Projects 行 (beta)、Plugins 行に Mods、Slack 行に Claude Tag のリンク) が、11-11 の concepts run は 3 件とも「欠落」として ON HOLD に再掲した — **drift run は README の現状と食い違うことがある**。URL は原典のリンクを写さず公式 docs で確認する。原典自身、09-15 の
+  (v2.1.281 で設定ラベルが "Cloud sessions")・"Routines" (公式は "scheduled tasks (formerly routines)"、10-22 ON HOLD) も未追従。CONCEPTS の Settings 行に公式キー索引 `docs/en/settings-reference` へのリンクが無い点は 10-25 に NEW ON HOLD、Output Styles が Settings の補助リンク止まりで独立行が無い点は 10-26 に NEW ON HOLD。長期 ON HOLD だった Projects (09-18〜)・Mods (10-02〜)・Claude Tag (08-08〜) は 11-10 に README へ入った (Hot に Projects 行 (beta)、Plugins 行に Mods、Slack 行に Claude Tag のリンク) が、11-11 の concepts run は 3 件とも「欠落」として ON HOLD に再掲し、11-12 run も同じ 3 件を含む 17 件の ON HOLD と 4 件の INVALID をそのまま繰り越して「0 auto-applied・steady-state」と書いた — **drift run は README の現状と食い違うことがある**。URL は原典のリンクを写さず公式 docs で確認する。原典自身、09-15 の
   run で `claude-code-guide` agent が sitemap に無い URL を複数 fabricate したと記録している。
