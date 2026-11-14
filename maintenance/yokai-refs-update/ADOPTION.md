@@ -27,6 +27,23 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-15
+
+### 再蒸留 (awesome-harness-engineering) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | subagent | fan-out する orchestrator に停止規則を持たせる型: ターンごとの支出・時間の上限、同じ結果を 3 回返した worker の差し戻し、どの worker も step を進めない fan-out が 2 回続いたら打ち切り、orchestrator から書き込み系 tool を外して計画・brief・レビューに専念させ、各部分を fresh-context の judge に受け入れリストで照らさせる。README の注記だけが根拠で、製品本体は未検証。このハーネスで fan-out するのは `yokai-refs-update` の手順4 (repo ごとに 1 回委譲し、再委譲のループを持たない) なので、繰り返し fan-out の停止規則は今は当たらない。この環境には Grep ツールが無く、リポジトリ全体の全文検索はしていない | README.md `### Task Runners & Orchestration` の Atomic Agent Fusion (`5b0ca5f`・`64df655`) |
+| 未対応 | FYI | 運用 | tool を多く載せたハーネスで出る失敗の型 3 つ: tool retrieval の飽和 (載せる tool を絞る)、over-confidence (行動後に環境の状態を確かめない)、strategic defeatism (失敗を正当化して回復しない)。README の注記ベースで、論文本文と数値は未検証。MCP や tool を増やすときの設計判断の材料にとどめる | README.md `## Evals & Verification` の ComplexMCP (arXiv 2605.10787、`64df655`) |
+| 対応済 (2026-11-15、蒸留版の項目 16 を更新) | FYI | 運用 | 11-14 に外れた Sponsor の募集が、バッジ列の Sponsor バッジ (宛先は申込メール) として戻った。2026-11-13 の行と同じく、このリストを根拠に取り込み候補を立てるときは一次資料を確かめる | README.md バッジ列、`15f9068`・`37db138` |
+
+Mnemoverse (Memory & State) は hosted engine 前提の製品なので、カテゴリ表の 1 行だけにとどめた。
+
+### 再蒸留 (claude-code-best-practice・meiseki) から
+
+今回は取り込み候補なし。claude-code-best-practice は commands 表 5 件の文言更新 (v2.1.325)、experimental な Code Mode (`CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1` で opt-in) の概念表への追加、drift run の ON HOLD 積み増しだけで、CLAUDE.md・skill・hook・settings を直す根拠にならない。meiseki は v0.10.1 で textlint 系の版を上げただけで、`textlint.config.json` のルール構成と SKILL.md の手順は変わっていない。
+
+---
 ## 2026-11-14
 
 ### 再蒸留 (claude-code-best-practice) から

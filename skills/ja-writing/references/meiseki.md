@@ -1,12 +1,12 @@
 ---
 source: https://github.com/bamboo-nova/meiseki
-distilled_commit: 9750d9262c949aa3919b05b9dff1ba9ef502da03
-distilled_at: 2026-10-21
+distilled_commit: ba163a304140ef8b7e30cc3edb2c8c9acbda2085
+distilled_at: 2026-11-15
 ---
 
 # meiseki 蒸留版
 
-日本語文章の Agent Skill / Claude Code・Codex プラグイン (bamboo-nova 製、package.json 上は v0.10.0)。狙いは「明晰さ (clarity) = 内容を知らない読者が一度読んで正しく理解できること」だけ (.agents/skills/meiseki/SKILL.md §1)。**この蒸留版は「読解負荷を生む構文」と「やさしい日本語」の検出・書き換え規則の索引**として読む。AI 臭の診断と声の回復は姉妹スキル `ja-slop-review` の領域で、meiseki は原典自身が「声を足さない」逆方向だと宣言している (README.md 冒頭)。
+日本語文章の Agent Skill / Claude Code・Codex プラグイン (bamboo-nova 製、package.json 上は v0.10.1)。狙いは「明晰さ (clarity) = 内容を知らない読者が一度読んで正しく理解できること」だけ (.agents/skills/meiseki/SKILL.md §1)。**この蒸留版は「読解負荷を生む構文」と「やさしい日本語」の検出・書き換え規則の索引**として読む。AI 臭の診断と声の回復は姉妹スキル `ja-slop-review` の領域で、meiseki は原典自身が「声を足さない」逆方向だと宣言している (README.md 冒頭)。
 
 ## Contents
 
@@ -116,7 +116,7 @@ distilled_at: 2026-10-21
 
     無効にしているルールは `arabic-kanji-numbers`、`no-mix-dearu-desumasu`、`ja-no-mixed-period`、`no-dropping-the-ra`、`no-exclamation-question-mark`、`ja-no-abusage`、`ja-no-successive-word`、`ja-unnatural-alphabet`、`max-comma`、`no-unmatched-pair`。
 
-    パッケージは版を固定している: `textlint@14.8.4`、`textlint-rule-preset-ja-technical-writing@10.0.2`、`textlint-rule-preset-ai-writing@1.1.0`、`textlint-rule-prh@6.1.0`。実行時は `npx --min-release-age=7` を付ける (meiseki/SKILL.md Step 2、package.json)。
+    パッケージは版を固定している: `textlint@15.8.0`、`textlint-rule-preset-ja-technical-writing@12.0.2`、`textlint-rule-preset-ai-writing@1.1.0`、`textlint-rule-prh@6.1.1`。Markdown のガードは `markdownlint-cli@0.50.0`。実行時は `npx --min-release-age=7` を付ける (meiseki/SKILL.md Step 2、package.json)。v0.10.1 で版を上げたが、textlint.config.json のルール構成は変わっていない。
 
 12. **yorisoi の textlint 設定は同じプリセットを読み手向けに締めている** (.agents/skills/yorisoi/references/textlint-yorisoi.config.json)。
     - `sentence-length` は 50、`max-kanji-continuous-len` は 4
@@ -180,5 +180,5 @@ distilled_at: 2026-10-21
 - **原典内の食い違い** (蒸留時点の実測):
   - README.md の textlint 設定の節は `no-nfd` を無効化したルールに挙げている。しかし textlint.config.json では `no-nfd` が `true` で、カテゴリ I の検出に使われている。設定ファイルの値を正とする。
   - README.md「アーキテクチャ」が参照する `docs/diagrams/` は、この commit には存在しない。
-  - README.md の見出しには「v0.6.0 から」等の版表記が残っている。package.json の版は 0.10.0。
+  - README.md の見出しには「v0.6.0 から」等の版表記が残っている。package.json の版は 0.10.1。
   - vocab/README.md は基本語彙六千の残りを「目標レベルが N3 以上のとき」に許容すると書く。一方 vocab-check.js の実装 (`targetIdx >= LEVELS.indexOf('N4')`) は N4 から許容する。実装を正とした。
