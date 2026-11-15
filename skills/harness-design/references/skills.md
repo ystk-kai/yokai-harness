@@ -1,15 +1,14 @@
 ---
 source: https://github.com/anthropics/skills
-distilled_commit: 2c5958ecac7cee2b583967a2c4981d0f4a75c579
-distilled_at: 2026-11-09
+distilled_commit: 1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064
+distilled_at: 2026-11-16
 ---
 
 # anthropics/skills 蒸留版
 
-Anthropic 公式の Agent Skills リポジトリ。skill 定義 (SKILL.md) の設計・作成・レビュー時に引く
-**公式の一次資料** — 仕様 (spec) + 雛形 (template) + 模範実装 (skills/) の三点セット。
-`claude-code-best-practice.md` #8/#9 の skill tips は二次情報 (ツイート要約) なので、記憶や tips ではなく
-こちらを引く。以下のパスはすべてリポジトリルートからの相対パス。
+Anthropic 公式の Agent Skills リポジトリ。skill 定義 (SKILL.md) の設計・作成・レビュー時に引く **公式の一次資料** —
+仕様 (spec) + 雛形 (template) + 模範実装 (skills/) の三点セット。`claude-code-best-practice.md` #8/#9 の skill tips は
+二次情報 (ツイート要約) なので、記憶や tips ではなくこちらを引く。以下のパスはすべてリポジトリルートからの相対パス。
 
 ## Contents
 
@@ -69,10 +68,9 @@ Anthropic 公式の Agent Skills リポジトリ。skill 定義 (SKILL.md) の�
 11. **Principle of Lack of Surprise**。skill は説明された意図どおりであるべきで、マルウェア・不正アクセス・
     データ持ち出しを助ける skill の作成要求には従わない。 → `skills/skill-creator/SKILL.md`
 
-12. **模範実装のパターンは 2 系統**。(a) guidance 型 = SKILL.md 1 枚 (+LICENSE) だけ (`frontend-design`,
-    `brand-guidelines`, `academy-guide`, `discernment-nudge`)。(b) tool 型 = `scripts/` に実行コード + reference
-    を同梱し、SKILL.md 本文から "see REFERENCE.md" と明示誘導 (`pdf` = scripts 8 本 + reference.md +
-    forms.md)。 → `skills/pdf/`, `skills/frontend-design/`
+12. **模範実装のパターンは 2 系統**。(a) guidance 型 = SKILL.md 1 枚 (+LICENSE) だけ (`frontend-design`, `brand-guidelines`,
+    `academy-guide`, `discernment-nudge`)。(b) tool 型 = `scripts/` に実行コード + reference を同梱し、SKILL.md 本文から
+    "see REFERENCE.md" と明示誘導 (`pdf` = scripts 8 本 + `REFERENCE.md` + `FORMS.md`)。 → `skills/pdf/`, `skills/frontend-design/`
 
 13. **description 実例の最高峰は `claude-api`**。TRIGGER (発火条件を網羅列挙) と SKIP (発火しない条件で
     上書き) を構造化した pushy な description の手本。ただし同じリポジトリの `shared/prompt-audit.md` は
@@ -189,6 +187,11 @@ Anthropic 公式の Agent Skills リポジトリ。skill 定義 (SKILL.md) の�
     agent が共有ファイルで互いを見られる構成。 → `shared/managed-agents-multiagent.md` § Dynamic workflows、実装例
     `shared/managed-agents-quickstarts/bug-hunter.md` (読む → 全 slice の second look → 選別 → claim だけ渡した別 agent が証明)
 
+30. **tool 型 skill の本文は API 解説でなく「罠の列挙 + 必須の検証」に絞る (`1780c5e` 時点の Office 系)**。冒頭は Task → Approach 表、"The model knows the API; these are the footguns" と前置きして罠だけ並べ、preinstalled は「先に install せず、import 失敗時だけ」と書く。
+    検証は必須節: validator は **failure ごとに fix を名指し**、pptx は render 画像を "look at the images fresh (a subagent works well for this)"、xlsx は
+    **"A green recalc proves your formulas *evaluate*, not that they are *right*"** + `errors_found` でも exit 0 なので clean exit を clean と見なさない。
+    外部由来の docx は untrusted として unzip 後に symlink を消す。 → `skills/{docx,pptx,xlsx}/SKILL.md`
+
 ## 索引
 
 | トピック | 原典パス | 内容 (一行) |
@@ -214,8 +217,8 @@ Anthropic 公式の Agent Skills リポジトリ。skill 定義 (SKILL.md) の�
 | 毎ターンのリマインダと cache 検証 | `skills/claude-api/shared/prompt-caching.md` | `clear_at: "next_user_message"` で送り過去分を消さない、history edit が cache と thinking block を壊す、automatic と explicit breakpoint の使い分け、`usage` の常設 assert |
 | 手順書型 reference の書き方 (BREAKS/DECIDE マーカー) | `skills/claude-api/python/claude-api/sdk-upgrade.md` | 壊れる項目と user が決める項目を 2 値マーカーで分離、Checklist/Report で再掲、grep Signal 表を検証に再利用 |
 | 監査を呼ぶ側の契約 | `skills/claude-api/SKILL.md` の Subcommands / Language Detection | `migrate` / `prompt-audit` / `upgrade` / `cost-optimize` / `build-eval` / `preserved-thinking-migration` / `hillclimb` の 7 行 (+ Managed Agents の `managed-agents-onboard` 3 形)。「ガイドを要約せず実行しろ」「対話するか否か」「承認を取ってから課金」を subcommand ごとに規定 |
-| document skill (tool 型模範) | `skills/pdf/` | SKILL.md + scripts/*.py 8 本 + reference.md + forms.md。本文から reference を明示誘導 |
-| tool 型の他の実例 | `skills/{docx,pptx,xlsx,mcp-builder,webapp-testing}/` | Office 系は SKILL.md + 共有 `scripts/office/` + 固有 script、mcp-builder は reference/ + scripts/ (2026-10 に TS SDK の v2 / v1 ガイドを並置し、SKILL.md で着手前に版を選ばせる)、webapp-testing は examples/ + scripts/ |
+| document skill (tool 型模範) | `skills/pdf/` | SKILL.md + scripts/*.py 8 本 + `REFERENCE.md` + `FORMS.md`。本文から reference を明示誘導 |
+| tool 型の他の実例 | `skills/{docx,pptx,xlsx,mcp-builder,webapp-testing}/` | Office 系は SKILL.md + 共有 `scripts/office/` (`soffice.py` / `validate.py`) + 固有 script、本文は Task→Approach 表・footgun 列挙・必須 QA 節 (項目 30)、mcp-builder は reference/ + scripts/ (2026-10 に TS SDK の v2 / v1 ガイドを並置し、SKILL.md で着手前に版を選ばせる)、webapp-testing は examples/ + scripts/ |
 | **guidance 型 (SKILL.md 1 枚) の模範とその更新実例** | `skills/{frontend-design,brand-guidelines}/` | scripts なし・本文のみ。frontend-design は 2026-09 に「今の AI っぽさ」5 クラスタ + template chrome + typography 既定禁止を差し替え、プロセス節は簡素化 |
 | Creative / Enterprise 実例 | `skills/{algorithmic-art,canvas-design,theme-factory,web-artifacts-builder,internal-comms,doc-coauthoring,slack-gif-creator}/` | 生成アート・テーマ適用・複雑 artifact・社内文書・共同執筆。examples/ 同梱例あり |
 | repo 同梱 skill の配置・発見規約 | `skills/claude-api/shared/managed-agents-tools.md` | ルート `.claude/skills/<name>/` を 1 階層走査 (セッション開始時 1 回・cloud sandbox 限定・agent あたり最大 20)、発見されない配置、信頼境界の警告 |
@@ -238,12 +241,10 @@ Anthropic 公式の Agent Skills リポジトリ。skill 定義 (SKILL.md) の�
   dynamic workflows の event 仕様・limits・update merge 規則、Messages API で大規模 job を作った後の Managed Agents 提案文
   (`{lang}/claude-api/tool-use.md` 冒頭)、Admin API の usage/cost report クエリ、eval の最小レシピ、effort/model スイープの
   数値表、項目 26 の wire 形式 (`evaluation` の JSON 形、`reason_code`、SDK 別の型対応) は写していない。
-- **gate 型 2 件のドメイン内容** — Academy のカタログ構造、AI Fluency の discernment 3 習慣と nudge 文例。
+- **gate 型 2 件のドメイン内容** — Academy のカタログ構造、AI Fluency の discernment 3 習慣と nudge 文例。Office 系の個々の footgun (docx-js / pptxgenjs / openpyxl の罠、pptx の配色・タイポ表、xlsx の financial model 規約) も写していない。
 - **prompt-audit の pattern 表の行そのもの (Before/After 対や greppable な正規表現)** — 監査時は
   `skills/claude-api/shared/prompt-audit.md` を直接読んで表と Signals をそのまま使う。ここでは分類軸と
   keep 契約、ハーネス実装に直接当たる新規行 (項目 22) だけを索引した。モデル固有の破壊的変更は
   `skills/claude-api/shared/model-migration.md` の per-target 節が正。
-- **eval スクリプトの実装詳細** — `scripts/*.py` の CLI 引数や内部ロジック。skill-creator SKILL.md と `references/schemas.md` を引く。
-- **skill-creator の環境別分岐** (Claude.ai / Cowork の subagent 有無・browser 有無による手順差) — 必要時に
-  `skills/skill-creator/SKILL.md` 末尾の各 "-specific instructions" 節を読む。
+- **eval スクリプトの実装詳細と skill-creator の環境別分岐** — `scripts/*.py` の CLI 引数は SKILL.md と `references/schemas.md`、Claude.ai / Cowork の手順差は SKILL.md 末尾の "-specific instructions" 節を引く。
 - **THIRD_PARTY_NOTICES.md / 各 LICENSE.txt** — `2c5958e` (#2146) で document skills (`docx` / `pdf` / `pptx` / `xlsx`) も source-available から Apache 2.0 に移り、README.md も「These are also open source (Apache 2.0)」と書く。全 skill が Apache 2.0。

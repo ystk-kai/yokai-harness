@@ -1,12 +1,12 @@
 ---
 source: https://github.com/textlint-ja/textlint-rule-preset-ja-spacing
-distilled_commit: 5d1e2130d3f5fc668353fc2228411efb28bb24dc
-distilled_at: 2026-10-17
+distilled_commit: bc6fb68d859eb16c5caa38c6d7f894dad0285978
+distilled_at: 2026-11-16
 ---
 
 # textlint-rule-preset-ja-spacing 蒸留版
 
-日本語文中の「スペースを入れるか入れないか」だけを扱う textlint ルール 11 本と、それを束ねるプリセットの monorepo (textlint-ja 製、各パッケージ v3.0.4)。原典の自己規定は「日本語周りにおけるスペースの有無を決定するtextlintルールプリセット」(README.md)。**この蒸留版は「和欧間・全角同士・記号まわり・Markdown 要素まわりのスペース規則と、その選び方」の索引**であり、textlint の導入手順やルール実装の書き方は扱わない。
+日本語文中の「スペースを入れるか入れないか」だけを扱う textlint ルール 11 本と、それを束ねるプリセットの monorepo (textlint-ja 製、各パッケージ v3.1.0)。原典の自己規定は「日本語周りにおけるスペースの有無を決定するtextlintルールプリセット」(README.md)。**この蒸留版は「和欧間・全角同士・記号まわり・Markdown 要素まわりのスペース規則と、その選び方」の索引**であり、textlint の導入手順やルール実装の書き方は扱わない。
 
 ルールは README だけでなく `src/index.js` も読んで確認した。README の説明より実装の判定範囲が狭いルールがあるので、そうしたルールには「実装上」と書いてある。
 
@@ -45,9 +45,11 @@ distilled_at: 2026-10-17
 
 13. **Markdown 要素の 4 ルールは「隣が日本語のときだけ」判定する**。code / link / emphasis / strong は前後 1 文字が和文字 (漢字・かな) のときだけスペースの有無を見る。隣が英数字や記号なら何も言わない (packages/textlint-rule-ja-space-around-code/src/index.js。link / emphasis / strong も同じ実装構造)。
 
-14. **強調 (`*em*`) と強い強調 (`**strong**`) はプリセットで無効**。両 README とも「利用するpluginによっては、スペースを削除すると強調として解析されなくなる場合があります」(strong 側は「強い強調として」) と注記している。この注記は無効化と同じコミット (38aac28) で追加されたもので、無効の理由として原典が示すのはこれだけ (packages/textlint-rule-ja-space-around-emphasis/README.md, -strong/README.md)。
+14. **強調 (`*em*`) と強い強調 (`**strong**`) はプリセットで無効。v3.1.0 から、削除すると強調が壊れるスペースは咎めない**。無効化 (38aac28) の理由だった「スペースを削除すると強調として解析されなくなる」問題に、v3.1.0 (bb158a9) が実装で対処した。プリセットの既定は無効のまま。`before` / `after` が `false` でも次の 2 つはエラーにせず、スペースを残す。(a) `_` / `__` 区切り: 前後が文字の `_` は CommonMark でも markdown-cjk-friendly でも強調にならないので、常に残す。(b) `*` 区切りで内側の端が約物: `**文章で:** 後半` や `前半 **「強調」** 後半` を詰めると CommonMark / GFM では `**` がそのまま表示されるので残す。約物の判定は CommonMark の定義どおり Unicode の P / S カテゴリ (`/^[\p{P}\p{S}]$/u`)。`before` / `after` が `true` 側 (スペースを挿入する側) の判定は変わっていない (packages/textlint-rule-ja-space-around-{emphasis,strong}/README.md § 例外, src/index.js の `canRemoveBeforeSpace` / `canRemoveAfterSpace`)。
 
-15. **JTF-style とは大部分が重複する**。原典の記述は「JTFスタイルガイドに含まれているルールと大部分は共通しています」「以下のプリセットを利用している場合は重複するルールがあります」で、`textlint-rule-preset-JTF-style` を挙げる。どのルールが重複するか、併用時にどちらを切るかは書かれていない (README.md § 関連)。
+15. **markdown-cjk-friendly で表示する文書なら `cjkFriendlyEmphasis: true`**。v3.1.0 で emphasis / strong に追加されたオプション (既定 `false`)。`true` にすると (b) の約物の例外を外し、`前半 **「強調」** 後半` を `前半**「強調」**後半` に修正する。`_` の例外 (a) は `true` でも残る。原典の指定は、VitePress や Rspress のように markdown-cjk-friendly で表示する文書では textlint の Markdown プラグイン (`@textlint/textlint-plugin-markdown`、textlint 16 以降) とこのルールの**両方**で `cjkFriendlyEmphasis` を `true` にする (プラグインのオプションはルールに伝わらないため)。GitHub のように CommonMark / GFM で表示する文書では両方 `false` のまま。プリセット経由なら `"preset-ja-spacing": { "ja-space-around-strong": { "cjkFriendlyEmphasis": true } }` のようにオブジェクトで渡すと、既定無効のルールが有効になる (同 README.md § textlintのMarkdownプラグインの設定)。
+
+16. **JTF-style とは大部分が重複する**。原典の記述は「JTFスタイルガイドに含まれているルールと大部分は共通しています」「以下のプリセットを利用している場合は重複するルールがあります」で、`textlint-rule-preset-JTF-style` を挙げる。どのルールが重複するか、併用時にどちらを切るかは書かれていない (README.md § 関連)。
 
 ## ルール別早見表
 
@@ -64,8 +66,8 @@ distilled_at: 2026-10-17
 | `ja-space-after-question` | 文末 `？` の後に文が続くなら全角スペース。文中は入れない | なし | 有効 | 可 |
 | `ja-space-around-code` | インラインコードの前後が日本語のときのスペース。既定は入れない | `before`: `false` / `after`: `false` | 有効 (既定値) | 可 |
 | `ja-space-around-link` | リンクの前後が日本語のときのスペース。既定は入れない | `before`: `false` / `after`: `false` | 有効 (既定値) | 可 |
-| `ja-space-around-emphasis` | `*emphasis*` の前後が日本語のときのスペース | `before`: `false` / `after`: `false` | **無効** | 可 |
-| `ja-space-around-strong` | `**strong**` の前後が日本語のときのスペース | `before`: `false` / `after`: `false` | **無効** | 可 |
+| `ja-space-around-emphasis` | `*emphasis*` の前後が日本語のときのスペース。削除で強調が壊れる箇所は除外 (v3.1.0〜) | `before`: `false` / `after`: `false` / `cjkFriendlyEmphasis`: `false` | **無効** | 可 |
+| `ja-space-around-strong` | `**strong**` の前後が日本語のときのスペース。削除で強調が壊れる箇所は除外 (v3.1.0〜) | `before`: `false` / `after`: `false` / `cjkFriendlyEmphasis`: `false` | **無効** | 可 |
 
 入れる派の設定例 (原典の各 Options 節を組み合わせたもの。この組み合わせ自体は原典に載っていない):
 
@@ -96,6 +98,7 @@ distilled_at: 2026-10-17
 | スラッシュ | packages/textlint-rule-ja-no-space-around-slash/src/index.js | `/` 前後の `[ 　]{0,10}` を除去 |
 | 感嘆符 / 疑問符 | packages/textlint-rule-ja-space-after-exclamation/README.md, packages/textlint-rule-ja-space-after-question/README.md | OK / NG 例。実装は各 src/index.js |
 | Markdown 要素 4 種 | packages/textlint-rule-ja-space-around-{code,link,emphasis,strong}/README.md | TxtAST の `Code` / `Link` / `Emphasis` / `Strong` node が対象。Options 節と強調の解析注意 |
+| 強調が壊れるスペースの除外・`cjkFriendlyEmphasis` | packages/textlint-rule-ja-space-around-{emphasis,strong}/README.md § 例外, src/index.js | CommonMark と markdown-cjk-friendly での表示の違い (HTML 例つき)、`isPunctuationChar` と `countDelimiter` による判定 |
 | 隣接文字が日本語かの判定 | packages/textlint-rule-ja-space-around-code/src/index.js | `isJapaneseChar` と前後 2 文字の取り方。他 3 ルールも同構造 |
 | ブラウザで試す | website/ | playground の実体 (README.md § Demo の URL) |
 
@@ -105,5 +108,6 @@ distilled_at: 2026-10-17
 - **JTF-style の個別ルールとの対応表** — 原典は「大部分は共通」と書くだけで対応関係を示さない。対応を見るには `textlint-rule-preset-JTF-style` 側の README を読む
 - **和欧間スペースの是非 (組版論)** — 原典は選択肢を出すだけで根拠を論じない。根拠が要るときは ja-writing の表記ガイド系の蒸留版を当たる
 - **開発フロー・lerna / yarn の monorepo 運用・テスト実行** — README.md § 開発フロー / Tests
-- **CHANGELOG の版ごとの変更履歴** — CHANGELOG.md と各 packages/*/CHANGELOG.md は v2.4.x (2024-04) で止まっている (slash パッケージには CHANGELOG.md 自体が無い)。v3.0.0 以降 (space-around 系の既定有効化 76e586f、slash ルール追加 2e37817、emphasis / strong 無効化 38aac28 など) は git log と GitHub Releases で追う
+- **CHANGELOG の版ごとの変更履歴** — CHANGELOG.md と各 packages/*/CHANGELOG.md は v2.4.x (2024-04) で止まっている (slash パッケージには CHANGELOG.md 自体が無い)。v3.0.0 以降 (space-around 系の既定有効化 76e586f、slash ルール追加 2e37817、emphasis / strong 無効化 38aac28、v3.1.0 の `cjkFriendlyEmphasis` 追加 bb158a9 など) は git log と GitHub Releases で追う
+- **textlint Markdown プラグイン側の `cjkFriendlyEmphasis` の仕様と markdown-cjk-friendly の解析規則** — 原典は「textlint 16 から存在する」「ルールには伝わらない」と書くだけ。詳細は textlint 本体と tats-u/markdown-cjk-friendly のドキュメントを当たる
 - **`isPlainStrNode` が何を「プレーン」とみなすか** — 原典は外部の textlint-rule-helper の README を参照させるだけ。見出しが never で valid になるテストはあるが、理由は原典に書かれていない

@@ -27,6 +27,41 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-16
+
+### 再蒸留 (skills) から
+
+git show が使えない実行だったので、新旧の差分は見ていない。HEAD 時点の docx / pptx / xlsx / pdf の SKILL.md を Read して得た候補。照合は skills/visual-slop-review/SKILL.md と skills/ja-slop-review/SKILL.md の Read による (この環境には Grep ツールが無く、grep コマンドも使えないので、リポジトリ全体の全文検索はしていない)。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | 生成物の目視確認は、生成コードを書いた本人の目では見落としやすい (書いたつもりの姿が見えてしまう)。描画結果の画像を、文脈を引き継がない別の subagent に見させる。visual-slop-review の Process 4 は「生成の後に評価を分ける」(5 秒テスト・first-click・1 変数ずつの比較) と書くが、誰の目で見るかは決めていない。Process 4 か prescriptions.md に、描画した画像を fresh な subagent に見させる手を足す | `skills/pptx/SKILL.md` の "Visual QA" (`1780c5e`) |
+| 未対応 | FYI | skill | tool 型 skill の本文には、モデルが既に知っている API の解説を書かない。冒頭に Task → Approach 表を置き、罠だけを並べる。インストールは import に失敗したときだけ。このハーネスの skill は参照資料とレビュー手順で、ライブラリを操作する tool 型 skill を持たないので当たらない。tool 型 skill を作るときの型 | `skills/docx/SKILL.md`・`skills/pptx/SKILL.md`・`skills/xlsx/SKILL.md` |
+| 未対応 | FYI | hook / 運用 | 終了コード 0 を成功とみなさない (xlsx の `recalc.py` は `errors_found` でも exit 0 を返す)。式が「評価できる」ことと「正しい」ことは別で、作り込む前に 2〜3 個で値が正しいかを確かめる。このハーネスの PreToolUse hook は拒否するためのガードで、生成物を検証するスクリプトではない。`check-freshness.sh` は判定できなかった `NOTE` も exit 1 に数えている。検証スクリプトを足すときの材料 | `skills/xlsx/SKILL.md` "Recalculate" |
+| 未対応 | FYI | skill | 外部から受け取ったファイルは untrusted として扱い、展開した後に symlink を消す。外部のアーカイブを展開する skill を作るときの参考 | `skills/docx/SKILL.md` "Editing existing documents" |
+
+### 再蒸留 (awesome-harness-engineering) から
+
+README の注記ベースで、論文本文は未読。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | skill | skill の失敗のほとんどは「無関係だから」ではなく、checklist や手順を毎回やる作業にしてしまうことで起きる (失敗 307 件のうち過剰な検証が最大の 67 件)。要るのは中身を足すことではなく、どんなときに適用するかの条件とコストへの配慮。ja-slop-review と visual-slop-review は「When not to run this」と「1 つの成果物に 1 会話で 1 回まで」を、ja-slop-review は短い文書向けの Quick path も持っており、適用条件はすでに書いてある。ただし ja-slop-review の手順 6 の機械的な列挙 (機械を主語にした動詞・場所の比喩の名詞) は、書き直すたびに回すことになっている。skill に checklist を足すときは適用条件も一緒に書く | README.md `## Skills & MCP` の "Agent Skills Can Be Harmful" (arXiv 2608.11888、`f55bd0e`) |
+| 未対応 | FYI | 運用 | skill の効果や退行は、skill あり run と no-skill baseline の差分から帰属させる (SkillTriage)。maintenance/evals/ の control run と同じ向き | 同上 |
+
+Senrelay (ContextCore、Memory & State) は製品の紹介なので、カテゴリ行に足すだけにした。
+
+### 再蒸留 (textlint-rule-preset-ja-spacing) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | v3.1.0 から ja-space-around-emphasis / strong は、消すと強調が崩れるスペース (`_` で囲んだ強調、内側の端が約物の `*` 強調) を削除しなくなった。新オプション `cjkFriendlyEmphasis` (既定 `false`) は、markdown-cjk-friendly で表示する文書 (VitePress / Rspress) で使う。その場合は `@textlint/markdown` プラグインとルールの両方で `true` にする (プラグインの設定はルールに伝わらない)。プリセットでは 2 つのルールは今も無効。ja-writing は規則を参照するだけで、2 つのルールを有効にする手順を持たない。textlint の設定ファイルがあるかは全文検索ができず確かめていないので、VitePress などで textlint をかけるときに見直す材料にとどめる | `bb158a9`、packages/textlint-rule-ja-space-around-{emphasis,strong}/README.md |
+
+### 再蒸留 (claude-code-best-practice) から
+
+今回は取り込み候補なし。11-15 の drift run は ON HOLD の繰り越し (skills の削除候補 5 件、subagents 4 件、commands 3 件、concepts 17 件) とバッジ・★ 数の更新、workflow の chain reset だけだった。Code Mode の行は 11-14 に反映済み。
+
+---
 ## 2026-11-15
 
 ### 再蒸留 (awesome-harness-engineering) から
