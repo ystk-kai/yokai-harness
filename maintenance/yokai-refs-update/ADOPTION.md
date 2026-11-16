@@ -27,6 +27,25 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-17
+
+この実行では Grep ツールも grep コマンドも使えなかったので、全文検索での照合はしていない。照合はリポジトリ直下の AGENTS.md の有無を Read で確かめただけ (無かった)。3 件とも FYI。claude-code-best-practice と smarthr-design-system は候補なし。
+
+### 再蒸留 (skills) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | 2026-11-16 の「外部ファイルは展開した後に symlink を消す」の手順が変わった。今の手順は、`unzip` (symlink を復元する) を使わずに Python の `zipfile.extractall` で展開し、`zip -XrDy` で再梱包する。`-D` で folder entry を入れないのは、folder entry 入りの docx を Word が拒否したため。このハーネスには外部の ZIP 系ファイルを展開する skill が無いので当たらない。作るときは 11-16 の項目ではなくこちらに従う | `skills/docx/SKILL.md` "Editing existing documents"、`skills/pptx/SKILL.md` (`e4bb5d9`) |
+
+### 再蒸留 (awesome-harness-engineering) から
+
+README の注記ベースで、リンク先の本文は未読。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | 指示ファイル (CLAUDE.md / AGENTS.md) の探索規則・優先順位・サイズ上限は CLI agent ごとに違う (Codex は既定 32 KiB 上限など)。RigFit の比較ページは各主張に vendor docs へのリンクと日付が付く。このリポジトリ直下に AGENTS.md は無い。Claude Code 以外の agent で使う指示ファイルを置くときの確認先 | README.md Context Delivery & Compaction 節 (`c9a4e8c`) |
+| 未対応 | FYI | 運用 | 同期 compaction の要約誤りは後続 step に気づかれず伝播する。Slipstream は非同期 compaction の候補要約を後続の軌跡で検証する段を置く (精度 +8.8pt、latency −39.7%)。自作の agent loop の実装側の話で、Claude Code 利用者が CLAUDE.md・hook・settings で取れる手段は原典に無い | README.md Context Delivery & Compaction 節 (`38ba5a0`、arXiv 2605.08580) |
+
 ## 2026-11-16
 
 ### 再蒸留 (skills) から

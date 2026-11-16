@@ -1,7 +1,7 @@
 ---
 source: https://github.com/kufu/smarthr-design-system
-distilled_commit: 05a9425754795e79bba6c87dd144f077856f94cf
-distilled_at: 2026-11-14
+distilled_commit: 67705fce99d87a0814c0bec403654c5e2164f7aa
+distilled_at: 2026-11-17
 ---
 
 # smarthr-design-system 蒸留版 (ライティングガイドライン)
@@ -105,6 +105,6 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 
 - **規則ごとの具体的な推奨 / 非推奨の語、OK / NG 例文、エラーメッセージの文型テンプレート全文**: ライセンス指定が無いため転載しない。C/idiomatic-usage/ichiran.mdx を起点に該当ページを直接読む。
 - **ヘルプページのタイプ別ライティングパターンの具体文型**: C/help-center/overview.mdx・step-by-step.mdx 末尾と faq.mdx の単一記事構成内 (52 行目付近) にある「ライティングパターン」節。basic-rule.mdx の「具体的な書き方のヒント」(63 行目以降) も原典で読む。basic-rule.mdx 末尾 (340 行目以降) はタイプ別ページへのリンク集で、パターン本体は各タイプのページにある。
-- **ライティング以外の領域** (コンポーネント・デザインパターン・デザイントークン・色・タイポ・IA・アクセシビリティ・ユーザビリティ): 同じ `src/content/articles/products/` 配下の components/、design-patterns/、design-tokens/、information-architecture/、usability/ と、`src/content/articles/` 直下の basics/・accessibility/ にある。本蒸留では扱わない。
+- **ライティング以外の領域** (コンポーネント・デザインパターン・デザイントークン・色・タイポ・IA・アクセシビリティ・ユーザビリティ): 同じ `src/content/articles/products/` 配下の components/、design-patterns/、design-tokens/、information-architecture/、usability/ と、`src/content/articles/` 直下の basics/・accessibility/ にある。本蒸留では扱わない。design-patterns/ は 22793ac7 で 1 ファイル構成のパターンも `<slug>/index.mdx` 形式に揃えられたので、`<slug>.mdx` で探すと見つからない。
 - **textlint-rule-preset-smarthr の個別ルール内容**: 別 repo (原典外)。この repo で分かるのはバージョン指定と無効化したルール名だけ (.textlintrc)。
 - **多言語 (英語ほか) の表記規則**: 対象ディレクトリ内にあるのは断片のみ — 日付形式の言語別一覧 (C/idiomatic-usage/count.mdx)、全文英語・翻訳結果での半角括弧 (C/idiomatic-usage/symbol.mdx)、「母国語」ではなく「得意な言語」(C/idiomatic-usage/other.mdx)、多言語化ページのレビュー (C/help-center/review.mdx)。翻訳文の書き方を体系的に定めたページは無い。

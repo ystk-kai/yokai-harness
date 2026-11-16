@@ -1,7 +1,7 @@
 ---
 source: https://github.com/anthropics/skills
-distilled_commit: 1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064
-distilled_at: 2026-11-16
+distilled_commit: e4bb5d960d87126ff3b3a8af1a104b7db67560ba
+distilled_at: 2026-11-17
 ---
 
 # anthropics/skills 蒸留版
@@ -187,10 +187,10 @@ Anthropic 公式の Agent Skills リポジトリ。skill 定義 (SKILL.md) の�
     agent が共有ファイルで互いを見られる構成。 → `shared/managed-agents-multiagent.md` § Dynamic workflows、実装例
     `shared/managed-agents-quickstarts/bug-hunter.md` (読む → 全 slice の second look → 選別 → claim だけ渡した別 agent が証明)
 
-30. **tool 型 skill の本文は API 解説でなく「罠の列挙 + 必須の検証」に絞る (`1780c5e` 時点の Office 系)**。冒頭は Task → Approach 表、"The model knows the API; these are the footguns" と前置きして罠だけ並べ、preinstalled は「先に install せず、import 失敗時だけ」と書く。
+30. **tool 型 skill の本文は API 解説でなく「罠の列挙 + 必須の検証」に絞る (`e4bb5d9` 時点の Office 系)**。冒頭は Task → Approach 表、"The model knows the API; these are the footguns" と前置きして罠だけ並べ、preinstalled は「先に install せず、import 失敗時だけ」と書く。
     検証は必須節: validator は **failure ごとに fix を名指し**、pptx は render 画像を "look at the images fresh (a subagent works well for this)"、xlsx は
     **"A green recalc proves your formulas *evaluate*, not that they are *right*"** + `errors_found` でも exit 0 なので clean exit を clean と見なさない。
-    外部由来の docx は untrusted として unzip 後に symlink を消す。 → `skills/{docx,pptx,xlsx}/SKILL.md`
+    外部由来の docx は untrusted として、展開は `unzip` (symlink を復元する) でなく Python `zipfile.extractall`、再梱包は `zip -XrDy` (pptx も同じ。folder entry を入れない — cloud 共同編集経由の Word が拒否した実例あり)。 → `skills/{docx,pptx,xlsx}/SKILL.md`
 
 ## 索引
 
