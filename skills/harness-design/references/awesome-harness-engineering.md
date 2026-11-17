@@ -1,7 +1,7 @@
 ---
 source: https://github.com/ai-boost/awesome-harness-engineering
-distilled_commit: 38ba5a057a001faaa30dde0c7cfd2ac772b25b33
-distilled_at: 2026-11-17
+distilled_commit: 9fde57d0cfb47a3e85e80d96982023d75f949574
+distilled_at: 2026-11-18
 ---
 
 # awesome-harness-engineering 蒸留版
@@ -21,7 +21,7 @@ AI エージェントハーネス構築のパターン・テンプレート・�
 
 ## まず押さえる
 
-1. **リポジトリの正体**: 実体は `README.md` (745 行の注釈付きリンク集) + `templates/` の 4 テンプレート + `verify_urls.py` (URL 到達性検証スクリプト)。それ以外の情報はすべて外部リンク。本文を読みたいものはローカルには無く、URL 先を見る必要がある。README 冒頭の定義文の直前と、`Skills & MCP` / `Verification & CI Integration` 等のセクション冒頭には、Claude Code 用 skill をカテゴリ別に並べた agentcraft.dev への誘導リンクがある (外部の skill カタログで、エントリではない)。
+1. **リポジトリの正体**: 実体は `README.md` (750 行の注釈付きリンク集) + `templates/` の 4 テンプレート + `verify_urls.py` (URL 到達性検証スクリプト)。それ以外の情報はすべて外部リンク。本文を読みたいものはローカルには無く、URL 先を見る必要がある。README 冒頭の定義文の直前と、`Skills & MCP` / `Verification & CI Integration` 等のセクション冒頭には、Claude Code 用 skill をカテゴリ別に並べた agentcraft.dev への誘導リンクがある (外部の skill カタログで、エントリではない)。
 2. **定義** (`README.md` 冒頭): "Harness engineering is the discipline of designing the scaffolding — context delivery, tool interfaces, planning artifacts, verification loops, memory systems, and sandboxes — that surrounds an AI agent and determines whether it succeeds or fails on real tasks"。焦点はモデルではなくハーネス。
 3. **中心原則**: "Every component here exists because the model can't do it alone — and the best harnesses are designed knowing those components will become unnecessary as models improve"。`templates/HARNESS_CHECKLIST.md` の「When this harness component should be removed」表 (Component / Exists because / Can be removed when) がこの原則を運用に落としている。Foundations の Marmelab "The State Of AI Harness Engineering 2026" (2026 年 9 月) も、統制に expiry condition を持たせてモデル向上に合わせハーネスを graceful に腐らせることを推奨している (README の注記ベース、記事本文は未検証)。`Context Delivery & Compaction` の Boris Cherny の YC Startup School 講演 (2026 年 7 月) はこれを実測で裏づける: Opus 5 出荷時に Claude Code の system prompt の約 80% を、モデルがもう持たない挙動への補正だったとして削除し、eval の退行は無かった。手法は「prompt を全部剥がし、繰り返す失敗を直す行だけ足し戻す」をモデルのリリースごとに繰り返す ablation で、蓄積した指示は「モデル能力に対する賭け」であり古びる (harness rot) という主張 (README の注記ベース、講演本体は未検証)。
 4. **分類原則** (`AGENTS.md`): セクションは vendor 別ではなく「解決する問題」別に編成する。各エントリは `- [Title](URL) — 1–2 sentence note` 形式で、note は「なぜ読む価値があるか」を opinionated に書くのが規約。
@@ -44,7 +44,7 @@ AI エージェントハーネス構築のパターン・テンプレート・�
 
 | トピック | 場所 (原典相対パス) | 内容 (一行) |
 |---|---|---|
-| リンク集本体 | `README.md` | 全カテゴリの注釈付き外部リンク集 (745 行)。この蒸留の元 |
+| リンク集本体 | `README.md` | 全カテゴリの注釈付き外部リンク集 (750 行)。この蒸留の元 |
 | repo 運用規約 | `AGENTS.md` (`CLAUDE.md` は symlink) | この repo 自体への agent 指示: entry 形式、問題別分類の原則、収載/除外基準 |
 | 収載基準 | `CONTRIBUTING.md` | 収載 3 条件 (specific problem / worth time / vendor-agnostic) と除外基準 |
 | AGENTS.md テンプレ | `templates/AGENTS.md` | プロジェクト用 agent 指示: 構成・規約・permissions 3 段・verification gates |
@@ -67,7 +67,7 @@ AI エージェントハーネス構築のパターン・テンプレート・�
 | — Permissions & Authorization | 構造化 permission、excessive agency、agent の認証認可標準、実行前 firewall と監査ログ、自然言語ルールと built-in control の乖離を測る研究、ユーザー自作 permission policy の実効性を測る user study、credential を workspace 側で管理し呼び出し元の identity で実行する on-behalf-of 認可 |
 | — Memory & State | クロスセッション記憶 (Letta/mem0/Zep 系)、graph memory・記憶ガバナンスの研究、既存セッションログを記憶に転用する系、ハーネス横断のセッション記録を単一フォーマットへ正規化する系、記憶の鮮度・失効 (symbol 接地 + drift 検出、証拠バージョンによる stale 判定) を扱う系、compaction による安全制約の消失 (Governance Decay)、memory substrate を単一ハーネスで横並び比較する評価研究、永続メモリの書き込み経路を汚染する攻撃 (Persistent Memory Poisoning) と write-path gating、複数ユーザー・複数 agent が共有するハーネスで軌跡から抽出した教訓に scope (user-agent の組 / user / agent / global) を割り当てる記憶書き込み (MixUA, arXiv 2611.10439)、想起した記憶を helpful / misleading と評価させ次の想起の順位に戻す MCP の記憶サーバ (`mnemoverse/mcp-memory-server`。hosted engine 前提)、agent 横断のセッション transcript の中継 (範囲を限った paging・worktree の判別・`must_not_execute=true` の gate) と、作業中タスク + 出典を引用した内容の 2 層記憶 (明示的な supersession と rollback snapshot) を組み合わせた local-first の macOS 向け workbench (Senrelay (ContextCore)、`qingsongcui/ContextCore`) |
 | — Task Runners & Orchestration | 先頭は単一ホストの動的タスクグラフ (SQLite 永続化・lease と fencing による再起動復旧・アプリ所有の verifier で完了を gate する LightDAG)、multi-agent フレームワーク (LangGraph/ADK/AutoGen/CrewAI 等)、並列実行基盤 (worktree 分離)、handoff 用の artifact 参照プリミティブ、deploy 先を差し替えられる TS ハーネス、JVM ネイティブの分散 agent 基盤、既存ハーネスの上に載る provider 中立の control plane、複数 agent runtime を単一 API 規約の裏で交換可能にする router、OSS ハーネスを自社アプリの基盤として組み込む分業論、各 agent をコンテナ・worktree・credential・network policy ごと隔離して並走させる「agent の hypervisor」、既に使っている複数ハーネス (Codex / Claude Code / Cursor 等) を daemon 無しで 1 チームにし、builder と challenger を (両方にサインイン済みなら別ベンダーで) 組ませ、利用上限で別 agent に作業を移す local runtime (`sno-ai/sno-station`)、orchestrator agent が worktree ごとの worker に仕事を割り振り、CI 失敗・レビューコメント・merge conflict を PR 担当の worker へ自動で差し戻す desktop app (`OrchestratorInc/agent-orchestrator`)、工程を agent の外の YAML chain (agent / command / gate のノード) に置き、仕様・計画・最終レビューで人の承認を待つ local orchestrator (`itsOmidKarami/kraft`)、計画・brief・レビュー専任で書き込み系 tool を拒否される orchestrator と短命 worker を分け、明示的な停止規則を持つ local-first agent (`AtomicBot-ai/atomic-agent`、Atomic Agent Fusion) |
-| — Verification & CI Integration | 検証をループに組み込む方法、eval の CI 統合、regression testing、agent が 1 回で自己修正できるエラー文を返す agent-first linter、要件ごとの受け入れ基準を validator に対応づけ完了を agent の自己申告でなく CI で判定する要件フォーマット (SLCR) |
+| — Verification & CI Integration | 検証をループに組み込む方法、eval の CI 統合、regression testing、agent が 1 回で自己修正できるエラー文を返す agent-first linter、要件ごとの受け入れ基準を validator に対応づけ完了を agent の自己申告でなく CI で判定する要件フォーマット (SLCR)、編集で過去の検証判定を無効化し現在の実装に対する記録済みチェックで完了を gate するハーネス (SemaPLC, arXiv 2608.18565) |
 | — Observability & Tracing | trace 基盤 (Langfuse/Phoenix 等)、OTel GenAI 規約、token/コストの作業単位への帰属、ローカル agent プロセスのファイル・TCP 活動をホスト側で観測する desktop monitor (`antropos17/Aegis`。Permissions の `Justin0504/Aegis` とは別物) |
 | — Debugging & Developer Experience | session replay、agent 用デバッガ、fault taxonomy 研究、MCP wire の proxy trace、agent 失敗の原因をモデルでなく指示衝突・変更衛生に帰す実証研究、失敗軌跡をハーネス部品に帰属させてから修復する診断先行の研究 |
 | — Human-in-the-Loop | interrupt/approval パターン、HITL プロトコル、自律度の計測、承認待ちを run の中断として直列化し crash をまたいで再開する SDK 側の実装、複数の coding agent の承認プロンプトを手元の別端末 (電話・Web) から返す E2E 暗号化アプリ (`happier-dev/happier`)、tmux over SSH で session を走らせたまま desktop・電話への通知と音声返信で待機中の agent に離席先から答える remote-first の tmux IDE (`gal064/muxflow`) |
@@ -167,7 +167,7 @@ AI エージェントハーネス構築のパターン・テンプレート・�
 | Verification & CI | https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents / https://github.com/promptfoo/promptfoo | agent eval の枠組み (unit-test 型 eval が agent で機能しない理由) と、YAML 駆動 LLM テスト + LLM-as-judge + CI 統合の定番 |
 | Verification & CI | https://github.com/vaquarkhan/mcp-test-harness | MCP サーバの pytest 型テスト framework。stdio/SSE/HTTP 横断で tool/schema の regression を通常のテスト失敗に落とす |
 | Verification & CI | https://github.com/shadcn-ui/lint | 2026 年 9 月の agent-first な Tailwind design system linter (ESLint / Oxlint 対応、shadcn/ui 不要)。design system の契約を lint rule に書き、エラー文に component の size / variant / theme ファイルパスを載せて agent が推測せず 1 回で自己修正できるようにする。150+ タスクの公開 eval でほぼ全タスクが 1 回の修正で違反ゼロ、prompt 上のルールだけより lint feedback が 10–48% 安い。「verifier のエラー文もハーネスの出力」— 決定論的チェックは次に何をすべきかを agent に伝えて初めてループを閉じる (README の注記ベース、数値は未検証) |
-| Verification & CI | https://github.com/wack/slcr | SLCR (Sliceable, Linked, Checkable Requirements)。要件ごとの acceptance criteria を validator (test / linter / ast-grep rule) に対応づける open な要件フォーマット + CLI で、`slcr check` が CI でどの要件が満たされたかを報告する — 完了判定を agent の「done」の自己申告に頼らない。agent には spec 全体でなく、タスクに要る依存と用語集だけを含む要件単位の slice を渡す (README の注記ベース、中身は未検証) |
+| Verification & CI | https://github.com/wack/slcr / https://arxiv.org/abs/2608.18565 | 完了判定を agent の「done」の自己申告に頼らない 2 件。SLCR (Sliceable, Linked, Checkable Requirements) は要件ごとの acceptance criteria を validator (test / linter / ast-grep rule) に対応づける open な要件フォーマット + CLI で、`slcr check` が CI でどの要件が満たされたかを報告する。agent には spec 全体でなく、タスクに要る依存と用語集だけを含む要件単位の slice を渡す。SemaPLC (2026 年 8 月、10 月改訂) は KUKA の iiQworks に配備された PLC コード生成の verification-gated ハーネスで、PLC に限らず通用する 2 つの不変条件を持つ: 編集が入るとそれまでの検証判定はすべて無効になり、完了には現在の実装に対して**記録された**チェックの合格が要る (主張はモデルの自己申告でなく獲得した証拠)。チェック失敗時は無制限の再生成でなく範囲を限った guided repair に回す。7 モデルで verified-pass +8.7pt (72.6%)、本番で PLC 開発時間 45% 減。古い承認ではすり抜けられない completion gate の参照 (いずれも README の注記ベース、中身・論文本文・数値は未検証) |
 | Observability | https://github.com/langfuse/langfuse / https://opentelemetry.io/docs/specs/semconv/gen-ai/ | 最も普及した self-hostable LLM observability (Langfuse) と、OTel の GenAI span 標準属性規約 |
 | Observability | https://github.com/mikehasa/agentacct | local-first の Agent Work Intelligence。Claude Code / Codex / OpenCode の既存セッションログを取り込み、token と推定コストを作業ステップへ confidence 付きで帰属させて private dashboard に出す (cloud sync / API key 不要) |
 | Debugging | https://github.com/AgentOps-AI/agentops | session replay・コスト追跡・failure 検出の agent engineering platform |
@@ -241,7 +241,7 @@ AI エージェントハーネス構築のパターン・テンプレート・�
 
 ## 蒸留の範囲外
 
-- **各エントリの詳細な注記**: README の各エントリには 1–2 文の opinionated note が付いており、本蒸留はその大半 (外部リンクエントリ約 540 のうち索引に載せたのは 169 件) を割愛した。特定の問題領域を深掘りするときは `README.md` の該当セクションを直接 Grep/Read する (セクション見出しは `## ` / `### `、エントリは `- [Title](URL) — note` 形式で機械的に抽出できる)。
+- **各エントリの詳細な注記**: README の各エントリには 1–2 文の opinionated note が付いており、本蒸留はその大半 (外部リンクエントリ約 540 のうち索引に載せたのは 170 件) を割愛した。特定の問題領域を深掘りするときは `README.md` の該当セクションを直接 Grep/Read する (セクション見出しは `## ` / `### `、エントリは `- [Title](URL) — note` 形式で機械的に抽出できる)。
 - **Generators & Meta-Harnesses と研究系エントリの個別評価**: 自己改善ハーネス (meta-harness / harness-evolver 系) や 2026 年の arXiv 論文群は数が多く玉石混交のため、代表 11 件 (`ruvnet/metaharness`、`fainir/most-capable-agent-system-prompt`、`exoharness/exo`、`affaan-m/ECC`、`ModelEngine-Group/nexent`、`SalesforceAIResearch/Beagle`、Harness-R1 (arXiv 2608.02276)、MemoHarness (arXiv 2607.14159)、Harness-Zero (arXiv 2609.24974)、HarnessDev (arXiv 2609.01437)、Harness Evolution Hits a Ceiling (arXiv 2610.11655)) 以外は個別に挙げていない (SBCO (arXiv 2608.10157)、Causal Improvement Graph (arXiv 2610.05039)、ハーネスの振る舞いとソースを結ぶ索引を自動合成して編集箇所の特定を助ける Harness Handbook (arXiv 2607.13285)、training feedback で編集し固定 validation で候補を選び採用はユーザーの明示判断に残す RSI ループの `ZHangZHengEric/Sage` 等もここで見る)。関心があれば `README.md` の `### Generators & Meta-Harnesses` と各カテゴリ末尾の arXiv エントリを見る。
 - **templates/ の全文**: 各テンプレートは短い (40–80 行) ので、使うときは原典の `templates/*.md` をそのままコピーして使う。コメントが本体なので、`AGENTS.md` (repo 運用規約) の指示どおりコメント構造を保つ。
 - **音声・realtime な対話面**: 既存 CLI agent を realtime voice shell で包む系 (`Demo Harnesses` の `QwenAudio/qwen-audio-agent`、`Pipecat` 等) は、ハーネス設計の判断材料ではなく対話面の実装なので索引に載せていない。必要なら該当セクションを直接見る。

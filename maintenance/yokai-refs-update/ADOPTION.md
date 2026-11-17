@@ -27,6 +27,30 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-18
+
+この実行では Grep ツールも grep コマンドも使えなかったので、全文検索での照合はしていない。照合は `~/.claude/settings.json` の Read による。hooks は PreToolUse の拒否ガードだけで、PostToolUse hook も入力を書き換える hook も無い。候補 6 件は全部 FYI。claude-code-best-practice は候補なし (commands 表の説明文の同期、ON HOLD / INVALID の持ち越し、件数・バッジの更新だけ)。
+
+### 再蒸留 (awesome-harness-engineering) から
+
+README の注記ベースで、リンク先の本文は未読。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | 完了の判定を「検証済み」フラグで持たない。編集が入るたびにそれまでの検証判定をすべて無効にし、完了には現在の実装に対して記録されたチェックが通っていることを要求する (編集前の「テスト通過」を完了報告に使う経路を塞ぐ)。失敗時は範囲を限った修復に回す。このハーネスには完了ゲートの hook も verifier の subagent も無いので当たらない。作るときの型 | README.md Verification & CI Integration 節の SemaPLC (`9fde57d`、arXiv 2608.18565) |
+
+### 再蒸留 (smarthr-design-system) から
+
+すべて `plugins/figma-inventory/README.md` (`f95d874`・`b5a9749`・`dee2963`・`8a4ed49`)。ja-writing 側の候補は無い。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | hook | 大きな MCP 応答 (20 万文字程度) を PostToolUse hook でファイルに逃がし、モデルには圧縮版のパス・生データのパス・続け方の短い案内だけを返す。生データには「読まない。足りないときだけ jq / grep で引く」と明記する。このハーネスに PostToolUse hook は無いので当たらない | 「何が起きるか」 |
+| 未対応 | FYI | hook | PreToolUse hook で引数を補うときは、指定の無い引数にだけ既定値を入れ、呼び出し側の指定は上書きしない。このハーネスの PreToolUse hook は拒否ガードで、入力を書き換えないので当たらない | 「何が起きるか」の表 |
+| 未対応 | FYI | settings | auto mode 下で hook が入力を書き換えた呼び出しは、1 回目が "a hook changed this call's input after auto mode reviewed it" で止まり、送り直せば通る。往復を避けるには該当ツールを `permissions.allow` に足す。このハーネスは auto mode だが入力を書き換える hook が無いので当たらない。書き換える hook を足すときに見る | 「対象外と制限」 |
+| 未対応 | FYI | hook | 要約を LLM に任せず決定的なスクリプトで圧縮し、fixture の期待出力との比較 (selftest) で品質を保つ。解釈はモデル側に残す | 「開発者向け情報」「selftest」 |
+| 未対応 | FYI | hook | hook の中間ファイルはリポジトリに書かず、Claude Code ならセッションの scratchpad に 0700 で置く。起動時の環境変数で hook を止められるようにする (セッション途中では切り替えられない) | 「出力先」「hookを止めたいとき」 |
+
 ## 2026-11-17
 
 この実行では Grep ツールも grep コマンドも使えなかったので、全文検索での照合はしていない。照合はリポジトリ直下の AGENTS.md の有無を Read で確かめただけ (無かった)。3 件とも FYI。claude-code-best-practice と smarthr-design-system は候補なし。
