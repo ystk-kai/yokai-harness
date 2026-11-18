@@ -27,6 +27,47 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-19
+
+この実行では Grep ツールも grep コマンドも使えなかったので、全文検索での照合はしていない。照合は該当ファイルの Read による (`skills/ui-design/SKILL.md`、`skills/ja-slop-review/SKILL.md`、`skills/ja-slop-review/references/syntax-patterns.md`)。RECOMMENDED 5 件・FYI 6 件。
+
+### 再蒸留 (yomiyasu) から
+
+v3.2.0 (`3042154`)。A〜C は `ja-slop-review` の該当箇所を Read で確かめた。A・B は直す箇所を減らす歯止め、C は修正時に残す扱いの既存規則 (§13) に形を足すだけで、人の文の言い回しは変えない。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | `ja-slop-review/references/syntax-patterns.md` §12「間を作るだけの読点」は外す対象の短い主題に「とは」を挙げている。yomiyasu 3.2.0 は定義の「〜とは、」のあとの読点と、文頭の場面の枠 (「この記事では、」) のあとで文が長い所の読点を残す側に移した。「とは」を外す対象の例から外し、keep list に 2 つを足す | `skills/yomiyasu/SKILL.md` § 文長と読点の調整、`skills/yomiyasu/references/slop-catalog.md` § 9、`CHANGELOG.md` § 3.2.0 |
+| 未対応 | RECOMMENDED | skill | `ja-slop-review/SKILL.md` 手順 7 の意味検算 (今は概数・「以上」⇔「超」・「AまたはB」・相関→因果・人の追加) に、限定の語 (だけ・のみ・しか〜ない) の脱落、境目の言い方 (超える・未満 ↔ 以上・以下)、義務の強さ (「必須ではない」≠「不要」)、範囲の語 (すべて・一切)・期限の語 (までに)・条件の句の脱落、文の丸ごとの脱落を足す | `CHANGELOG.md` § 3.2.0、`docs/tools.md`「3.2.0 で足した意味が変わる恐れ」 |
+| 未対応 | RECOMMENDED | skill | `syntax-patterns.md` §13「AI によく出る言い回し 7 形」に「〜は多岐にわたる」「〜が求められている」を足して 9 形にする。修正時は既存の決まりどおり残すので書き手の文は変わらない (人のニュース記事にも 21 件・8 件出ている) | `skills/yomiyasu/references/slop-catalog.md` § 10、`CHANGELOG.md` § 3.2.0 |
+| 未対応 | FYI | skill | yomiyasu 3.2.0 は分が 0 の時刻表記の違い (18:00 → 18時)、依頼の言い直し、打ち消した「禁止」の許可への言い直しを意味の変化に数えなくした。手順 7 で戻しすぎないための材料 | `CHANGELOG.md` § 3.2.0 変えたこと・限界 |
+| 未対応 | FYI | 運用 | 上の 3 件を取り込むときは `ja-writing/MAPPING.md` の更新履歴と syntax-patterns の出所記述 (「7 形」、§12 の出所)、`syntax-patterns.md` の `reviewed_at` も合わせて直す | `skills/ja-writing/MAPPING.md` 冒頭 |
+
+### 再蒸留 (design.md) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | `skills/ui-design/SKILL.md` の参照リポジトリ表 (design.md 行) が「8 セクションの固定順序」のまま。仕様はセクション 10 個 (Motion & Micro-interaction・Voice & Content Strategy を追加)。同じ行に grouped tokens と外部 `@`-参照も足す | `docs/spec.md` § Section Order (`a2e3304`・`679d301`・`db977b3`・`9ac6eb9`) |
+| 未対応 | RECOMMENDED | skill | `skills/ui-design/SKILL.md` は UI 文言の中身を `ja-writing` の担当としている。DESIGN.md 仕様は Voice & Content Strategy 節で口調・大文字化・用語・ボタン文言・空/エラー状態・数値と日付の書式を書くよう求める。DESIGN.md のこの節の項目は仕様に従い、日本語の書き方そのものは `ja-writing` で決める、と分担を書く | `docs/spec.md` § Voice & Content Strategy (`679d301`) |
+| 未対応 | FYI | skill | 仕様が `motion` トークンを目的名 (`state-change` / `surface-enter` / `surface-exit`) と `duration`/`delay`/`timingFunction` のオブジェクトで定め、prose に `prefers-reduced-motion` と `transform`/`opacity` の使用を書く。`PHILOSOPHY.md` の motion の例は古い単一値のままなので形式は spec に従う | `docs/spec.md` § Motion & Micro-interaction、`PHILOSOPHY.md` (`a2e3304`) |
+
+### 再蒸留 (awesome-harness-engineering) から
+
+README の注記ベースで、論文本文と数値は未読。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | 検証を増やすなら、指示や途中の reminder を足すより完成物を独立した critic にレビューさせるほうが精度とコストの釣り合いが良い (「検証の量より誰が検証するか」)。completion gate も効くがコストがかかる。このハーネスには完了ゲートの hook も verifier の subagent も無いので当たらない。2026-11-18 の SemaPLC の項と併せて、作るときの型 | README.md Verification & CI Integration 節 (`a0db6f2`、arXiv 2610.34577) |
+
+### 再蒸留 (claude-code-best-practice) から
+
+二次資料の drift run の記録で、どちらも原典側で CHANGELOG のみ・ON HOLD の扱い。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | settings | v2.1.327 で `attributionProject` が追加されたと concepts の drift run が 1 行記録している。意味・型・スコープの説明は無い。attribution 系を見直すときに公式 settings reference で確かめる材料 | `changelog/best-practice/concepts/changelog.md` 2026-11-18 #22 (`faa9fc5`) |
+| 未対応 | FYI | 運用 | v2.1.327 の CHANGELOG では `/status` が壊れたファイルの一覧を出し、`/config` が他の設定に上書きされている行に注記を出す。settings が効かないときの切り分けに使える可能性がある (公式 docs の表には未掲載) | `changelog/best-practice/claude-commands/changelog.md` 2026-11-18 #4・#5 (`9f8bf8b`) |
+
 ## 2026-11-18
 
 この実行では Grep ツールも grep コマンドも使えなかったので、全文検索での照合はしていない。照合は `~/.claude/settings.json` の Read による。hooks は PreToolUse の拒否ガードだけで、PostToolUse hook も入力を書き換える hook も無い。候補 6 件は全部 FYI。claude-code-best-practice は候補なし (commands 表の説明文の同期、ON HOLD / INVALID の持ち越し、件数・バッジの更新だけ)。

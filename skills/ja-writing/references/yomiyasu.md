@@ -1,18 +1,18 @@
 ---
 source: https://github.com/nanaism/yomiyasu
-distilled_commit: db78b9bc5e868549b517a037df7a4d1c93edac23
-distilled_at: 2026-11-13
+distilled_commit: 3042154ee537c1b7093eefed00a97b40aae9446d
+distilled_at: 2026-11-19
 ---
 
 # yomiyasu 蒸留版
 
-AI が生成した日本語を推敲するスキル (v3.1.0、ALGO ARTIS の大賀氏作、MIT)。SKILL.md の description は「意味と条件を保ち、不自然な比喩、曖昧な主述関係、不要な装飾やコピー調を整える」(skills/yomiyasu/SKILL.md frontmatter)。**この蒸留版は「推敲で何を変えてはいけないか」の規則と、その根拠になった研究・測定の索引**。`ja-slop-review` が「何を直すか」の診断手順を持つのに対し、yomiyasu の中心は意味保持と不増補の制約にある。理想科学工業のクラウドサービス「ヨミヤス（YOMIYAS）」とは別物で同社と関係がない、と README が注記している (8394e09 で追加)。
+AI が生成した日本語を推敲するスキル (v3.2.0、ALGO ARTIS の大賀氏作、MIT)。SKILL.md の description は「意味と条件を保ち、不自然な比喩、曖昧な主述関係、不要な装飾やコピー調を整える」(skills/yomiyasu/SKILL.md frontmatter)。**この蒸留版は「推敲で何を変えてはいけないか」の規則と、その根拠になった研究・測定の索引**。`ja-slop-review` が「何を直すか」の診断手順を持つのに対し、yomiyasu の中心は意味保持と不増補の制約にある。理想科学工業のクラウドサービス「ヨミヤス（YOMIYAS）」とは別物で同社と関係がない、と README が注記している (8394e09 で追加)。
 
-版の流れ (正は CHANGELOG.md。README の「2.x.0 で加わったこと」節は 552c12c で外れた): v2.0.0 (2026-10-16) 文脈からの事実の補い・書き手と読み手・検査の記録 / v2.0.2 発火を「名前を出して頼んだときだけ」に / v2.1.0 語順・省略・助詞の読み違いと許可・能力・保証の言い方 / v2.1.1〜2.1.3 検査とフックと Windows の不具合直し / v2.2.0 lint の info 指摘 (直訳語ほか)・script・プロジェクトの語の一覧 / v2.2.1 直訳語の書き直し方の抜け / v2.3.0 `renyo_noun` / v2.4.0 直訳語の型 4・「原文にない人や担当」の節・`slide_comma` / v2.5.0 `ai_phrase`・読点・`allowed-tools` / **v3.0.0 (2026-11-11) SKILL.md を 2.5.0 の 46,311 字から 15,656 字 (先頭の YAML を含む) に書き直した互換性のない版** (項目 25〜28) / v3.0.1 (11-11) lint と diff の組み込みの正規表現を初めて使うときに組むようにして起動を速くしただけで、lint・diff・check・フックの出力は 3.0.0 と 1 字も変わらない (CHANGELOG.md § 3.0.1) / **v3.1.0 (11-12) スキルのフォルダから Codex 用のプラグインの設定 `skills/yomiyasu/.codex-plugin/plugin.json` を消した**。apm (microsoft/apm) 0.35.0 がこのファイルを見てフォルダを「Codex のプラグイン」と判定し、プロジェクト単位の `apm install` が失敗したため (issue #61)。Codex にスキルのフォルダを写して入れる形 (README「6. Codex で使うリポジトリに置く」・`npx skills add`・`gh skill install`) ではスキル名が `yomiyasu:yomiyasu` から `yomiyasu` に変わり、依頼の `$yomiyasu:yomiyasu`・`AGENTS.md` の 1 行・Codex 設定の `[[skills.config]]` の `name` と `environments.toml` の `required` を書き換える必要がある (Codex がスキルの指示を自動で差し込むのは `$` のあとの名前が一覧と 1 字ずつ同じときだけ)。`gh skill install --force` のように前のフォルダに重ねる入れ方では `.codex-plugin/` が残り名前は変わらない。Claude Code・Claude.ai の ZIP・openskills、clone への symlink と Codex のプラグインとして入れた形では名前は変わらない。スクリプト中の生の U+FEFF を `﻿` のエスケープに替えた (見えない文字を消す道具で消えると常に真の条件になるため)。推敲の手順 (SKILL.md と references) は SKILL.md のバージョンの行のほか 3.0.1 から変えておらず、lint・diff・check の出力も `tool_version` と `--version` のほか同じ (CHANGELOG.md § 3.1.0)。
+版の流れ (正は CHANGELOG.md。README の「2.x.0 で加わったこと」節は 552c12c で外れた): v2.0.0 (2026-10-16) 文脈からの事実の補い・書き手と読み手・検査の記録 / v2.0.2 発火を「名前を出して頼んだときだけ」に / v2.1.0 語順・省略・助詞の読み違いと許可・能力・保証の言い方 / v2.1.1〜2.1.3 検査とフックと Windows の不具合直し / v2.2.0 lint の info 指摘 (直訳語ほか)・script・プロジェクトの語の一覧 / v2.2.1 直訳語の書き直し方の抜け / v2.3.0 `renyo_noun` / v2.4.0 直訳語の型 4・「原文にない人や担当」の節・`slide_comma` / v2.5.0 `ai_phrase`・読点・`allowed-tools` / **v3.0.0 (2026-11-11) SKILL.md を 2.5.0 の 46,311 字から 15,656 字 (先頭の YAML を含む) に書き直した互換性のない版** (項目 25〜28) / v3.0.1 (11-11) lint と diff の組み込みの正規表現を初めて使うときに組むようにして起動を速くしただけで、lint・diff・check・フックの出力は 3.0.0 と 1 字も変わらない (CHANGELOG.md § 3.0.1) / **v3.1.0 (11-12) スキルのフォルダから Codex 用のプラグインの設定 `skills/yomiyasu/.codex-plugin/plugin.json` を消した**。apm (microsoft/apm) 0.35.0 がこのファイルを見てフォルダを「Codex のプラグイン」と判定し、プロジェクト単位の `apm install` が失敗したため (issue #61)。Codex にスキルのフォルダを写して入れる形 (README「6. Codex で使うリポジトリに置く」・`npx skills add`・`gh skill install`) ではスキル名が `yomiyasu:yomiyasu` から `yomiyasu` に変わり、依頼の `$yomiyasu:yomiyasu`・`AGENTS.md` の 1 行・Codex 設定の `[[skills.config]]` の `name` と `environments.toml` の `required` を書き換える必要がある (Codex がスキルの指示を自動で差し込むのは `$` のあとの名前が一覧と 1 字ずつ同じときだけ)。`gh skill install --force` のように前のフォルダに重ねる入れ方では `.codex-plugin/` が残り名前は変わらない。Claude Code・Claude.ai の ZIP・openskills、clone への symlink と Codex のプラグインとして入れた形では名前は変わらない。スクリプト中の生の U+FEFF を `﻿` のエスケープに替えた (見えない文字を消す道具で消えると常に真の条件になるため)。推敲の手順 (SKILL.md と references) は SKILL.md のバージョンの行のほか 3.0.1 から変えておらず、lint・diff・check の出力も `tool_version` と `--version` のほか同じ (CHANGELOG.md § 3.1.0)。**v3.2.0 (11-18) lint の `pause_comma` の誤った指摘と見落としを直し、diff の意味が変わる恐れに 7 つの kind を足した** (項目 29)。推敲の手順で直したのは SKILL.md § 文長と読点の調整 の段落と slop-catalog.md の 9 章・10 章だけ (CHANGELOG.md § 3.2.0)。
 
 ## Contents
 
-- まず押さえる (1〜28)
+- まず押さえる (1〜29)
 - 表記規則の具体 (ダッシュ・括弧・空白・ラベル・見出し・読点・太字)
 - 文書の種類 13 とドメイン 3 種
 - 索引テーブル
@@ -51,7 +51,7 @@ AI が生成した日本語を推敲するスキル (v3.1.0、ALGO ARTIS の大�
 
 15. **検査は「実行したこと」を記録で示すだけで、意味保持や読みやすさの合格を示さない**。手順は Step 2 の前に原文へ lint → 書き直し → Step 3 で `yomiyasu_check.py run --final` (lint と diff をまとめて実行) → Step 4 で修正 1 回だけ → Step 5 で残った info の指摘と「残した指摘の語」を確かめ、原文と最終稿の読点の数を比べ、提出直前に `verify`。verify のあとに 1 字でも変えたら run と verify をやり直す。理由を書くだけで尋ねずに済ませてよいのは、定着した言い方と文字どおりの意味のときだけ。記録は git 最上位の `.yomiyasu/` に置き、原典は「同じ権限で原稿と記録の両方を書き換えられる」とし改ざん防止にならないと書く。状態フォルダは作った OS ユーザーだけが読み書きでき、ほかの OS ユーザーと共有するときは `YOMIYASU_STATE_DIR` か `--state-dir` で分ける (SKILL.md Step 3〜5, docs/tools.md § 3・4, CHANGELOG.md § 2.1.2・2.2.1)。
 
-16. **diff は「意味が変わる恐れ」を出すが、拾えない形が多い**。対象は数値、否定、主語と目的語の入れ替え、文の種類、引用、確度の強化、状態の語の消失、原文にない約束・保証、因果の足し、否定対比の逆転、元にない気持ちの語、`modality`・`choice`・`causality`・`number_qualifier`。**原文にない評価の語と一般化・勧めの足しは拾わない**。原文にない担当者の足しは別の節「■ 原文にない人や担当を足した文」に出るが件数・`--fail-on` には入らない (CHANGELOG.md § 2.0.0・2.1.0・2.1.1・2.4.0, docs/limitations.md § 意味が変わる恐れに出ない形, review-points.md)。
+16. **diff は「意味が変わる恐れ」を出すが、拾えない形が多い**。対象は数値、否定、主語と目的語の入れ替え、文の種類、引用、確度の強化、状態の語の消失、原文にない約束・保証、因果の足し、否定対比の逆転、元にない気持ちの語、`modality`・`choice`・`causality`・`number_qualifier`、3.2.0 の `limiter`・`boundary` ほか 5 つ (項目 29)。**原文にない評価の語と一般化・勧めの足しは拾わない**。原文にない担当者の足しは別の節「■ 原文にない人や担当を足した文」に出るが件数・`--fail-on` には入らない (CHANGELOG.md § 2.0.0・2.1.0・2.1.1・2.4.0, docs/limitations.md § 意味が変わる恐れに出ない形, review-points.md)。
 
 17. **lint の点数は v2 で通常出力から外れた。v1 の「人の文章 16 本の平均 98.7、AUC 0.56」は原典が訂正した** (16 本のうち 8 本は AI の例文だった)。JSON の `score` は `rule_penalty_score` に改名・再定義され、「合否やしきい値には使わず」、前後比較は run の「見直し候補: 原文 N件 → 最終稿 M件」と直した箇所の元と後を読む (CHANGELOG.md § 2.0.0 訂正, docs/tools.md § 点数が出なくなった理由)。
 
@@ -86,6 +86,13 @@ AI が生成した日本語を推敲するスキル (v3.1.0、ALGO ARTIS の大�
 
 28. **3.0.0 の評価: 意味は保つが、AI の判定の読みやすさではスキルなしと数行の指示にほぼいつも負け、費用は約 3 倍**。きっかけは 3 つの外部評価 (natural-japanese の作者による 12 本の比較で yomiyasu 2.4.0 が読みやすさの 1 対 1 でスキルなしに 1 勝 23 敗、片桐あまね氏の記事が素のエージェント (A)・数行の指示 (B)・スキル (C) の比較を勧め、記事の ABC プロンプトの監査で B と C の差が見えず C の費用が約 3.8 倍)。公開版を 12 本で 2 回測ると、読みやすさの 1 対 1 は A に 1 勝 23 敗と 1 勝 23 敗、B に 1 勝 23 敗と 0 勝 24 敗 (48 判定すべて「小差」)、意味が変わったという指摘は 3.0.0 が 3 件 (重いもの 1) と 0 件、A が 14 件と 12 件、B が 44 件と 42 件、12 本の費用は 3.0.0 $7.77・$7.80、A $2.60・$2.66 (2.5.0 は $10.16)。原典は「3.0.0 は A と B より意味を保っていますが、AI の読みやすさの判定ではほぼいつも負けていて、12本の費用は A の約3倍です」と書く。候補選びの 5 条件のうち 3 つ (diff の恐れ、作者の好みの段落判定、ターン数) に届かないまま作者が選び、公開前に決めた 8 条件のうち「原文にない「ではなく、」を作らない」だけ届かず限界に書いた。作者は調整にも測りにも使っていない新しい 6 本でスキルなしと読み比べ、6 本とも 3.0.0 を選んだ (答えた 50 か所もすべて 3.0.0。うち 24 か所は 3.0.0 が原文を残しスキルなしだけが変えた所)。測定は macOS の Claude Code `claude -p` (Claude Opus 5.5、effort high) だけで、判定と反証は AI、人が出力を読んだのは作者の 6 本だけ (CHANGELOG.md § 3.0.0 きっかけ・公開した SKILL.md を2回測った結果・確かめのあとの仕上げで測ったこと・確かめたこと・限界, docs/limitations.md § 3.0.0 の SKILL.md で測ったこと)。
 
+29. **v3.2.0 の変更: 読点の残す所を広げ、diff に意味の変化 7 種を足した** (CHANGELOG.md § 3.2.0。diff の見直しは AnIT 氏の nihongo の考え方に学び、コードは含まない)。
+    (a) **読点の決まり (推敲の手順で変えた唯一の所)**。定義の「〜とは、」のあとの読点は外さず残す (仕様の変更。AI の文と人の文で出る数の差が小さく、残したほうが読みやすい)。SKILL.md の短い主題の例から「とは」を外し、残す読点に「定義の「〜とは、」のあと」と「文頭の場面の枠 (「この記事では、」「この画面には、」) のあとで文が長く、外すと区切りが見えにくくなる所」を足した。きっかけは yomiyasu を試した記事の「主題のあとの読点を外しすぎると読みにくくなる」という指摘。slop-catalog.md § 9 の表も同じに直した。lint `pause_comma` は文頭の「実は、」「要は、」を主題として拾わず、読点のあとの動詞の中の「が」(つながります、切り替わりながら) を別の主語に数えなくなった (「小さな工夫が、やがて大きな変化につながります。」に指摘が出る)。場面の枠の行には今までどおり指摘を出し、message の最後に残してよい場合を 1 文で書く (SKILL.md § 文長と読点の調整, slop-catalog.md § 9)。
+    (b) **`ai_phrase` (info) に「多岐にわたる」「が求められている」**。段落の文だけに当て、essay と script では外す。何が足りない文か (何が多いのか、誰が何を求めているのか) と確かめる問いを slop-catalog.md § 10 に足した。人のニュース記事 7,367 本で `ai_phrase` は 32 件 → 61 件 (うち「多岐にわたる」21 件、「が求められている」8 件)。`slop_vocabulary` は「の中で動」「内で動」「に組み込」「を制御」「の制御」が続く「装置」を文字どおりの機器として拾わない (slop-catalog.md § 10, CHANGELOG.md § 3.2.0 確かめたこと)。
+    (c) **diff の意味が変わる恐れの新しい kind**。`--fail-on=meaning-risk` に数える: `limiter` (だけ、のみ、しか〜ない、に限る が消えた。きっかけは「〜だけなら手伝える」の「だけ」が落ちた例)、`boundary` (超える・未満 ↔ 以上・以下・達する)。数えない見直しの候補: `obligation` (「必須ではない」と「不要」を違う強さに分ける)、`quantifier` (すべて、一切 が消えた)、`deadline` (までに が消えた)、`condition` (条件の句が消えた。3.1.0 までは候補にしない決まりだった)、`dropped_sentence` (段落から丸ごと消えた文。内容の語が 2 つ以上かつ半分以上消えた文、1 文書で 3 件以上なら出さない)。`choice` に「電話かメール → 電話とメール」。勢いの強める語に 7 語 (大幅、抜本的、全力、飛躍的、劇的、心より、格段。references/lists/intensifiers.txt)。誤った候補を減らした: 「18:00 → 18時」を表記の違いとして打ち消す、依頼の言い直し (「〜いただけますと幸いです」「〜てもらえると助かります」ほか) を候補にしない、打ち消した「禁止」を許可として読む、「〜事例があります」を「ことがある」と同じ強さに数える。当てる形と当てない形は docs/tools.md「3.2.0 で足した意味が変わる恐れ」(CHANGELOG.md § 3.2.0 変えたこと)。
+    (d) **限界**: 新しい kind は語と文の形の手がかりで決め、手がかりの語を使わない言い換え、反対の意味の語への置き換え (延長 → 短縮)、する人が消えた書き換えは拾わない。「心より感謝申し上げます → ありがとうございます」にも勢いの候補が出る。SKILL.md の読点の決まりを直して推敲の出力がどう変わるかはモデルを動かして測っておらず、AI の文章のコーパスでも数え直していない。yomiyasu-mini と yomiyasu-pocket には 3.2.0 の読点の決まりと規則がまだ入っていない (CHANGELOG.md § 3.2.0 限界・変えたこと)。
+    (e) **更新の注意**: `meaning_risks` の `kind` が 7 つ増えた。`--fail-on=meaning-risk` を CI で使うと終了コードが変わる文書がある (限定の語の消失などで 1 に、時刻の表記だけ・依頼の言い直しだけなら 0 に)。3.1.0 の記録を 3.2.0 の `verify` で照らすと `tool_changed` (CHANGELOG.md § 3.2.0 更新するときの注意)。
+
 ## 表記規則の具体 (ダッシュ・括弧・空白・ラベル・見出し・読点・太字)
 
 - **ダッシュ** (SKILL.md § 装飾記号の排除と太字の表示、コピー調の抑制 / gemini-syntax.md 原則 9): em dash と「─」「──」は外す。罫線の区切り線、出典の記号は残す。外して 1 文につなぐと前の理由や条件が後ろまで掛かるなら 2 文にする。3.0.0 の SKILL.md にエッセイと小説の例外はないが、domains/essay.md と README の 7 原則 (文書の種類のファイルに従い小説のダッシュは残す) には残る (docs/limitations.md)。lint は `dash_insertion` / `dash_list_ending` / `dash_decoration`。
@@ -93,7 +100,7 @@ AI が生成した日本語を推敲するスキル (v3.1.0、ALGO ARTIS の大�
 - **和欧間・表記の揺れ** (SKILL.md § 用途と表記の扱い): 英数字の前後の空白は一律に足したり消したりしない。長音・送り仮名・かなと漢字・全角半角は原文のまま。直すのは補助動詞と形式名詞「事」「為」のひらがな化だけ (「して下さい → してください」。「事の経緯」は残す)。
 - **ラベルとコロン** (SKILL.md § 太字とラベル): 値 (日時・場所・担当・数値・状態) と、物・方式・引数・設定項目・作業の名前に説明が続く項目、値の項目が並ぶ中の 1 項目はラベルとコロンを残す。ラベルが説明をまとめただけの語 (分類の語、出来事を名詞にした語、短い述語) なら太字・ラベル・コロンを外して説明の最初の文に入れる (`1. **応答速度の低下**：ピーク時に3秒を超えた。` → `1. 応答が遅くなり、ピーク時に3秒を超えた。`)。3.0.0 の歯止めは項目 25。入れたあとで条件・否定・「〜し、」の節の掛かる範囲が変わったらラベルとコロンの形に戻す。番号と項目の数と順は保つ。太字のラベルで始まる項目が 2 つ以上重なれば残すラベルの太字も外す。議事録とスライドのラベルと値、宣伝文の見出しの太字の行は外。
 - **見出し** (SKILL.md § 案内用の見出し): 何を扱うかが分かる短い項目名にし、語り出し・理由・警告・結論を詰め込まない。「A ではなく B」の形にせず B だけを書く。後ろの括弧と「〜について」は外し、管理番号や画面の項目名の括弧は残す。本文に出てこない一語の比喩の見出しは本文の語で項目名にする。見出しから外した警告・条件・結論・評価は本文へ移して残し、移すときは語を落とさない。節の役割の語 (まとめ、はじめに) は外さない。依頼で指定された見出しの形とまとめの節、文書の題、議事録の見出し、宣伝文のキャッチコピーは直さない。見出しと節の数と順は変えない。
-- **読点** (SKILL.md § 文長と読点の調整, slop-catalog.md § 9): 短い主題・短い主語の「が」・短い目的語の「を」のすぐあとで間を作るだけの読点は外し、新しく足さない。誤読を防ぐ所 (「店長は、慌てて逃げた客を追いかけた」)、主題のあとに別の動作主が続く所、長い主語や節のあと、挟み込みの前、並べ、条件・逆接・理由の切れ目、文頭の接続語のあとは残す。項目の先頭の主題のあと、「なく」のあと、見出しの中の読点も外す。外すのは読点だけで語順と述語は変えない。小説や随筆で書き手が間として置いた読点は残してよい。平均の文の長さと読点の数の目安は 3.0.0 の SKILL.md から外れ gemini-syntax.md 原則 7 にだけ残る。`pause_comma` は `--doc-type` 指定時だけ。`slide_comma` は項目 23。
+- **読点** (SKILL.md § 文長と読点の調整, slop-catalog.md § 9): 短い主題・短い主語の「が」・短い目的語の「を」のすぐあとで間を作るだけの読点は外し、新しく足さない。誤読を防ぐ所 (「店長は、慌てて逃げた客を追いかけた」)、主題のあとに別の動作主が続く所、文頭の場面の枠 (「この記事では、」) のあとで文が長く外すと区切りが見えにくくなる所、長い主語や節のあと、定義の「〜とは、」のあと (この 2 つは 3.2.0。項目 29)、挟み込みの前、並べ、条件・逆接・理由の切れ目、文頭の接続語のあとは残す。項目の先頭の主題のあと、「なく」のあと、見出しの中の読点も外す。外すのは読点だけで語順と述語は変えない。小説や随筆で書き手が間として置いた読点は残してよい。平均の文の長さと読点の数の目安は 3.0.0 の SKILL.md から外れ gemini-syntax.md 原則 7 にだけ残る。`pause_comma` は `--doc-type` 指定時だけ。`slide_comma` は項目 23。
 - **太字の表示** (gemini-syntax.md 原則 14、lint `bold_not_rendered`): CommonMark 0.31.2 § 6.2 の flanking 規則と GFM 0.29 が根拠。`**` のすぐ内側が記号ですぐ外側が文字だと太字にならないことがある。直し方は lint の指摘が示す (3.0.0 の SKILL.md からは手順を外した)。
 - **区切りの記号**: 原文の「■」「・」は Markdown に置き換えない (SKILL.md § 装飾記号の排除と太字の表示、コピー調の抑制)。
 
@@ -119,11 +126,11 @@ AI が生成した日本語を推敲するスキル (v3.1.0、ALGO ARTIS の大�
 
 ## 索引テーブル
 
-パスは skills/yomiyasu/ 以下を正とする (リポジトリ直下の references/ と scripts/ は同じ内容。3.0.0 の変更も両方を同じに直したと CHANGELOG が書く)。行数は 3.0.1 時点 (3.1.0 で SKILL.md と references は版の行のほか不変)。
+パスは skills/yomiyasu/ 以下を正とする (リポジトリ直下の references/ と scripts/ は同じ内容。3.0.0 の変更も両方を同じに直したと CHANGELOG が書く)。行数は 3.0.1 時点 (3.1.0 で SKILL.md と references は版の行のほか不変。3.2.0 は SKILL.md の読点の段落と slop-catalog.md § 9・10 だけを直し、SKILL.md は 177 行のまま)。
 
 | トピック | 原典パス | 一行説明 |
 |---|---|---|
-| ルール本体・手順・出力形式 | skills/yomiyasu/SKILL.md | 177 行、15,656 字 (3.0.0、`metadata.version` は 3.1.0)。冒頭の名前だけで呼ばれたときの扱いと § 用途と表記の扱い、1 章 (最優先ルール / 情報の不増補 / 暫定文 / 文書の立場と文末 / 主語と目的語 / 段落と文の論理構造 / セルフラベリングと否定対比 / 大げさな名詞と専門用語 / 比喩動詞と擬人化 / 文長と読点 / 太字とラベル / 2文の否定対比と「もちろん、」/ 案内用の見出し / 装飾記号とコピー調 / 直訳語・漢語の詰まり・連用形名詞)、2 章 (Step 1 種類と読み手 / Step 2 上から読み 1 か所ずつ直す (4 項目) / 実行するコマンド / Step 3 検査 / Step 4 読み手として読み候補を確かめる / Step 5 提出の前の照合)、3 章 (書き直した本文 / 変えたところ 5 点 / 残した AI っぽいところ / 書き手に確かめたい点 3 点 / 事実の確かめ / 確認の記録)。2.5.0 の節名・Step 番号は使えない (項目 25) |
+| ルール本体・手順・出力形式 | skills/yomiyasu/SKILL.md | 177 行、15,656 字 (3.0.0 時点の字数。`metadata.version` は 3.2.0 で、§ 文長と読点の調整 の段落を直した)。冒頭の名前だけで呼ばれたときの扱いと § 用途と表記の扱い、1 章 (最優先ルール / 情報の不増補 / 暫定文 / 文書の立場と文末 / 主語と目的語 / 段落と文の論理構造 / セルフラベリングと否定対比 / 大げさな名詞と専門用語 / 比喩動詞と擬人化 / 文長と読点 / 太字とラベル / 2文の否定対比と「もちろん、」/ 案内用の見出し / 装飾記号とコピー調 / 直訳語・漢語の詰まり・連用形名詞)、2 章 (Step 1 種類と読み手 / Step 2 上から読み 1 か所ずつ直す (4 項目) / 実行するコマンド / Step 3 検査 / Step 4 読み手として読み候補を確かめる / Step 5 提出の前の照合)、3 章 (書き直した本文 / 変えたところ 5 点 / 残した AI っぽいところ / 書き手に確かめたい点 3 点 / 事実の確かめ / 確認の記録)。2.5.0 の節名・Step 番号は使えない (項目 25) |
 | 言い直しテスト (6 点) と否定対比 | skills/yomiyasu/references/rephrase-test.md | 74 行。6 点の表、否定対比の残す例・直す例・直し方を誤った例、報告の書き方。3.0.0 で § 2 に漢語の選び方 (項目 26)、§ 3 の例を「なく」のあとに読点を足さない形にそろえた |
 | 文脈からの事実の補い (本体) | skills/yomiyasu/references/fact-recovery.md | いつ読むか、材料の決め方、補ってよい 6 条件、補足と訂正、「事実の確かめ」節の形。3.0.0 は参照先を今の SKILL.md の節に合わせただけ |
 | 事実の補いの細部 | skills/yomiyasu/references/fact-recovery-details.md | §5 問いの形と例、§6 種類と宛先・入れてはいけない事実、§7 穴の種類、§8 check への渡し方、§9 ほかの場面 |
@@ -133,25 +140,25 @@ AI が生成した日本語を推敲するスキル (v3.1.0、ALGO ARTIS の大�
 | 直訳語の見方と書き直し方 | skills/yomiyasu/references/calques.md | 66 行。§ 1 5 つの型、§ 2 2 つの問い (繰り返しは根拠にしない)、§ 3 残す言い方 (型 4・型 5 の文字どおりの使い方、flag.txt と allow.txt)、§ 4 書き直し方 (分野の呼び名、使う語、原文にない漢語を足さない決まりは呼び名への替えに当てない)、§ 5 合成の例の表 |
 | 検査の出力の見方 | skills/yomiyasu/references/review-points.md | run の節ごと (意味が変わる恐れ / 硬化 / 勢い / 慎重な言い方 / 敬語の度合い / 資料との照合 / 原文にない人や担当 / 見出しの形 / 読点が増えた / 残した指摘の語 / 全文差分) の見方と info の指摘ごとの見る先。3.0.0 で flag.txt の使う語の扱いと参照先を直した |
 | 構文変換原則 14 項と根拠研究 | skills/yomiyasu/references/gemini-syntax.md | 研究 7 件と原則 1〜14 (対照表つき)。原則 7 に文の長さと読点の目安、原則 13 の 7 番に「操作と結果の対応」、原則 14 に表示されない太字 (いずれも 3.0.0 の SKILL.md から外れた決まりの残り)。3.0.0 で和語へ寄せる書き方を直した |
-| 語彙・構文カタログ 10 分類 | skills/yomiyasu/references/slop-catalog.md | 188 行。上の項目 14。§ 10 は `ai_phrase` と型 3 の句と「前提が崩れる」ごとに用例・何が足りない文か・確かめる問い (置き換え先は書かない) |
+| 語彙・構文カタログ 10 分類 | skills/yomiyasu/references/slop-catalog.md | 189 行 (3.2.0)。上の項目 14。§ 9 の残す読点に定義の「〜とは、」と場面の枠 (3.2.0)。§ 10 は `ai_phrase` (3.2.0 で 9 形) と型 3 の句と「前提が崩れる」ごとに用例・何が足りない文か・確かめる問い (置き換え先は書かない) |
 | ドメイン別仕様 | skills/yomiyasu/references/domains/tech.md, business.md, essay.md | 上の「ドメイン 3 種」 |
-| 検査に使う語の一覧 | skills/yomiyasu/references/lists/*.txt | nominalization / intensifiers / feelings / hedges / fact-gaps / katakana-terms / thin-evaluation / renyo-nouns。ハッシュが check の記録に残る。プロジェクトの事情は `.yomiyasu-words/` で外す |
+| 検査に使う語の一覧 | skills/yomiyasu/references/lists/*.txt | nominalization / intensifiers / feelings / hedges / fact-gaps / katakana-terms / thin-evaluation / renyo-nouns。ハッシュが check の記録に残る。intensifiers.txt は 3.2.0 で 7 語を足した。プロジェクトの事情は `.yomiyasu-words/` で外す |
 | 使い方の詳細 | docs/usage.md | 「/yomiyasu」だけ送ったとき、種類と読者、書き手と読み手、事実を補うとき、完了報告、スキルの名前。3.0.0 で分野別の指針の文を直した |
-| 付属ツールの詳細 | docs/tools.md | 点数をやめた理由と `rule_penalty_score` の式、lint / diff / check のオプションと終了コード、状態フォルダ、§ プロジェクトの語の一覧 (flag-patterns.txt の書き方と上限)、「2.5.0 で足した規則」、§ 3.0.0 で足した直訳語の型と前提の比喩の形、§ 読まないファイル、任意のフック |
+| 付属ツールの詳細 | docs/tools.md | 点数をやめた理由と `rule_penalty_score` の式、lint / diff / check のオプションと終了コード、状態フォルダ、§ プロジェクトの語の一覧 (flag-patterns.txt の書き方と上限)、「2.5.0 で足した規則」、§ 3.0.0 で足した直訳語の型と前提の比喩の形、「3.2.0 で足した意味が変わる恐れ」(新しい kind の当てる形と当てない形)、§ 読まないファイル、任意のフック |
 | 承認する人がいない実行 | README.md § 承認する人がいない実行で使うとき | `--allowedTools` と `permissions.allow` で lint と check を許す例 (項目 24 (e)) |
 | 限界と確かめた範囲 | docs/limitations.md | § 3.0.0 の SKILL.md で測ったこと (12 本・51 本・段落ごとの判定、外した決まりの一覧、残る参照のずれ 2 つ、漢語の修正と gist の案、仕上げと公開版の 2 回の測定)、§ 確かめた範囲 (2.0.0 の SKILL.md で確かめた内容)、§ 意味が変わる恐れに出ない形、§ 数値・否定・否定対比の逆転ほか |
-| 変更履歴 (2.0.0 から) | CHANGELOG.md | **版ごとの変更の正**。3.1.0 (Codex での名前の変化・きっかけ・変えたこと・確かめたこと)、3.0.1 (変更・更新するときの注意・時間の表)、3.0.0 (互換性のない変更・きっかけ・変えたこと・測ったこと・公開した SKILL.md を2回測った結果・漢語の報告・gist の案・確かめのあとの仕上げ・確かめたこと・限界)、2.0.0〜2.5.0 の各節 |
+| 変更履歴 (2.0.0 から) | CHANGELOG.md | **版ごとの変更の正**。3.2.0 (nihongo に学んだこと・きっかけ・変えたこと・確かめたこと・試験と CI・限界・更新するときの注意)、3.1.0 (Codex での名前の変化・きっかけ・変えたこと・確かめたこと)、3.0.1 (変更・更新するときの注意・時間の表)、3.0.0 (互換性のない変更・きっかけ・変えたこと・測ったこと・公開した SKILL.md を2回測った結果・漢語の報告・gist の案・確かめのあとの仕上げ・確かめたこと・限界)、2.0.0〜2.5.0 の各節 |
 | 概要・背景・7 変換原則・Before/After | README.md § 背景と課題・§ 本スキルのアプローチ・§ Before → After 例 | 3.0.0 で「従来のやり方より良くなる」と読める書き方を外し、7 原則から平均の文の長さと読点の目安を外し、Before → After が 2.0.0 の出力であることと「文脈から事実を補う」を測っていないことを書いた。英語の README.en.md は意味の保持や不増補を「保証のように書いていた所」を「指示書にそう書いている」に弱めた |
-| 本体を入れられない環境向け | README.md § 本体を入れられない環境では | 別リポジトリの 2 つで、どちらも「本体 3.0.0 から作った 2.0.0」。yomiyasu-mini は SKILL.md を節ごとに写し配るファイルを 17 個にまとめたスキル (スクリプト 1 本 90KB 以下、参照ファイル 1 本 100KB 以下、本体 3.0.0 の diff と同じ結果の検査を含む)、yomiyasu-pocket は指示欄に貼る 400〜500 字の指示文 (検査なし) |
+| 本体を入れられない環境向け | README.md § 本体を入れられない環境では | 別リポジトリの 2 つで、どちらも「本体 3.0.0 から作った 2.0.0」。yomiyasu-mini は SKILL.md を節ごとに写し配るファイルを 17 個にまとめたスキル (スクリプト 1 本 90KB 以下、参照ファイル 1 本 100KB 以下、本体 3.0.0 の diff と同じ結果の検査を含む)、yomiyasu-pocket は指示欄に貼る 400〜500 字の指示文 (検査なし)。3.2.0 の読点の決まりと lint・diff の規則はまだ 2 つに入っていない |
 | 毎回使いたいときの 1 行 | README.md § 毎回 yomiyasu を使いたいとき | 入れ方ごと (Claude Code / Codex / openskills / Claude.ai) の CLAUDE.md・AGENTS.md・指示に足す文と、スキル名 `yomiyasu` / `yomiyasu:yomiyasu` の違い。v2.0.2 で発火を名前指定時だけに絞った測定は CHANGELOG.md § 2.0.2 |
 | 「書く前に読ませる」検証 | README.md § 書く前に読ませる使い方 | 外部記事 (ai-garage、v1.1.1) の数値。上の項目 18 |
 | 作者・所属と免責 | README.md § 作者・宛先・§ ライセンス・§ 紹介・解説について | 個人の研究・創作物で所属企業 (ALGO ARTIS) の公式プロダクトではない旨、YOMIYAS との無関係の注記 (8394e09)、MIT と UNICODE-LICENSE.txt |
 | 検査をまとめて記録する CLI | skills/yomiyasu/scripts/yomiyasu_check.py | 約 5,640 行。`run` (`--source` / `--final` / `--stdin` / `--material` / `--doc-type` / `--reader` / `--stance` / `--fact-gaps` / `--no-record`)、`verify` (`--replay` ほか)、`start` / `end` / `export`。3.0.0 で子の lint と diff を写しのフォルダを作業フォルダにして動かし、「残した指摘の語」が flag-patterns.txt の語と使う語を拾う |
-| 静的検査リンター | skills/yomiyasu/scripts/yomiyasu_lint.py | 約 6,400 行。3.0.0 で `calque` の型 4 の字と型 5、`metaphor_verb` の前提の比喩、flag-patterns.txt、読まないファイル。3.0.1 で組み込みの正規表現を遅延コンパイル |
-| 推敲差分チェッカー | skills/yomiyasu/scripts/yomiyasu_diff.py | 約 11,600 行。kind に `modality` / `choice` / `causality` / `number_qualifier`、節に原文にない人や担当・見出しの形・読点が増えた。3.0.1 で遅延コンパイル (読み込み時の `re.compile` 402 回 → 0 回) |
+| 静的検査リンター | skills/yomiyasu/scripts/yomiyasu_lint.py | 約 6,400 行。3.0.0 で `calque` の型 4 の字と型 5、`metaphor_verb` の前提の比喩、flag-patterns.txt、読まないファイル。3.0.1 で組み込みの正規表現を遅延コンパイル。3.2.0 で `pause_comma` の直し、`ai_phrase` の 2 形、`slop_vocabulary` の「装置」 |
+| 推敲差分チェッカー | skills/yomiyasu/scripts/yomiyasu_diff.py | 約 11,600 行。kind に `modality` / `choice` / `causality` / `number_qualifier`、節に原文にない人や担当・見出しの形・読点が増えた。3.0.1 で遅延コンパイル (読み込み時の `re.compile` 402 回 → 0 回)。3.2.0 で kind `limiter`・`boundary`・`obligation`・`quantifier`・`deadline`・`condition`・`dropped_sentence`、時刻の表記と依頼の言い直しの打ち消し |
 | 任意のフック | skills/yomiyasu/scripts/yomiyasu_hook.py | 設定に貼ったときだけ動く。最終稿が記録と合うかを返答終了時と `gh` 投稿前に確かめる。`--print-config claude-code` |
 | Markdown の構造と入力の判定 | skills/yomiyasu/scripts/markdown_visibility.py | lint と diff が共用。3.0.0 で読まないファイルの判定 `input_path_problem` を置いた |
-| 回帰テスト | tests/test_*.py | 3.0.0 で `test_v300_kango.py`・`test_v300_calque_terms.py`・`test_v300_premise.py`・`test_v300_flag_boundary.py`・`test_v300_flag_patterns.py`・`test_v300_gist_refs.py`・`test_v300_finish.py`・`test_v300_input_paths.py`・`test_v300_flag_replacements.py`・`test_windows_drive_relative.py`、3.0.1 で `test_lazy_patterns.py`。試験一式は 3.0.1 で 2,586 件。CI は ruff 0.17.3 の ANN・PTH と ty 0.0.92 を足し、b6115c6 で pytest-xdist の並列 (時間を測る `timing` の 66 件はあとで 1 件ずつ)、2318a6d で時間を測らない試験を 3 組の別ジョブに分けた |
+| 回帰テスト | tests/test_*.py | 3.0.0 で `test_v300_kango.py`・`test_v300_calque_terms.py`・`test_v300_premise.py`・`test_v300_flag_boundary.py`・`test_v300_flag_patterns.py`・`test_v300_gist_refs.py`・`test_v300_finish.py`・`test_v300_input_paths.py`・`test_v300_flag_replacements.py`・`test_windows_drive_relative.py`、3.0.1 で `test_lazy_patterns.py`、3.2.0 で `test_v320_lint.py`・`test_v320_limiter.py`・`test_v320_meaning_scope.py`。試験一式は 3.0.1 で 2,586 件、3.1.0 で 2,601 件、3.2.0 で 2,731 件。CI は ruff 0.17.3 の ANN・PTH と ty 0.0.92 を足し、b6115c6 で pytest-xdist の並列 (時間を測る `timing` の 66 件はあとで 1 件ずつ)、2318a6d で時間を測らない試験を 3 組の別ジョブに分けた |
 | 評価コーパス | tests/corpus/ | human / raw_ai / blacklist_ai / yomiyasu_rewritten / edge_cases (3.0.0 で edge_yakugo_55〜66 の残す例文 12 本を足し 181 本・154 組)。human 16 本のうち 8 本は AI の例文 (CHANGELOG 訂正) |
 | 比較検証の記録 | evals/comparison_benchmark.md | 過去の記録 |
 
@@ -165,6 +172,7 @@ AI が生成した日本語を推敲するスキル (v3.1.0、ALGO ARTIS の大�
 - **2.x の各版の細部** (2.0.1 の照合アルゴリズム、2.1.1 の誤警告の直し、2.2.0 の新規則の閾値、2.2.1 の印の除外条件、2.2.2 と 2.3.0 の diff の時間の表、2.3.0 の renyo-nouns の全語、2.4.0 の `slide_comma` と型 4 の除外の全体・出力の言葉の対応、2.5.0 の `ai_phrase` と `pause_comma` の除外の全体・読点の測定の全数値): CHANGELOG.md の各版の節。
 - **3.0.0 の測定の全数値** (候補 T と L の選定条件の表、15,098 字の SKILL.md の 2 回の表、漢語の組 8 本と新規作成の和語の割合、gist の案の G0〜G3 の数え方と結果の表、仕上げの 8 条件の表、A・B と並べた平均順位、段落ごとの判定の内訳): CHANGELOG.md § 3.0.0 と docs/limitations.md § 3.0.0 の SKILL.md で測ったこと。
 - **3.0.0 の flag.txt の使う語と worktree の探し方の細部** (使う語が使わない語を含む組、submodule と bare リポジトリ、`.git`・commondir・config.worktree の読み方)、型 5 の語ごとの当てる条件、PR #54 の pathlib 移行の細部: CHANGELOG.md § 3.0.0、docs/tools.md。
+- **3.2.0 の細部** (`pause_comma` の限界の形、`limiter`・`boundary`・`condition` などの当てない形の全体、依頼を表す語の一覧と除外の条件、5,131 件・1,415 組・1,821 組の比べ方と数値、fixture の作り直し): CHANGELOG.md § 3.2.0、docs/tools.md「3.2.0 で足した意味が変わる恐れ」、docs/limitations.md。
 - **3.0.1 の時間の表と、遅延コンパイルの互換の注意の全体** (`re.Pattern` でなくなる名前の一覧): CHANGELOG.md § 3.0.1。
 - **yomiyasu-mini / yomiyasu-pocket の中身**: 別リポジトリで clone していない。README.md § 本体を入れられない環境では の案内だけを索引した。
 - **インストール手順とスキル名の違い** (npx skills (`-a grok` で Grok Build にも入る) / gh skill / openskills / プラグインの `yomiyasu:yomiyasu` / ZIP / Codex の `.agents/skills/` へのコピー (前のフォルダを `.agents/yomiyasu.bak-日付-時刻/` へ移す) / § スキルのフォルダの中を書き換えたとき (更新で書き換えが残らないので、プロジェクトの決まりは `.yomiyasu-words/`・CLAUDE.md・AGENTS.md に書く)): README.md § インストール, docs/usage.md § スキルの名前。
