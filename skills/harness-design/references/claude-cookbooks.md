@@ -1,7 +1,7 @@
 ---
 source: https://github.com/anthropics/claude-cookbooks
-distilled_commit: ce8b2629efe8b24048b127b4c79af1e9cbab93d4
-distilled_at: 2026-11-06
+distilled_commit: 8ad5de647d4f0f50c95d74aabc8aa20a3f70cdd3
+distilled_at: 2026-11-24
 ---
 
 # claude-cookbooks 蒸留版

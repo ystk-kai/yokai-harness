@@ -1,7 +1,7 @@
 ---
 source: https://github.com/textlint-ja/textlint-rule-preset-ja-technical-writing
-distilled_commit: 5e73caaf8700db90408bb133b0d792aaea4337d6
-distilled_at: 2026-10-16
+distilled_commit: 3a9833da89624f90e37f39ac1bf0fea9d0072ecc
+distilled_at: 2026-11-24
 ---
 
 # textlint-rule-preset-ja-technical-writing 蒸留版
@@ -33,9 +33,10 @@ distilled_at: 2026-10-16
 
 ## 版情報
 
-- package.json の版は **12.0.2**。Version Packages コミット (215a021) は 2025-01-02 で、12.0.0〜12.0.2 はいずれも再リリース・CI 修正のみ (CHANGELOG.md)。preset の既定値 (`rulesConfig` の値) が最後に変わったのは **v3.0.0** (c3e69fe、文長 90→100、2018-07) で、以後は moduleInterop 化・ルール追加・URL 修正のみ (`git log -- lib`)。判定挙動が最後に厳しくなった Major は **10.0.0** (依存ルール no-mix-dearu-desumasu v6 追従で、preset の値は不変)。ルール構成が最後に変わったのは **7.0.0** (no-zero-width-spaces 追加、2021-07)
+- package.json の版は **12.1.0** (fe7b35c、2026-11-22)。12.1.0 の中身は cf1c86d (#222) の**ルール依存の一括更新だけ**で、kuromojin 3.1.0 に依存する各ルールの最新版へ上げ、`engines` を外して Minor リリースにしている (commit message)。`lib/` は不変で、ルール構成・既定値に変化は無い。個別ルール側の検出挙動の差分はこの clone では確かめられない。12.0.0〜12.0.2 はいずれも再リリース・CI 修正のみ (CHANGELOG.md)。preset の既定値 (`rulesConfig` の値) が最後に変わったのは **v3.0.0** (c3e69fe、文長 90→100、2018-07) で、以後は moduleInterop 化・ルール追加・URL 修正のみ (`git log -- lib`)。判定挙動が最後に厳しくなった Major は **10.0.0** (依存ルール no-mix-dearu-desumasu v6 追従で、preset の値は不変)。ルール構成が最後に変わったのは **7.0.0** (no-zero-width-spaces 追加、2021-07)
 - 中身 (README) の最終更新は **2025-08-20** (1711aed、Online Demo 節の追加のみ)。preset 定義 `lib/textlint-rule-preset-ja-technical-writing.js` の最終変更は 2023-02-12 (856c3f4、URL 修正)
-- 1711aed より後のコミット (HEAD 5e73caa、2026-03-01 まで) は **renovate / dependabot の依存更新だけ**。ルール・既定値・文書に変化は無い
+- 1711aed より後のコミット (HEAD 3a9833d まで) は依存更新・CI・リリース手順の変更だけ。ルール・既定値・README に変化は無い
+- **リリース手順が changesets から Release PR 方式に変わった** (cf1c86d): `.changeset/` を削除し、`Type: Release` の PR をマージすると npm へ staged publish する。リリースノートは Release PR の本文 → GitHub Release に書くため、**CHANGELOG.md は 12.0.2 で止まっている**。README の「Version Packages の PR で次期版との差分を確認」「Release Flow」の記述は旧手順のまま更新されていない
 - package.json の `files` は `src/` を挙げるが、リポジトリに `src/` は存在しない。preset 本体は `lib/` 直書きの 1 ファイル
 
 ## ルール一覧 (既定値・理由・変更履歴)
@@ -84,7 +85,7 @@ preset 内キー名 → 既定値 → 理由 (README / lib コメントの要約
 | ルールの束ねと既定値の実体 | lib/textlint-rule-preset-ja-technical-writing.js | `rules` (23 個) と `rulesConfig`。各既定値に理由コメントと個別ルール URL |
 | ルールごとの説明・既定値 JSON | README.md「ルール一覧」 | 23 節。文長の版別履歴、助詞連続の処方はここだけ |
 | 導入・設定・filter | README.md「Install」「Usage」「ルールの設定方法」 | `.textlintrc.json` / CLI / `@next` / filter ルール 2 種 |
-| 版ごとの破壊的変更 | CHANGELOG.md | 7.0.0〜12.0.2。Node.js 要件、sentence-splitter v5、文体 v6 |
+| 版ごとの破壊的変更 | CHANGELOG.md | 7.0.0〜12.0.2。Node.js 要件、sentence-splitter v5、文体 v6。12.1.0 以降は GitHub Releases のみ |
 | バージョニング方針 | README.md「Semantic Versioning Policy」「Release Flow」 | Major/Minor/Patch の判定基準、半年リリース |
 | 自己 lint の構成例 | example/.textlintrc.json, example/package.json | preset + comments filter で README を lint |
 | キー整合テスト | test/textlint-rule-preset-ja-technical-writing-test.js | rules と rulesConfig のキー一致のみ |
@@ -96,4 +97,4 @@ preset 内キー名 → 既定値 → 理由 (README / lib コメントの要約
 - **JTF スタイルガイド全体**: preset が使うのは `2.2.2.算用数字と漢数字の使い分け` の 1 ルールだけ。残りは textlint-rule-preset-JTF-style と JTF 日本語標準スタイルガイド側
 - **CHANGELOG 7.0.0 より前の変更**: CHANGELOG.md に無い。README は GitHub Releases を参照させている。この clone では git log で辿るしかない
 - **Online Demo の挙動**: README のリンク先 (GitHub Pages)。`.github/workflows/website.yml` が `@textlint/website-generator` で生成する
-- **リリース自動化** (.changeset/, .github/workflows/, renovate.json): ルール内容に関係しない
+- **リリース自動化** (.github/workflows/create-release-pr.yml・release.yml ほか, .agents/skills/release-notes/, renovate.json): ルール内容に関係しない

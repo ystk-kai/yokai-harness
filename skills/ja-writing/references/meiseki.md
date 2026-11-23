@@ -1,12 +1,12 @@
 ---
 source: https://github.com/bamboo-nova/meiseki
-distilled_commit: ba163a304140ef8b7e30cc3edb2c8c9acbda2085
-distilled_at: 2026-11-15
+distilled_commit: f28f59a6a0d0788ac62b271a43c90d6f14d6e6ee
+distilled_at: 2026-11-24
 ---
 
 # meiseki 蒸留版
 
-日本語文章の Agent Skill / Claude Code・Codex プラグイン (bamboo-nova 製、package.json 上は v0.10.1)。狙いは「明晰さ (clarity) = 内容を知らない読者が一度読んで正しく理解できること」だけ (.agents/skills/meiseki/SKILL.md §1)。**この蒸留版は「読解負荷を生む構文」と「やさしい日本語」の検出・書き換え規則の索引**として読む。AI 臭の診断と声の回復は姉妹スキル `ja-slop-review` の領域で、meiseki は原典自身が「声を足さない」逆方向だと宣言している (README.md 冒頭)。
+日本語文章の Agent Skill / Claude Code・Codex プラグイン (bamboo-nova 製、package.json 上は v0.11.0)。狙いは「明晰さ (clarity) = 内容を知らない読者が一度読んで正しく理解できること」だけ (.agents/skills/meiseki/SKILL.md §1)。**この蒸留版は「読解負荷を生む構文」と「やさしい日本語」の検出・書き換え規則の索引**として読む。AI 臭の診断と声の回復は姉妹スキル `ja-slop-review` の領域で、meiseki は原典自身が「声を足さない」逆方向だと宣言している (README.md 冒頭)。
 
 ## Contents
 
@@ -49,19 +49,25 @@ distilled_at: 2026-11-15
 
 5. **E1 と F は「構造を内容の論理形状に合わせる」という 1 つの原理で両立させる**。飾りの箇条書きは散文に戻し、埋もれた列挙は開く。F を発動するのは「同格の項目が 3 つ以上、かつ一文が長い」場合だけ。開くときも太字＋コロンの定型にしない (patterns.md F)。
 
-6. **二重否定を畳む前に真偽を検算する。原典はこれを最重要のガードとしている**。
-   - 「負荷の増大を招かないとは言えません」は「負荷が増えることがある」と同じ意味。「負荷が増えない」と畳めば誤訳で、不合格になる
-   - 控えめな肯定の含意 (litotes) が本質的な箇所は、安全に畳めなければ残す
-   - G を削ったら、主張の強さが原文より強くも弱くもなっていないか確認する
-   - H で文を削ったら、新しい含意・条件・例外を持つ文を消していないか一文ずつ確認する。迷ったら残す
+6. **意味の検算 (Step 5、原典が最重要のガードとする) は「機械で印を数える → LLM が読む」の 2 段** (v0.11.0 から)。
+   - 前段は `meiseki-invariants.js` (依存ゼロ・オフライン)。書き換え前後を段落単位で対応づけ、次の変化を `恐れあり` とする
+     - 保護領域 (コード・引用・数式・URL) が 1 文字でも変わった
+     - 数値・識別子・「」の語が文書全体から消えた、または原文に無いものが現れた
+     - 否定の数の増減が奇数 (正しい二重否定の畳み込みは 2 つずつ減るので、偶数の減少は `情報` 扱い)
+     - 条件・例外・限定の印 (`場合`・`ただし`・`のみ`) が減った
+     - 確度・義務・全称・部分の印 (`ことがある`・`べき`・`常に`・`一部`) が減った。言い切りへの変化や範囲の拡大を拾う
+   - `恐れあり` の段落だけを LLM が 1 回直して再検査する。それでも残れば `--revert-risky` でスクリプトがその段落を原文に戻す。正当な変化を戻す対象から外す `--keep` は、ユーザーが変更点の説明を求めたときだけ使い、理由を報告する
+   - スクリプトは合否を決めない。印を変えずに意味だけ変える書き換え (「A は B より速い」→「B は A より速い」) は見逃すので、何も出なくても後段の確認を続ける。`node` が無い環境では前段を飛ばす (フェイルオープン)
+   - 後段の LLM 確認: 「負荷の増大を招かないとは言えません」は「負荷が増えることがある」と同じ意味で、「負荷が増えない」と畳めば誤訳。litotes が本質的な箇所は安全に畳めなければ残す。G を削ったら主張の強さが変わっていないか、H で削った文が新しい含意・条件・例外を持っていなかったかを一文ずつ確かめる。迷ったら残す
 
-   出典は meiseki/SKILL.md §4 Step 5 と examples/meiseki/README.md 01。
+   出典は meiseki/SKILL.md §4 Step 5、README.md「意味の検算」、examples/meaning/README.md、examples/meiseki/README.md 01。
 
 7. **処理は「検出と採点は決定論層、書き換えは LLM 層」の分担で組まれている**。順序は次のとおり。
    1. textlint を `npx` で実行し、行・列つきの指摘から RLS(before) を出す
    2. 任意で Jev 層が文脈判断 (G の語に実質があるか／H の段落が反復か／A が意図的な litotes か) を 1 リクエストにまとめて返す。確率 p ≥ 0.8 は yes、p ≤ 0.2 は no として採用し、その間は LLM が判断する
    3. LLM が A→H の順に書き換える
-   4. textlint を再実行して検算する
+   4. `meiseki-invariants.js` で前後の印を比べる (項目 6)
+   5. textlint を再実行して検算する
 
    textlint では取れない部分は LLM が担う。具体的には B1 長い連体修飾、C の「の」連鎖の深さと一般の名詞化、F、辞書外の G、H、E の散文に戻すかの判断。原典はこれを独自価値と呼ぶ (meiseki/SKILL.md §4・§8、README.md「アーキテクチャ」)。
 
@@ -116,7 +122,7 @@ distilled_at: 2026-11-15
 
     無効にしているルールは `arabic-kanji-numbers`、`no-mix-dearu-desumasu`、`ja-no-mixed-period`、`no-dropping-the-ra`、`no-exclamation-question-mark`、`ja-no-abusage`、`ja-no-successive-word`、`ja-unnatural-alphabet`、`max-comma`、`no-unmatched-pair`。
 
-    パッケージは版を固定している: `textlint@15.8.0`、`textlint-rule-preset-ja-technical-writing@12.0.2`、`textlint-rule-preset-ai-writing@1.1.0`、`textlint-rule-prh@6.1.1`。Markdown のガードは `markdownlint-cli@0.50.0`。実行時は `npx --min-release-age=7` を付ける (meiseki/SKILL.md Step 2、package.json)。v0.10.1 で版を上げたが、textlint.config.json のルール構成は変わっていない。
+    パッケージは版を固定している: `textlint@15.8.0`、`textlint-rule-preset-ja-technical-writing@12.0.2`、`textlint-rule-preset-ai-writing@1.1.0`、`textlint-rule-prh@6.1.1`。Markdown のガードは `markdownlint-cli@0.50.0`。実行時は `npx --min-release-age=7` を付ける (meiseki/SKILL.md Step 2、package.json)。v0.10.1 で版を上げたが、textlint.config.json のルール構成は変わっていない (v0.11.0 でも同じ)。
 
 12. **yorisoi の textlint 設定は同じプリセットを読み手向けに締めている** (.agents/skills/yorisoi/references/textlint-yorisoi.config.json)。
     - `sentence-length` は 50、`max-kanji-continuous-len` は 4
@@ -153,7 +159,10 @@ distilled_at: 2026-11-15
 | トピック | 原典パス | 一行説明 |
 |---|---|---|
 | 全体像・3 層構成・RLS・hook・Jev | README.md | 560 行。英語版は README.en.md |
-| meiseki 本体の手順 | .agents/skills/meiseki/SKILL.md | §4 の 8 ステップ、§5 ガードレール、§7 RLS、§8 textlint が拾える／拾えないもの |
+| meiseki 本体の手順 | .agents/skills/meiseki/SKILL.md | §4 の 8 ステップ (Step 5 が意味の検算)、§5 ガードレール、§7 RLS、§8 textlint が拾える／拾えないもの |
+| 意味の検算スクリプト | .agents/skills/meiseki/scripts/meiseki-invariants.js | 冒頭コメントに引数と終了コード (0 恐れなし／1 恐れあり／2 判定不能／3 対象外)。NEG・COND・MODAL の印の定義、保護ブロックの分割規則 |
+| 意味の検算の適用例 | examples/meaning/README.md | 意味を変えた 7 種類 (否定反転・数値・条件削除・ぼかしの言い切り化・識別子・インラインコード・範囲拡大)、保った例、原文に戻す例、検出できないもの |
+| 意味の検算の所要時間 | experiments/meaning-benchmark/README.md | textlint 1 回の 5% 未満という実測と、誤検出の確かめ方 (規則は examples/meiseki の 9 組で調整した、と限界も明記) |
 | 高負荷構文カタログ A–H | .agents/skills/meiseki/references/patterns.md | 267 行。各項目に Before／After と注意、末尾に全体の検算 |
 | meiseki の textlint 設定 | .agents/skills/meiseki/references/textlint.config.json | 3 プリセットで有効・無効にしたルールの実体 |
 | LLM 定型句と二重否定の補完辞書 | .agents/skills/meiseki/references/prh-llm-phrases.yml | I / A1 補完 / G1〜G3 の正規表現と expected |
@@ -172,7 +181,8 @@ distilled_at: 2026-11-15
 
 ## 蒸留の範囲外
 
-- **Jev 層の運用全般**: キーの解決 4 経路、OS のセキュアストアへのキャッシュ、`.meiseki.json` のポリシー、`.meiseki-no-jev` マーカー、送信データと ZDR の扱いが該当する。いずれも外部 API (TypeSafe) 固有の話なので、README.md「Jev 高速判定層」と scripts/jev-judge.js を直接読む。
+- **Jev 層の運用全般**: キーの解決 4 経路、OS のセキュアストアへのキャッシュ、`.meiseki.json` のポリシー、`.meiseki-no-jev` マーカー、送信データと ZDR の扱いが該当する。いずれも外部 API (TypeSafe) 固有の話なので、README.md「Jev 高速判定層」と scripts/jev-judge.js を直接読む。`.meiseki.json` の置き場所・読まれる順・`allow`／`ask`／`deny` と ZDR 申請の案内は v0.11.0 で足された examples/config/README.md にある。
+- **意味の検算のテスト・ベンチの実装**: scripts/test-meaning.js、scripts/bench-meaning.js、experiments/meaning-benchmark/results/。段落対応づけのアルゴリズム詳細も含め、規則の利用者には要らない。
 - **rikai の出題・採点・進捗表示の実装**: quiz-format.md、explainer-html.md、explainer-textbook.md、dashboard.md、scripts/build_quiz.py、quiz_server.py、build_textbook.py、build_dashboard.py が該当する。文章規範ではなくクイズアプリの仕様。v0.10.0 で足された進捗ダッシュボード (`.rikai/dashboard.html`、study.md から決定的に生成する読み取り専用 HTML) と手動の卒業 (`manual_graduation`。挑戦履歴には書かない) もここに含める。
 - **jp-pdf**: .agents/skills/jp-pdf/。PDF の組版であり、文章の規則ではない。
 - **プラグインの配布と install 手順**: .claude-plugin/、.codex-plugin/、hooks/、README.md「インストール」。
@@ -180,5 +190,5 @@ distilled_at: 2026-11-15
 - **原典内の食い違い** (蒸留時点の実測):
   - README.md の textlint 設定の節は `no-nfd` を無効化したルールに挙げている。しかし textlint.config.json では `no-nfd` が `true` で、カテゴリ I の検出に使われている。設定ファイルの値を正とする。
   - README.md「アーキテクチャ」が参照する `docs/diagrams/` は、この commit には存在しない。
-  - README.md の見出しには「v0.6.0 から」等の版表記が残っている。package.json の版は 0.10.1。
+  - README.md の見出しには「v0.6.0 から」等の版表記が残っている。package.json の版は 0.11.0。
   - vocab/README.md は基本語彙六千の残りを「目標レベルが N3 以上のとき」に許容すると書く。一方 vocab-check.js の実装 (`targetIdx >= LEVELS.indexOf('N4')`) は N4 から許容する。実装を正とした。

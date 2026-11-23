@@ -27,6 +27,59 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-24
+
+この実行でも Grep ツールと grep コマンドは使えなかった。そのため全文検索での照合はしていない。照合は次のファイルを Read で確かめた: `skills/ja-slop-review/SKILL.md`、`skills/ja-slop-review/references/syntax-patterns.md` §12・§13、`~/.claude/settings.json`。内訳は RECOMMENDED 4 件・FYI 12 件。claude-cookbooks (CI だけ) と textlint-rule-preset-ja-technical-writing (依存更新とリリース手順だけ) は候補なし。
+
+### 再蒸留 (yomiyasu) から
+
+v3.3.0 (`8831b14`)。§12「係り受け」は「Make an ambiguous dependency unique with a comma or word order」の 1 文だけで、語順で直してよい範囲の歯止めが無い。手順 7 には、入れ子の節で役が入れ替わったかの確かめも、範囲の語の入れ替わりの確かめも無い。どちらも Read で確かめた。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | `syntax-patterns.md` §12「係り受け」に、語順で直さない条件を足す。次の場合は直さない: 長い・主語と述語が遠いというだけの文、主題の「は」のあとに「が」の節が続く文、主語を寄せると原文にない強調や対比が出る文、文頭の「は」が後ろの文まで話題を決めている文。文頭の条件や時の句は文頭に残す。2 通りに読めるなら語順で決めずに尋ねる。いずれも直す箇所を減らす歯止め | `skills/yomiyasu/SKILL.md` § 主語と目的語の明確化、`CHANGELOG.md` § 3.3.0 |
+| 未対応 | RECOMMENDED | skill | `ja-slop-review/SKILL.md` 手順 7 に 2 つの確かめを足す。(1) 語順を変えた文では、述語ごとの主語と相手、使役・受け身、否定や「だけ」の掛かる範囲を原文と読み比べる。例:「部長が新人が会議で発言することをやめさせた」→「部長が会議で発言することを新人がやめさせた」。(2) 範囲を狭める「を除き・以外は」と、広げる「以外も・以外でも」を入れ替えていないか。どちらも原文に戻す側の確かめ | 同上 § 主語と目的語の明確化、`CHANGELOG.md` § 3.3.0 (diff `nested`)・§ 3.2.3 |
+| 未対応 | FYI | skill | 主語と述語のあいだに別の主語の節が挟まる文は、長い節を前に出し、主語を述語の直前に置いて直す。ただし、これは直す箇所を増やす規則になる。人の文の強調・対比を変えないことは例で確かめられていない (原典の例は合成の 1 組だけ)。3.3.0 全体では、判定役の「意味が変わった」指摘が 7 件から 17 件に増えた | 同上、`skills/yomiyasu/references/persona.md` 5 章、`CHANGELOG.md` § 3.3.0 限界 |
+| 未対応 | FYI | skill | calques 型 4 に段 (stage) と門 (gate) が加わった。残す形も決まっている: 前段・後段・手段・関門、数の後の段、段位。§13「漢字 1 字の名詞」に足すかどうかを決める材料。ただし、語の言い換え規則として渡したときの効き方は測られていない | `skills/yomiyasu/references/calques.md` § 1・3・4 (`49a2c53`) |
+| 未対応 | FYI | skill | 3.3.0 で、外す読点の形が広がった。7 字までの場面の枠 (「そのときは、」) と、並べた語のあとの主題 (「A、B、C は、」) が加わった。§12「間を作るだけの読点」で直す箇所を増やす向きの変更で、原典も人の文に指摘が出ることを限界に書いている | `CHANGELOG.md` § 3.3.0 |
+
+### 再蒸留 (meiseki) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | `ja-slop-review/SKILL.md` 手順 7 の意味検算は、読み比べだけで行っている。その前に、変わった段落ごとに印を数えて比べる段を置く。比べるのは、否定の数の奇偶、条件・例外・限定の印、確度・義務・全称・部分の印、数値・識別子・「」の語。引っかかった段落は 1 回だけ直し、まだ残れば原文に戻す。原典は、LLM の読み直しだけでは見落としに気づく手段がないことを理由に挙げている。戻す側の確かめなので、書き手の文は変えない | `.agents/skills/meiseki/SKILL.md` §4 Step 5、`examples/meaning/README.md` (`f28f59a`) |
+| 未対応 | FYI | skill | 印の比較で何も出なくても合格ではない。語順だけの入れ替え (「A は B より速い」→「B は A より速い」) は検出できない。そのため、上を入れても読み比べは外さない。規則は 9 組の例で調整されたもので、誤検出率は測られていない | `examples/meaning/README.md`「この検算で分からないこと」、`experiments/meaning-benchmark/README.md` |
+
+### 再蒸留 (awesome-harness-engineering) から
+
+README の注記だけが根拠で、論文と記事の本文は読んでいない。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | 運用 | 第三者の `SKILL.md` や MCP サーバは、入れる前に静的規則で点検する。Agent Skills Hub は約 13.8 万件を 44 の規則で格付けし、star 20 未満の repo は深刻なサプライチェーンリスクが約 9 倍だったと報告している。ユーザー設定では外部 marketplace の plugin を複数有効にしている。一方、このハーネスに入れる前の点検手順は無い | README.md Skills & MCP「Agent Skills Hub」(`00396a4`) |
+| 未対応 | FYI | hook / 運用 | hook や guard のテストでは失敗する経路も試し、必須の故障シナリオが一度も発火しなかったらテストを落とす (AgentProbe)。PreToolUse hook は 3 本ある。ただし、そのテストの有無は確かめていない | README.md Evals「AgentProbe」(`1167c99`) |
+| 未対応 | FYI | CLAUDE.md | root の指示ファイルは短い地図にとどめ、ディレクトリごとに置き、CI の整合性チェックで構造を保つ実例 | README.md Tutorials「Harness Engineering Study Archive」(`18110e7`) |
+| 未対応 | FYI | 運用 | ハーネスを固定し、記録済みの run をモデルだけ替えて再生して、退行を測る (EvalShift)。モデルを切り替えるときの回帰確認の型 | README.md Evals「EvalShift」(`a419208`) |
+| 未対応 | FYI | 運用 | orchestration 層だけを替えると、品質はそのままでコスト −41%・時間 −44% (The Harness Effect)。token コストはハーネスの設計レビューで扱う | README.md Production「The Harness Effect」(`4ef3aa1`) |
+| 未対応 | FYI | settings / hook | 呼び出しごとの allowlist ではなく、ツール間で共有するイベント履歴で認可を判定する。前の file read を理由に、後の network request を拒否できる (Strands Box)。このハーネスの hook は呼び出し単位の拒否ガードで、履歴は持たない | README.md Security「Strands Box」(`8bf1ba6`) |
+
+### 再蒸留 (claude-code-best-practice) から
+
+二次資料の concepts run の 1 行記録で、commands 表・settings 表には反映されていない。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | settings | v2.1.328 で auto mode が対話セッションの開始モードになった、と記録されている。ユーザー設定は `permissions.defaultMode` を明示しているので当たらない | `changelog/best-practice/concepts/changelog.md` 2026-11-19 #22 |
+| 未対応 | FYI | 運用 | v2.1.328 で `/code-review` はバグと CLAUDE.md 違反に絞られ、整理系の指摘は `/simplify` に移った。`/code-review` だけでレビューしていると、整理系の指摘は出ない | 同 #22・#25 |
+
+### 再蒸留 (smarthr-design-system) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | 規則を 1 行に要約して抽出したら、例外が落ちた。checklist.yaml に「動詞の終止形」だけが残り、サ変動詞の「する」を省く例外が抜けたため、AI が「追加」を「追加する」に直す状態になった。蒸留版で規則を縮めるときにも起こりうる | `33075d6a`、`src/content/articles/products/components/button/checklist.yaml` |
+| 未対応 | FYI | skill | 原典は、基準とのズレを「違反」と扱わないと明記した。design-review も「違反」「NG」「必須」と言わず、「ガイドラインでは〜とされている」の型で書く。ja-slop-review が SmartHR の規則を根拠に指摘するときの言い回しを決める材料 | `src/content/articles/products/index.mdx`、`plugins/smarthr-design-system/skills/design-review/SKILL.md` |
+| 未対応 | FYI | skill | 修正系の skill の歯止めが 2 つある。(1) `--fix` は、ユーザーが自分のメッセージにその文字列を書いたときだけ有効にする。(2) 「起動した」と書いただけでツール呼び出しが出ていないことがあるので、呼び出しを確かめる | 同 design-review/SKILL.md (`6370fea1`・`4bf36537`) |
+
 ## 2026-11-19
 
 この実行では Grep ツールも grep コマンドも使えなかったので、全文検索での照合はしていない。照合は該当ファイルの Read による (`skills/ui-design/SKILL.md`、`skills/ja-slop-review/SKILL.md`、`skills/ja-slop-review/references/syntax-patterns.md`)。RECOMMENDED 5 件・FYI 6 件。

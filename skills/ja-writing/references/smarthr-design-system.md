@@ -1,7 +1,7 @@
 ---
 source: https://github.com/kufu/smarthr-design-system
-distilled_commit: 6407943a030d5f0abd256ddcab20badac59f9b3c
-distilled_at: 2026-11-18
+distilled_commit: 7290b9fb5864b0fef0c5820ec17c13c68b92c000
+distilled_at: 2026-11-24
 ---
 
 # smarthr-design-system 蒸留版 (ライティングガイドライン)
@@ -21,7 +21,7 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 
 ## まず押さえる
 
-1. **位置づけは「指針」であって強制規則ではない**。原典自身が「絶対に守らないといけない規則ではありません」と明言し、わかりやすさを都度確認する姿勢を求める。適用範囲はアプリだけでなくヘルプセンター等、ユーザーが触れるもの全部。重視する観点は一貫性・統一感・検索性・標準化・効率化の 5 つで、「日本語スタイルガイド 第3版」を参考にしたと書く (C/index.mdx, C/how-to-use.mdx)。
+1. **位置づけは「指針」であって強制規則ではない**。原典自身が「絶対に守らないといけない規則ではありません」と明言し、わかりやすさを都度確認する姿勢を求める。適用範囲はアプリだけでなくヘルプセンター等、ユーザーが触れるもの全部。重視する観点は一貫性・統一感・検索性・標準化・効率化の 5 つで、「日本語スタイルガイド 第3版」を参考にしたと書く (C/index.mdx, C/how-to-use.mdx)。デザインシステム全体の側でも、プロダクトのトップに「ガイドラインとの向き合いかた」節が加わった: 基準は守るべき規則ではなく「補助線」、どこまで合わせるかは開発現場の判断を優先、合わせないなら理由を説明できるようにする、**基準が書かれていないことは禁止の意味ではない**、人のレビューでも AI エージェントの参照でも基準とのズレは「違反」ではなく判断理由を確かめるきっかけとして扱う。迷ったときの「基準判定フローチャート」は画像のみだったが、12 ステップのテキスト版が本文に書き起こされた (src/content/articles/products/index.mdx, src/content/articles/products/usability/usability-checklist.mdx)。
 
 2. **構成は 5 つ**: 基本的な考え方 (writing-style)・用字用語 (idiomatic-usage)・UI テキスト・ヘルプページ・リリースノート。原典が明示する依存は「用字用語や UI テキストなどの具体的なガイドラインは基本的な考え方に基づく」だけ。エラーメッセージ・ステータスラベル・通知メール等は「基本的な考え方と用字用語に準拠」、ヘルプページとリリースノートは「基本的な考え方・用字用語・UI テキストに準拠」と宣言する。ただしヘルプページは「ユーザーのメンタルモデルに配慮して特例を設けている」と明記しており、実際に basic-rule は英数字・記号を半角とする (記号ページの全角原則と異なる) (C/how-to-use.mdx, C/error-messages/index.mdx, C/help-center/index.mdx, C/help-center/basic-rule.mdx, C/release-note/releasenotes.mdx)。
 
@@ -39,7 +39,7 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 
 9. **操作語は UI 部品ごとに動詞を固定する**: ボタンは「押す」、テキストリンクは「開く」、ラジオは「選択する」、チェックボックスは「チェックを入れる / 外す」、スイッチは「有効にする / 無効にする」。「クリック」「タップ」は使わない。止める系 (キャンセル / 取り消し / 中断) と戻す系 (解除 / 差し戻し / 戻す) は意味の違いで使い分ける。外来語の操作名は語ごとに判断し、インポート・エクスポート等は和語側に寄せる一方でアップロード・ダウンロードはそのまま使う (C/idiomatic-usage/action.mdx)。
 
-10. **UI テキストは品詞で書き分ける**: 説明文は敬体で動詞まで書き体言止めを避ける。画面タイトル・項目名は名詞 (助詞は「の」)。ボタンは動詞の終止形だがサ変動詞の「する」は省く (オブジェクトを付けるなら助詞は「を」)。ダイアログのタイトルと実行ボタンのアクションを一致させる。リンクは「こちら」を避けて移動先を想起できる文言にする (WCAG 2.4.4 を参考文献に付ける)。監査ログだけは検索性を優先し、完結文ではなく「目的語 + を + 動詞」型の体言止めに統一する (C/ui-text/app-writing.mdx)。
+10. **UI テキストは品詞で書き分ける**: 説明文は敬体で動詞まで書き体言止めを避ける。画面タイトル・項目名は名詞 (助詞は「の」)。ボタンは動詞の終止形だがサ変動詞の「する」は省く (理由は「短くシンプルなほうが業務アプリに適する」。オブジェクトを付けるなら助詞は「を」で、画面タイトル・項目名の「の」と対になる)。この例外は Button コンポーネントのページのライティング節と、その AI スキル用 checklist.yaml の sub_items にも同じ OK / NG 例付きで書かれた (それ以前はリンクだけで、抽出された項目から例外が落ちていた)。ダイアログのタイトルと実行ボタンのアクションを一致させる。リンクは「こちら」を避けて移動先を想起できる文言にする (WCAG 2.4.4 を参考文献に付ける)。監査ログだけは検索性を優先し、完結文ではなく「目的語 + を + 動詞」型の体言止めに統一する (C/ui-text/app-writing.mdx)。
 
 11. **エラーメッセージは「事象・原因・対処」の 3 要素**。目的は「ユーザーがメッセージを見て問題を解決でき、次の操作に進める」こと。全部を載せられないときは**原因 > 対処 > 事象**の優先順。表示スペースで要素を変える: NotificationBar は原因 (または原因 + 対処) を 1 文程度、バックグラウンド処理は結果概要に事象・エラー詳細に原因と対処を書き、両者に同じ文を繰り返さない。原因の型 (仕様上不可・制限値超過・既に済・存在しない・未入力・未選択・不正・不一致・権限なし・不明) ごとに `{{変数}}` 入りの文型テンプレートがある (C/error-messages/overview.mdx, notificationbar.mdx, background-process.mdx)。
 
@@ -51,10 +51,14 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 
 15. **textlint との関係は「この repo 自身の MDX を lint している」まで**。ガイドライン本文は textlint-rule-preset-smarthr に言及していない。repo の `package.json` が `textlint-rule-preset-smarthr` (^1.38.3) と `textlint-rule-prh` を devDependency に持ち、`.textlintrc` で preset の一部ルール (句点混在・文長・全角半角間スペース・括弧周りスペース) を無効化し、`dict/prh-books.yml` (蒸留時点では中身はコメントアウトのみ) を読む。ガイドライン本文中の NG 例は `{/* textlint-disable */}` コメントで lint から除外している。各ガイドライン規則と preset のルールの対応表は原典に無い (AGENTS.md, package.json, .textlintrc)。
 
+16. **配布 AI プラグインの design-review はライティングガイドラインを直接は読まない**。`plugins/smarthr-design-system/` の design-review スキルは `.tsx` / `.jsx` の差分を component-guidelines と design-pattern-guidelines の 2 観点で並列レビューするもので、入力に contents/ は含まれない。UI 文言の規則が効くのは、コンポーネントの checklist.yaml に写された分 (Button のライティング節など) だけ。出力の言い回しは「違反」「NG」「必須」を避け「ガイドラインでは〜とされている」型に揃える (plugins/smarthr-design-system/skills/design-review/SKILL.md, AGENTS.md)。
+
 ## 索引テーブル
 
 | トピック | 原典パス | 一行説明 |
 |---|---|---|
+| デザインシステム全体のガイドラインの位置づけ | src/content/articles/products/index.mdx | 「ガイドラインとの向き合いかた」節。補助線であり規則ではない、基準が無い≠禁止 |
+| 基準判定フローチャート (テキスト版) | src/content/articles/products/usability/usability-checklist.mdx | 末尾。基準に合わせる / 新しい基準を作る / 今回は合わせない を決める 12 ステップ |
 | ガイドラインの目的・適用範囲・5 観点 | C/index.mdx | 読解負荷の軽減と日本語の曖昧さの吸収。日本語スタイルガイド第3版を参考 |
 | 使い方と構成 | C/how-to-use.mdx | 強制ではなく指針。5 層の役割と、どの場面でどの層を引くか |
 | 文体の原則 9 項目 | C/writing-style.mdx | 冗長・敬語過多・表外読み・カタカナ語・格助詞省略・社内用語など。各項に出典 / 議事録 |
@@ -69,6 +73,7 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 | SmartHR 固有の用語 | C/idiomatic-usage/usage.mdx | ホーム、マスターデータ、基本機能 / オプション機能、呼びかけの敬称、管理者の具体化など |
 | 類似語の使い分け | C/idiomatic-usage/other.mdx | デフォルト / プリセット、テンプレート / フォーマット、「場合」と「とき」の入れ子など |
 | UI テキスト全般 | C/ui-text/app-writing.mdx | 説明文・画面タイトル・ボタン・ダイアログ・移動の助詞・リンク・一覧・ページタイトル・複製名・Tooltip・監査ログ |
+| Button のライティング (コンポーネント側) | src/content/articles/products/components/button/index.mdx, src/content/articles/products/components/button/checklist.yaml | 終止形・サ変の「する」省略・助詞「を」・アクションの明示。checklist.yaml は AI スキルの合成元 |
 | ステータスラベル | C/ui-text/statuslabel.mdx | タスクの段階 (開始前 / 進行中 / 完了後 / 問題発生) ごとの語尾の型 |
 | 通知メール | C/ui-text/mail.mdx | 件名・本文・フッター。件名の接頭辞 / 接尾辞、期日は具体的な日付で |
 | アカウント・従業員名の表記 | C/ui-text/crew-account.mdx | 同姓同名への配慮、氏名と敬称、社員番号の併記、ビジネスネームと戸籍名 |
@@ -92,6 +97,7 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 | アクセシビリティ向上に分類する文言変更 | C/release-note/text-check-list.mdx | 該当する変更 6 種と該当しない変更 |
 | AI 機能のライティング | C/ai/index.mdx, ai-name.mdx, ai-help.mdx | 命名とヘルプページの記載事項 |
 | repo の lint 設定 | package.json, .textlintrc, dict/prh-books.yml, AGENTS.md | textlint-rule-preset-smarthr の採用と無効化ルール |
+| 配布 AI プラグインの design-review | plugins/smarthr-design-system/skills/design-review/SKILL.md | 差分レビューの観点・重大度 4 段・断定しない出力文言 |
 
 ## 出典 / 議事録の辿り方
 
@@ -106,5 +112,6 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 - **規則ごとの具体的な推奨 / 非推奨の語、OK / NG 例文、エラーメッセージの文型テンプレート全文**: ライセンス指定が無いため転載しない。C/idiomatic-usage/ichiran.mdx を起点に該当ページを直接読む。
 - **ヘルプページのタイプ別ライティングパターンの具体文型**: C/help-center/overview.mdx・step-by-step.mdx 末尾と faq.mdx の単一記事構成内 (52 行目付近) にある「ライティングパターン」節。basic-rule.mdx の「具体的な書き方のヒント」(63 行目以降) も原典で読む。basic-rule.mdx 末尾 (340 行目以降) はタイプ別ページへのリンク集で、パターン本体は各タイプのページにある。
 - **ライティング以外の領域** (コンポーネント・デザインパターン・デザイントークン・色・タイポ・IA・アクセシビリティ・ユーザビリティ): 同じ `src/content/articles/products/` 配下の components/、design-patterns/、design-tokens/、information-architecture/、usability/ と、`src/content/articles/` 直下の basics/・accessibility/ にある。本蒸留では扱わない。design-patterns/ は 22793ac7 で 1 ファイル構成のパターンも `<slug>/index.mdx` 形式に揃えられたので、`<slug>.mdx` で探すと見つからない。
+- **design-review スキルの手順詳細** (対象の決め方、`--fix` / `--no-existing`、サブエージェントの雛形 references/reviewer-prompt.md、指摘のまとめ方): コードレビューの手順でライティングの規則ではないので要点だけに留めた。plugins/smarthr-design-system/skills/design-review/ を直接読む。
 - **textlint-rule-preset-smarthr の個別ルール内容**: 別 repo (原典外)。この repo で分かるのはバージョン指定と無効化したルール名だけ (.textlintrc)。
 - **多言語 (英語ほか) の表記規則**: 対象ディレクトリ内にあるのは断片のみ — 日付形式の言語別一覧 (C/idiomatic-usage/count.mdx)、全文英語・翻訳結果での半角括弧 (C/idiomatic-usage/symbol.mdx)、「母国語」ではなく「得意な言語」(C/idiomatic-usage/other.mdx)、多言語化ページのレビュー (C/help-center/review.mdx)。翻訳文の書き方を体系的に定めたページは無い。
