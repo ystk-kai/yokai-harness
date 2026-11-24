@@ -27,6 +27,44 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-25
+
+この実行でも Grep ツールと grep コマンドは使えず、全文検索での照合はしていない。照合は `skills/ja-slop-review/SKILL.md` (手順 7) と `~/.claude/CLAUDE.md` を Read で確かめた。内訳は RECOMMENDED 1 件・FYI 7 件。smarthr-design-system (依存更新・CI と、蒸留の範囲外のアクセシビリティ 4-1 の手順追加だけ) は候補なし。
+
+### 再蒸留 (yomiyasu) から
+
+v3.4.0 (`fbd4e42`)。手順 7 の数え比べは「numbers」を数えるが、数字の前の「▲」「△」(負の符号) と時刻の「午前」「午後」は印に入っていない。話題ごとの人の組み合わせの入れ替わりも、読み比べの確かめに無い。Read で確かめた。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | `ja-slop-review/SKILL.md` 手順 7 の数え比べの印に、数字の前の「▲」「△」と、時刻の「午前」「午後」を足す。「前年同期比▲3.2%」→「3.2%」、「午後3時」→「午前3時」は数字が残るので、今の数え比べでは数が合ったまま意味が変わる。読み比べには、話題ごとに人の組み合わせが入れ替わった形 (「初日の受付は田中さん、二日目は鈴木さん」の入れ替え) と、否定が別の話題へ移った形を足す。当たったら原文に戻す。戻す側の確かめなので直す箇所は増えない。取り込んだら MAPPING.md の履歴にも足す | `CHANGELOG.md` § 3.4.0 (diff `meridiem`・`topic`) |
+| 未対応 | FYI | skill | 「AすることとBすることを〜」のように並べた 2 節の順を入れ替えただけの推敲は役が変わらない。3.4.0 で diff の `nested` から外れた。手順 7 の語順の確かめは述語ごとに読み比べるので、今の手順でも誤って戻す恐れは小さい | `CHANGELOG.md` § 3.4.0 |
+| 未対応 | FYI | skill | スライドの見出しには、カギ括弧・引用符の中と数字の区切りのほかの読点を残さない (並べた語は「・」、条件・逆接のあとの読点も外す)。直す箇所を増やす規則で、人の見出しに当てて言い回しを変えないかは原典でも確かめていない。当たるとすれば `visual-slop-review` の slides-diagrams 側 | `doc-types/slides.md` § 2・4、`CHANGELOG.md` § 3.4.0 |
+
+### 再蒸留 (nihongo) から
+
+v3.1.1 (`4eee0fc`)。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | skill | 「足しすぎ」の癖に 2 つが加わった。頼まれていない長文の免責注釈と、同じ見出し・ラベルの列ごとの反復 (3 回以上なら行見出しに 1 回だけ)。新規執筆と資料構成の補助規則で、人の文に当てたときの効き方も評価記録も無い。banlist への追加は保留 | `nihongo/references/ai-patterns.md`、`nihongo/references/slides-and-documents.md` (`5d7d5ec`) |
+| 未対応 | FYI | skill | v3.1.1 の 4 点 (お知らせの表題、目上への LINE の敬語、ES の下書き、スライド構成案) は「ベンチマークから改善」とあるが、課題も結果も `evaluations/` に無い。ja-writing の文書種別の根拠に引くときは作者の主張として扱う。「全社員向けお知らせのカタカナ語は直してよい」は同じファイル冒頭の「言葉はほぼ触らない」と食い違うので、修正の許可として読まない | `nihongo/references/notices.md`、`CHANGELOG.md` § 3.1.1 (`0a6b21f`) |
+| 未対応 | FYI | hook | 原典の Claude Code hook 例が `nihongo-check git --auto-profile --hook` (PostToolUse `Edit\|Write`) に変わった。依頼文を見ずに HEAD と比べる性質は同じで、文書を意図して書き換える repo には向かない。入れる理由は今回も無い | `examples/hooks/claude-code-hook.json` (`56d18b0`) |
+
+### 再蒸留 (awesome-harness-engineering) から
+
+README の注記だけが根拠で、論文本文は読んでいない。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | ハーネス内蔵のセキュリティレビュー (`/security-review` 等) を唯一の検査にしない。built-in review policy は一部の脆弱性クラスを除外・制限し、同じモデルでも policy ありは 9/20、外すと 16/20 を検出した。SAST (recall 82.4%) と agent (79.3%) は相補的で、併用で 101/108。`~/.claude/CLAUDE.md` に `/security-review` を検査手段とする記述は無く、このハーネスは内蔵レビューに頼っていないので FYI | README.md Evals & Verification「VulnBench 2.0」(`fe3dfbc`) |
+
+### 再蒸留 (claude-code-best-practice) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 / skill | v2.1.331 で bundled skill `ship` (commit・push・PR 作成・レビュー・PR の見張りと修正 push) と `steward` (見張りだけ) が入り、`/ship:review` (`/code-review` の alias) も加わった。自作の PR 運用手順と役割が重なりうるが、原典は重複時の優先順位を書いていない。置き換えの判断材料に留める | `best-practice/claude-skills.md`、`best-practice/claude-commands.md` (`6fa9200`・`db145cb`) |
+
 ## 2026-11-24
 
 この実行でも Grep ツールと grep コマンドは使えなかった。そのため全文検索での照合はしていない。照合は次のファイルを Read で確かめた: `skills/ja-slop-review/SKILL.md`、`skills/ja-slop-review/references/syntax-patterns.md` §12・§13、`~/.claude/settings.json`。内訳は RECOMMENDED 4 件・FYI 12 件。claude-cookbooks (CI だけ) と textlint-rule-preset-ja-technical-writing (依存更新とリリース手順だけ) は候補なし。

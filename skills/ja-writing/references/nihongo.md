@@ -1,12 +1,12 @@
 ---
 source: https://github.com/AnIT012/nihongo
-distilled_commit: 465bb6fa183bb21f438e72a1b16291eb7cfcdf62
-distilled_at: 2026-11-24
+distilled_commit: 4eee0fc90cd500cd36dfcae4277e2e0f4f7e644f
+distilled_at: 2026-11-25
 ---
 
 # nihongo 蒸留版
 
-AI が書いた日本語の仕上げと確認をするスキル (v3.0.0、AnIT012 作、MIT)。場面ごとの書き分け (メール・チャット・お知らせ・技術文書・ES など) を 21 本の references に持ち、標準ライブラリだけで動く意味ズレ検査 CLI (`nihongo-check`) を同梱する。最初のコミットは 2026-11-17 で、1 週間で 1.0.0 から 3.0.0 まで進んだ (CHANGELOG.md)。
+AI が書いた日本語の仕上げと確認をするスキル (v3.1.1、AnIT012 作、MIT)。場面ごとの書き分け (メール・チャット・お知らせ・技術文書・ES・マーケ文など) を 22 本の references に持ち、標準ライブラリだけで動く意味ズレ検査 CLI (`nihongo-check`) を同梱する。最初のコミットは 2026-11-17 で、1 週間で 1.0.0 から 3.1.1 まで進んだ (CHANGELOG.md)。v3.1 系の変更の大半は Personal (HITL 受信箱・MCP サーバ・同期フォルダ) と LP・CI で、文章規則の変更は場面別資料の追記 (まず押さえる 15・16) と検査スクリプトの修正に限られる。
 
 **この蒸留版は ja-writing の中で「補」の位置づけ**。AI 臭の判定と修正の規律は `natural-japanese` と `yomiyasu` を先に当たり、nihongo は次の 3 つの出所としてだけ引く。
 
@@ -19,23 +19,24 @@ AI が書いた日本語の仕上げと確認をするスキル (v3.0.0、AnIT01
 - 課題はすべて AI が書いた合成文で、課題も「変わってはいけない点」の一覧も作者が作った。人が書いた文での測定は無い
 - 判定は作者 1 人か Claude (直す側も Claude)。1 組 4〜16 題、各 1〜2 回
 - 比較相手の「推敲用に作られた別の公開スキル」の名前は書かれていない。出力と判定プロンプトは公開されていない
-- 評価の数字は v2.2.0 時点。v3.0.0 で SKILL.md を 275 行から 93 行に書き直した後は測り直していない (README.md § 評価、CHANGELOG.md § 3.0.0)
+- 評価の数字は v2.2.0 時点。v3 系では測り直していないと README.md § 評価が明記する
+- v3.1.1 で「ベンチマーク結果から改善した」とする 4 点 (お知らせの表題・LINE の敬語・ES の下書き・スライド構成。CHANGELOG.md § 3.1.1) は、課題も結果も `evaluations/` に載っていない (465bb6f 以降 `evaluations/` は変更なし)
 
 引けるのは「作者の実験ではこうだった」まで。nihongo だけを根拠に `ja-slop-review` の直す箇所を増やさない。
 
 ## Contents
 
-- まず押さえる (1〜14)
+- まず押さえる (1〜16)
 - 意味ズレ検査スクリプトの中身
 - 索引テーブル
 - 蒸留の範囲外
 
 ## まず押さえる
 
-1. **構成は Lite と Full の 2 段**。Lite (`nihongo/ALWAYS.md`、約 1,200 字) を常時読み込み、Full (`nihongo/SKILL.md` 93 行 + `nihongo/references/` 21 本) は人に出す文章を書くときに読む。Full は Kernel 8 項目、判断の優先順位 (明示指示 → 会話・資料の事実 → プロフィール → 媒体の慣習 → 一般の慣習 → モデルの推定)、場面別の資料の振り分けからなる (nihongo/SKILL.md)
+1. **構成は Lite と Full の 2 段**。Lite (`nihongo/ALWAYS.md`、約 1,200 字、Web 用の `nihongo/WEB.md` もある) を常時読み込み、Full (`nihongo/SKILL.md` 95 行 + `nihongo/references/` 22 本) は人に出す文章を書くときに読む。Full は Kernel 8 項目、判断の優先順位 (明示指示 → 会話・資料の事実 → プロフィール → 媒体の慣習 → 一般の慣習 → モデルの推定)、場面別の資料の振り分けからなる (nihongo/SKILL.md)
 2. **Kernel 1: 迷ったら低い方・少ない方**。AI の文は敬語が 1 段高く、説明が 1 文多く、まとめが 1 つ多くなりやすい、とする。正式文書の型と頼まれた丁寧さは削らない。これは**新しく書くときの指針**で、修正時は `keigo.md` 末尾の「敬語を直す時は、原文の丁寧さを下げない」と `ja-slop-review` 手順 0 が先に立つ (nihongo/SKILL.md Kernel 1、nihongo/references/keigo.md)
-3. **Kernel 2: 作らないものの列挙**。数字・理由・経験・感想・会話の中身・約束や申し出 (〜します、調整いたします)・人名・場所・連絡先・仕様・手順・宛先部署名。2.3.1 で、延長のお願いメールに提出の約束が足された事例から「約束」と「宛先部署名の推測」を加えた (nihongo/SKILL.md Kernel 2、CHANGELOG.md § 2.3.1)
-4. **Kernel 4: 情報不足の 3 分岐**。値だけ不明なら【理由】のような空欄にして下書きを出す / 条件 (関係性・硬さ) が不明なら無難な方で書いて前提を一言添える / 中身そのもの (本人の体験・原文) が無ければ 3 つまで聞く。ただし出来事が 1 つでもあれば聞き返さずに書く (nihongo/SKILL.md Kernel 4)。値の空欄は新規執筆の話で、修正時に原文に無い空欄を作るのは `ja-slop-review` の banlist「仮置きの残り」と逆向きになる
+3. **Kernel 2: 作らないものの列挙**。数字・理由・経験・感想・会話の中身・約束や申し出 (〜します、調整いたします)・人名・場所・連絡先・仕様・手順・単位・宛先部署名。2.3.1 で、延長のお願いメールに提出の約束が足された事例から「約束」と「宛先部署名の推測」を加えた (nihongo/SKILL.md Kernel 2、CHANGELOG.md § 2.3.1)
+4. **Kernel 4: 情報不足の 3 分岐**。値だけ不明なら【理由】のような空欄にして下書きを出す / 条件 (関係性・硬さ) が不明なら無難な方で書いて前提を一言添える / 中身そのもの (本人の体験・原文) が無ければ 3 つまで聞く。ただし出来事が 1 つでもあれば聞き返さずに書く (nihongo/SKILL.md Kernel 4)。値の空欄は新規執筆の話で、修正時に原文に無い空欄を作るのは `ja-slop-review` の banlist「仮置きの残り」と逆向きになる。ES では v3.1.1 で空欄を減らす側に寄せた (項目 15)
 5. **直す深さ 0〜3 を依頼の言葉で決める**。0「一字も変えないで」→ 変えない / 1「誤字だけ」→ 誤字・助詞・敬語の誤用・表記の誤りだけ / 2「自然にして」「推敲して」→ 読み手が止まる表現・語順・情報の位置まで / 3「書き直して」→ 構成から。指定の無い「直して」「見て」は 2。範囲を指定されたら (「2段落目だけ」) その外を触らない (nihongo/references/review.md § 直す深さ)
 6. **修正の第一原則は直しすぎないこと**。目隠しテストで負けた文はどれも直しすぎ (口語に崩しすぎ、宣伝文の勢いを消した、敬語を普通にした) だった、とする。「自分なら別の言い方にする」は直す理由にしない。お知らせ・お詫び・行政の文・目上宛ての文は言葉をほぼ触らない。演出の言葉 (徹底的に) は仕事の文書では削るだけで別の言葉に替えない。宣伝文とエッセイでは残す (nihongo/references/review.md § 修正の原則)
 7. **技術文書で修正後に照らす 6 観点**。否定・例外・条件 / 数値・単位・範囲・既定値 / 義務の強さ (「必須ではない」と「不要」、「〜する必要があります」と「〜をお願いします」は別の強さ。誰がするかも落とさない) / 主体 / 確かさ (「確認されていない」を「無い」に、「推定」を「原因」にしない) / 識別子とコード。1 つでも変わったら原文の言い方に戻す (nihongo/references/technical-writing.md § 意味を守る)。この観点は `yomiyasu` v3.2.0 が「nihongo に学んだ」として diff に取り込んでいる (yomiyasu 蒸留版 項目 29)
@@ -46,17 +47,23 @@ AI が書いた日本語の仕上げと確認をするスキル (v3.0.0、AnIT01
 12. **規則の文だけを足しても勝てなかった**。足そうとした 6 案 (発話意図と文末を保つ、前後のつながりを確かめる、情報の順番を確かめる など) のうち 5 案が旧版に勝てず、例文を付けた「句点と文章全体のリズム」だけが 5-2 で勝った (evaluations/README.md § ルールを足した時の比較)
 13. **常時読む部分に 1 文足すと、対象外の場面で負ける**。SKILL.md に「予定・推定・可能性を確定の言い方に変えない」を足した版は、予定や推定を含む 6 題で 4 勝 0 敗 2 分けだったが、技術文書以外の 7 題で 2 勝 5 敗だったので採らなかった。代わりに「推敲の進め方」の最後に原文と照らす 1 行を置いた v14 が、19 題 × 2 回で 16 勝 12 敗 10 分け、意味の崩れが 8 から 4 に減って採用された (evaluations/technical.md § スキルを使わないAIとの比較、§ 推敲の最後に原文と照らす手順)
 14. **歯止めが強すぎるとスキルなしに負ける**。技術文書を強化した直後の v10 は、スキルを使わない AI に dev 16 題で 6 勝 10 敗だった。直しすぎを避けるルールが強すぎ、直すべき硬い言い回しや形まで残したため。評価は dev (規則を直しながら使った組) と holdout-1〜3 (規則を決めた後に作った組) に分けて報告している。v11 は dev で 10 勝 6 敗、holdout-1 で 2 勝 4 敗 (evaluations/technical.md § やり方・§ スキルを使わないAIとの比較)
+15. **v3.1.1 で足した場面規則 4 点 (新規執筆向け、評価記録なし)**。
+    - お知らせの見出しは項目名のままだが、社内のお知らせ・制度改定・システム移行の**表題**は「〜のお知らせ」にせず適用日と結論を先に出してよい。全社員向けではカタカナ語や AI 調の飾り (直感的な UI) を普通の言い方にしてよいが、規約・行政の文では変えない (nihongo/references/notices.md)。同じファイル冒頭の「言葉はほぼ触らない」と、review.md の「お知らせは言葉をほぼ触らない」とは緊張関係にある
+    - 目上への LINE は「いらっしゃいますでしょうか」「ご確認いただけますでしょうか」を避け、「いませんでしょうか」「大丈夫でしょうか」のような一段低い敬語にする (nihongo/references/messaging.md § 先輩・バイト先・目上へのLINE)。項目 2 と同じく修正時は原文の丁寧さを下げない側が先に立つ
+    - ES で材料が大きく足りないときは本文に【　】を並べた穴埋め文にせず、与えられた事実だけで本文を出し、後ろに現在の字数と書き足すと強くなる事実の候補 2〜3 点を示す。「〇字以内」は上限の 9 割以上、「〇字程度」は前後 1 割 (nihongo/references/entry-sheet.md)
+    - スライドの構成案を求められたら、1 枚ごとに結論型の見出しと本文の箇条書き 2〜4 点まで書く。目次だけなら番号つきリストで 1 枚 1 行 (nihongo/references/slides-and-documents.md § スライド)
+16. **「裏での補助」と足しすぎの追加**。新設の `marketing-copy.md` と改稿した `slides-and-documents.md` は冒頭に「ブランド指針・ユーザー指定・別テンプレートがあればそちらを優先し、ここは裏での補助」と立ち位置を書く。足さないものとして、頼まれていない長文の免責注釈、同じラベルが列や箱ごとに 3 回以上並ぶ反復 (行見出しに 1 回だけ括り出す)、番号の機械的なゼロ埋め (01、02)・理由のない仕切り線や色分けを挙げ、`ai-patterns.md` の「足しすぎ」にも前 2 つを加えた。マーケ文では熱量は消さず、根拠の無い No.1・最速・効果の保証と抽象ポエム (シームレスにサポート) を止める (nihongo/references/marketing-copy.md、nihongo/references/slides-and-documents.md § 構造化資料に共通する補助原則、nihongo/references/ai-patterns.md)
 
 ## 意味ズレ検査スクリプトの中身
 
-`nihongo/scripts/` の 4 本。標準ライブラリだけで動き、出すのは「見直す候補」で、意味が変わったと決めつけないと原典自身が書く (check_meaning.py 冒頭)。**このハーネスでは原典 clone から実行しない**。読む対象として、検出の観点と除外条件を引く。
+`nihongo/scripts/` のうち検査の 4 本。標準ライブラリだけで動き、出すのは「見直す候補」で、意味が変わったと決めつけないと原典自身が書く (check_meaning.py 冒頭)。**このハーネスでは原典 clone から実行しない**。読む対象として、検出の観点と除外条件を引く。
 
 | スクリプト | すること | 主な観点・除外 |
 |---|---|---|
-| `check_meaning.py` | 原文と直した文を比べて候補を出す | 確かさ・強さの語 (`MODALITY`: 予定・見込み・必須・必要・推奨・任意・不要・お願い・未定 など) の増減、程度・約束の語 (`DEGREE`: 必ず・のみ・だけ・まで・以上・未満・約 など) の脱落、数値 (`NUM`: 単位つき、負の数の符号まで 1 つの値)、否定、曜日、インラインコード、発信者・組織名と公式らしさの語 (`ORG`・`AUTHORITY`) の追加、消えた中身。「予約」「契約」の「約」、「以上です」の「以上」、「いただけ」の「だけ」は `DEGREE_SKIP` で除外。「14:00」と「14時」、午前・午後の表記の違いは `norm` でそろえてから比べる |
-| `revert_broken.py` | 候補が出た文だけを原文の文に戻す (最大 6 回) | `--request` で依頼文を読み、変更を頼む語 (`CHANGE`: 変更・置き換・伏せ・削除 など) と変えないでほしい語 (`KEEP`: 維持・そのまま・変えない など) で、依頼どおりの編集 (番号の伏字化、指定された日時への変更) を戻さない (`value_ok`)。依頼で足した文を「分割の片割れ」とみなして消さない (2.3.2) |
+| `check_meaning.py` | 原文と直した文を比べて候補を出す | 確かさ・強さの語 (`MODALITY`: 予定・見込み・必須・必要・推奨・任意・不要・お願い・未定 など) の増減、程度・約束の語 (`DEGREE`: 必ず・のみ・だけ・まで・以上・未満・約・頃 など) の脱落と、`DEGREE_ADDED` (頃・約・およそ・のみ・だけ・限り・必ず・すべて・一切・絶対 など) の追加 (締切の曖昧化・範囲の限定・言いすぎ)、数値 (`NUM`: 単位つき、負の数の符号まで 1 つの値)、否定、曜日、インラインコード、発信者・組織名と公式らしさの語 (`ORG`・`AUTHORITY`) の追加、消えた中身。「予約」「契約」の「約」、「手頃」「日頃」の「頃」、「以上です」の「以上」、「いただけ」の「だけ」は `DEGREE_SKIP` で除外。「お願い」の組に「ください」「下さい」を両方入れ、表記の違いだけでは出さない (3.1.1)。「14:00」と「14時」、「09:00」と「午前9時」は `norm` でそろえてから比べる |
+| `revert_broken.py` | 候補が出た文だけを原文の文に戻す (最大 6 回) | `--request` で依頼文を読み、変更を頼む語 (`CHANGE`: 変更・置き換・伏せ・削除 など) と変えないでほしい語 (`KEEP`: 維持・そのまま・変えない など) で、依頼どおりの編集 (番号の伏字化、指定された日時への変更) を戻さない (`value_ok`)。依頼で足した文を「分割の片割れ」とみなして消さない (2.3.2)。3.1.0 で `10:30:00` や IPv4 ポートを壊す誤り、追加された程度表現の戻し漏れを直した |
 | `trim_commas.py` | 要らない読点を外す | 36 字以下の短い文で文頭 9 字以下の「〜は」「〜で」「〜から」の後にある唯一の読点と、「を」の直後の読点だけ。定型の前置き・文頭の接続詞・並び・コードと URL の中は外さない。閾値は 2026-11-18 の作者の目隠し判定 20 問で決めた (ファイル冒頭コメント) |
-| `cli.py` | 上の 3 本をまとめた `nihongo-check` (`diff` / `fix` / `git`) | `git --hook` は Claude Code の PostToolUse から呼び、候補があれば終了コード 2 を返す。依頼文なしで HEAD と比べるので、意図した数値の変更でも止まる (examples/hooks/claude-code-hook.json、`cmd_git`) |
+| `cli.py` | 上の 3 本をまとめた `nihongo-check` (`diff` / `fix` / `git` / `doctor`) | `git --hook` は Claude Code の PostToolUse から呼び、候補があれば終了コード 2 を返す。例は `nihongo-check git --auto-profile --hook` で、依頼文なしで HEAD と比べるので意図した数値の変更でも止まる (examples/hooks/claude-code-hook.json)。3.1.0 で改名した文書も旧パスの原文と比べるようにした |
 
 同じ役目の検査は `yomiyasu_diff.py` (約 11,600 行) のほうが広い。nihongo に固有なのは、依頼文を読んで依頼どおりの変更を候補から外す仕組み (`revert_broken.py` の `KEEP` / `CHANGE` / `value_ok`) と、その回帰テスト (`tests/test_request_*.py`)。
 
@@ -65,7 +72,7 @@ AI が書いた日本語の仕上げと確認をするスキル (v3.0.0、AnIT01
 | トピック | 原典パス | 一行説明 |
 |---|---|---|
 | Kernel と優先順位 | nihongo/SKILL.md | Kernel 8 項目、判断の優先順位 6 段、場面別の資料の振り分け、生成と推敲の進め方 |
-| 常時読む短縮版 | nihongo/ALWAYS.md | 約 1,200 字の Lite。事実保持・場と形・水増し防止・ユーザー指示優先 |
+| 常時読む短縮版 | nihongo/ALWAYS.md | 約 1,200 字の Lite 6 項目。事実を作らない・なりすまし拒否・場と形・水増し防止・資料と個人設定・ユーザー指示優先 |
 | 直す深さと修正の原則 | nihongo/references/review.md | 深さ 0〜3 の表、直しすぎない原則、仕上げの点検 10 項目 |
 | 技術文書 | nihongo/references/technical-writing.md | 意味を守る 6 観点、構造で読みやすくする (文書種別ごとの情報の順)、直さないもの |
 | 書き言葉の段 | nihongo/references/register.md | 動詞の書き言葉化、主語に合う動詞、文の型の硬さの表、「〜し、」と「〜して」、理由の位置 |
@@ -76,9 +83,11 @@ AI が書いた日本語の仕上げと確認をするスキル (v3.0.0、AnIT01
 | 見出し・件名 | nihongo/references/titles.md | 見出し・題名・件名・キャッチコピーの使わない型と中身 |
 | 載る場所の記法 | nihongo/references/media.md | 媒体ごとの Markdown の可否など |
 | メール | nihongo/references/business-email.md | ビジネス・大学宛てのメール |
-| お知らせ | nihongo/references/notices.md | お知らせ・案内・お詫び・行政の文・規約 |
-| チャット | nihongo/references/messaging.md | 友達・目上への LINE、Slack・社内チャット、SNS |
-| その他の場面 | nihongo/references/ui-copy.md, nihongo/references/slides-and-documents.md, nihongo/references/conversation.md, nihongo/references/essays-and-promotion.md | UI 文言、スライド・議事録、会話の返事、エッセイ・宣伝文 (UI と議事録は `smarthr-design-system` と `natural-japanese` のほうが厚い) |
+| お知らせ | nihongo/references/notices.md | お知らせ・案内・お詫び・行政の文・規約。社内告知の表題は適用日と結論を先に (3.1.1) |
+| チャット | nihongo/references/messaging.md | 友達・目上への LINE (目上は一段低い敬語、3.1.1)、Slack・社内チャット、SNS |
+| スライド・資料 | nihongo/references/slides-and-documents.md | 構造化資料の補助原則 (1 単位 1 目的・ラベルの括り出し・装飾を足さない)、スライド構成案、企画書、議事録、手順書、表 |
+| マーケ文 | nihongo/references/marketing-copy.md | 3.1.1 新設。熱量は残し根拠の無い誇張と抽象ポエムを止める、LP・広告・SNS 告知・プレスリリースの要点 |
+| その他の場面 | nihongo/references/ui-copy.md, nihongo/references/conversation.md, nihongo/references/essays-and-promotion.md | UI 文言、会話の返事、エッセイ・紹介文 (UI と議事録は `smarthr-design-system` と `natural-japanese` のほうが厚い) |
 | 評価の記録 | evaluations/README.md | 比べ方 (目隠し、変わってはいけない点の一覧)、版ごとの結果、採らなかった案、参考文献 |
 | 技術文書の評価 | evaluations/technical.md | dev と holdout の分離、スキルなしとの比較、v14 の採用経緯 |
 | 評価課題 | evaluations/tasks/ | certainty・technical (dev / holdout-1〜3)・meaning・rewrite・punctuation・long・essay・everyday・general・safety。`*/checklist.md` が変わってはいけない点の一覧 |
@@ -87,9 +96,9 @@ AI が書いた日本語の仕上げと確認をするスキル (v3.0.0、AnIT01
 
 ## 蒸留の範囲外
 
-- **Personal** (`~/.nihongo/profile.md` の 4 つの区分と「絶対に言わない表現」、1 行学習): `nihongo/references/make-profile.md`、`nihongo/references/personal-profile.md`、`cli.py` の `parse_profile`。本人名義の文の書き分けで、このハーネスの文書には当たらない
+- **Personal** (`~/.nihongo/profile.md` の 4 つの箱と「絶対に言わない表現」、作業フォルダの `.nihongo/profile.md` との 2 層マージ、1 行学習、HITL 受信箱 `inbox.jsonl`、MCP サーバ `nihongo/scripts/mcp_server.py`、同期フォルダと `~/.nihongo/config.json`): `nihongo/references/make-profile.md`、`nihongo/references/personal-profile.md`、`nihongo/SKILL.md` § 判断の優先順位とコンテキスト、README.md § Personal を育てる HITL 受信箱。本人名義の文の書き分けで、このハーネスの文書には当たらない。v3.1.0 で作ったローカル web UI は同じ版の中で削除された (CHANGELOG.md § 3.1.0)
 - **安全・なりすまし対策**: Kernel 3、`SECURITY.md`、`evaluations/tasks/safety/`
-- **個人の文の場面**: `nihongo/references/entry-sheet.md`、`nihongo/references/speech.md`、`nihongo/references/translation.md`。必要なら原典を直接読む
-- **導入手順と配布物**: README.md の インストール、`nihongo/WEB.md`、`pyproject.toml`、`.github/`
-- **hook の例と CI の例**: `examples/hooks/`。上の表のとおり依頼文を見ずに止めるので、文書を意図して書き換える repo には向かない
-- **テストの細部**: `tests/` (依頼の読み方の回帰テストだけ上で触れた)
+- **個人の文の場面**: `nihongo/references/speech.md`、`nihongo/references/translation.md`。ES は項目 15 で触れた分だけ。必要なら原典を直接読む
+- **導入手順と配布物**: README.md の インストール、`nihongo/WEB.md`、公式サイト配布の `nihongo-setup.md`、`docs/` (LP)、`pyproject.toml`、`.github/`
+- **hook・MCP・CI の例**: `examples/hooks/`、`examples/mcp/`。上の表のとおり依頼文を見ずに止めるので、文書を意図して書き換える repo には向かない
+- **テストの細部**: `tests/` (依頼の読み方の回帰テストだけ上で触れた。導入の E2E テストは範囲外)
