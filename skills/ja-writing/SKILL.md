@@ -38,6 +38,7 @@ compatibility: Requires git and network access to clone/update the reference rep
 |---|---|---|---|
 | AI 臭スキル (主) | `natural-japanese/` | [references/natural-japanese.md](references/natural-japanese.md) | 「足さない」を最上位に置く書き方・直し方の規律。文書種別 5 本 (議事録・調査レポート・社内ガイド・メモ・スライド) の必須要素と AI がやりがちな失敗。lint の閾値を人間コーパスで校正した結論 (どの検出が人間側にも発火するか)。同梱の `critical-thinking` (v2.0.0〜) は稟議書・提案書などの論旨を決裁者の目で検査して直す別スキル (矛盾・根拠のない主張・前提の問い直し) |
 | AI 臭スキル (主) | `yomiyasu/` | [references/yomiyasu.md](references/yomiyasu.md) | 意味の保持と情報の不増補を最優先にした推敲規律。研究を引いた原則 14 項、slop 語彙 9 分類、v2 の文脈からの事実の補い (6 条件付き)・書き手と読み手に合わせた直し方・言い直しテスト、v2.1 の許可・能力・保証を言い切りの強さに含める規則と読み違いの型 (目的語の抜け・主題の掛かる範囲・前置きのない強調構文)、ドメイン別 (技術 / 業務 / エッセイ) の差、表記規則 (ダッシュ・括弧・和欧間スペース・コロン・太字が表示されない書き方) |
+| AI 臭スキル (補) | `nihongo/` | [references/nihongo.md](references/nihongo.md) | 前の 2 本が扱わない場面の書き方 (業務の書き言葉の段・敬語・メール・お知らせ・チャット・載る場所の記法)、依頼の言葉で決める直す深さ 0〜3、技術文書で修正後に原文と照らす 6 観点、規則を足して負けた記録。評価は AI が書いた合成文だけで判定は作者か Claude、v3.0.0 では測り直していない — 「作者の実験ではこうだった」までしか引かない。同梱の意味ズレ検査 (`nihongo-check`) は原典 clone から実行しない |
 | 構文・読解負荷 | `meiseki/` | [references/meiseki.md](references/meiseki.md) | 高負荷構文カタログ A–H (二重否定・係り受け・名詞化・段落の冗長)、やさしい日本語 YA–YH、読解負荷スコア。声を足さずに説明文を明晰化する側の規律。同梱の prh 辞書 2 本と textlint 設定の実例 |
 | 機械規則 | `textlint-rule-preset-ja-technical-writing/` | [references/textlint-rule-preset-ja-technical-writing.md](references/textlint-rule-preset-ja-technical-writing.md) | 技術文書の 23 ルールと既定値・理由・変更履歴。文長 100 字・読点 3 個・漢字連続 6 字などの数値の出典 |
 | 機械規則 | `textlint-rule-preset-ja-spacing/` | [references/textlint-rule-preset-ja-spacing.md](references/textlint-rule-preset-ja-spacing.md) | 日英混在・全角半角のスペース規則 11 本。和欧間スペースの入れる / 入れないの切り替え方と、連動しないルールの組 |
@@ -65,6 +66,11 @@ compatibility: Requires git and network access to clone/update the reference rep
   LLM 生成文に触れていない。AI 臭との対応は [MAPPING.md](MAPPING.md) 側の当てはめである
 - UI 文言・エラー・ヘルプ・リリースノートは `smarthr-design-system` を当たる。原典自身が「絶対に守る規則ではなく指針」と
   位置づけているので強制ルールとして扱わない。規則の理由は各ページの `### 説明` を使う (`### 議事録` は社内リンクで外から辿れない)
+- `nihongo` は補助の原典。新規執筆は `natural-japanese` → `yomiyasu` の順に当たり、nihongo は前の 2 本が扱わない場面
+  (書き言葉の段・敬語・メール・お知らせ・チャット) だけに使う。既存文書の修正では、直す深さと直さないものの歯止め、
+  原文と照らす観点の出所としてだけ使い、nihongo を根拠に直す箇所を増やさない。読点は `yomiyasu` と
+  `ja-slop-review` syntax-patterns.md の「間を作るだけの読点」を正とする (「とは、」の扱いが逆向き)。
+  「迷ったら敬語を 1 段低く」(Kernel 1) は新規執筆の指針で、修正時は原文の丁寧さを下げない
 - やさしい日本語 (外国人・子ども向け) は `meiseki/` の yorisoi を当たる。他の原典はネイティブ読者を前提にしている
 - **原典同士を同時に「従う規則」として読み込まない**。`yomiyasu` は他の日本語校正スキルとの併用で指示が衝突すると
   自ら警告している。ここで読むのは根拠と線引きであって、各原典の SKILL.md を実行手順として重ねることではない

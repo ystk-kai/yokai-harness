@@ -80,6 +80,25 @@ README の注記だけが根拠で、論文と記事の本文は読んでいな�
 | 未対応 | FYI | skill | 原典は、基準とのズレを「違反」と扱わないと明記した。design-review も「違反」「NG」「必須」と言わず、「ガイドラインでは〜とされている」の型で書く。ja-slop-review が SmartHR の規則を根拠に指摘するときの言い回しを決める材料 | `src/content/articles/products/index.mdx`、`plugins/smarthr-design-system/skills/design-review/SKILL.md` |
 | 未対応 | FYI | skill | 修正系の skill の歯止めが 2 つある。(1) `--fix` は、ユーザーが自分のメッセージにその文字列を書いたときだけ有効にする。(2) 「起動した」と書いただけでツール呼び出しが出ていないことがあるので、呼び出しを確かめる | 同 design-review/SKILL.md (`6370fea1`・`4bf36537`) |
 
+### 新規蒸留 (nihongo) から
+
+v3.0.0 (`465bb6f`)。ja-writing に「AI 臭スキル (補)」として加えた。評価は AI が書いた合成文だけで判定は作者か Claude、v3.0.0 では測り直していないので、検出・書き換えの規則は既定で FYI に留め、直す箇所を減らす歯止めと評価方法の借用だけを RECOMMENDED にした。照合は `ja-slop-review` と `maintenance/evals/ja-slop-review/eval.py` を grep と Read で確かめた。RECOMMENDED 4 件・FYI 3 件・却下 3 件。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | RECOMMENDED | skill | `ja-slop-review` 手順 0 に、直す深さを依頼の言葉で決める歯止めを足す。「一字も変えないで」なら原文だけを返す、「誤字だけ」なら誤字・助詞・敬語の誤用・表記の誤りだけ、「2段落目だけ」なら範囲の外を触らない。grep で「誤字だけ」「一字も」「段落目だけ」は 0 件。直す箇所を減らす歯止めなので人の文での確認は要らない | `nihongo/references/review.md` § 直す深さ |
+| 未対応 | RECOMMENDED | skill | 2026-11-19 の yomiyasu の手順 7 の行 (限定・境目・義務の強さ・範囲・期限・条件・文の脱落) を取り込むときに、出所に nihongo を併記し、「誰がするか (各自で、利用者が) を落とさない」も同じ変更で足す。今の手順 7 は人の**追加**と、語順を変えた文の述語ごとの主語は見るが、言い換えで主体 (各自で、利用者が) が落ちたかは見ていない | `nihongo/references/technical-writing.md` § 意味を守る、`evaluations/technical.md` (v11 が「各自で修正申請を行う必要がある」を「修正申請をお願いします」にした) |
+| 未対応 | RECOMMENDED | 運用 | `eval.py` の `mechanical()` に、数値・日時・曜日・インラインコード・URL の増減を記録として足す (合否には入れない)。今の機械検査は読点と字数の増減だけで、数値の変化は判定モデルに頼っている。コードは写さず自作する | `nihongo/scripts/check_meaning.py` の `NUM`・`WEEK`・`CODE`、`maintenance/evals/ja-slop-review/eval.py` `mechanical()` |
+| 未対応 | RECOMMENDED | 運用 | eval の集計を、規則の調整に使った素材 (dev) と調整後に作った素材 (holdout) に分ける。r1 の 10 本は規則を直した時点で dev になる。nihongo では dev で勝った版が holdout で負けた (v11: dev 10 勝 6 敗、holdout-1 2 勝 4 敗) | `evaluations/technical.md` § やり方・§ スキルを使わないAIとの比較 |
+| 未対応 | FYI | 運用 | 直す対象と残す対象が同じ文に重なる素材 (冗長な言い回しの中に「予定」「場合がある」) の型。予定を言い切りに変える崩れは nihongo の v14 でも 38 回中 1 回残った。素材は自作の方針なので型だけ借りる | `evaluations/tasks/certainty/`、`evaluations/technical.md` § 推敲の最後に原文と照らす手順 |
+| 未対応 | FYI | skill | 規則の文だけを足した版は旧版に勝てず (6 案中 5 案)、例文を付けた版だけが勝った。常時読む部分に 1 文足すと対象外の場面で負け (2 勝 5 敗)、手順の末尾に置いた版が採用された。判定は作者 1 人か Claude で 6〜7 題 | `evaluations/README.md` § ルールを足した時の比較、`evaluations/technical.md` § スキルを使わないAIとの比較 |
+| 未対応 | FYI | 運用 | 歯止めが強すぎるとスキルなしに負ける (v10 が dev 16 題で 6 勝 10 敗)。`ja-slop-review` に歯止めを足し続けるなら、eval の (a) 欠陥を直せたかの率で見張る | `evaluations/technical.md` § スキルを使わないAIとの比較 |
+| 却下 (このリポジトリに hook は無く、依頼文を見ずに HEAD と比べるので意図した数値の変更でも止まる。文書が成果物の repo では止まり続ける見込み) | FYI | hook | `nihongo-check git --hook` を PostToolUse (Edit/Write) で回し、候補があれば終了コード 2 で止める | `examples/hooks/claude-code-hook.json`、`nihongo/scripts/cli.py` `cmd_git` |
+| 却下 (読点は yomiyasu と syntax-patterns.md「間を作るだけの読点」が正。「とは、」の扱いが逆向きで、閾値は作者 1 人の 20 問で決めており、随筆・手紙の除外が無い) | FYI | skill | `trim_commas.py` と「直したのが読点だけでも直す理由になる」 | `nihongo/references/orthography.md` § 読点の重みと打ち方、`nihongo/scripts/trim_commas.py` 冒頭 |
+| 却下 (修正時は手順 0 と banlist「仮置きの残り」と逆向き。人の文で言い回しを変えないか未確認。新規執筆の参考としては蒸留版から引ける) | FYI | skill | 書き言葉の段 (出す→表示する、とても→非常に)、迷ったら敬語を 1 段低く、値が不明なら【空欄】で下書き、を修正時の規則として取り込む | `nihongo/references/register.md`、`nihongo/SKILL.md` Kernel 1・4 |
+
+見直す条件: 30 日間、文章の規則・評価・意味照合が変わらず Personal・CLI・導入手順だけが動いている、または `yomiyasu` か `natural-japanese` が nihongo 固有の分 (場面別の書き方・書き言葉の段・依頼を読む照合) を持ったら、蒸留版を外すか検討する。人が書いた文での測定、判定への別ベンダーのモデルか複数人の参加、出力と判定プロンプトの公開、v3 以降の測り直しのうち 2 つがそろったら「主」に上げるか検討する。nihongo 由来の候補を入れた後に eval の欠陥のない素材で書き換えが出たら、その規則を削り、以後の nihongo 由来の候補は既定で却下する。
+
 ## 2026-11-19
 
 この実行では Grep ツールも grep コマンドも使えなかったので、全文検索での照合はしていない。照合は該当ファイルの Read による (`skills/ui-design/SKILL.md`、`skills/ja-slop-review/SKILL.md`、`skills/ja-slop-review/references/syntax-patterns.md`)。RECOMMENDED 5 件・FYI 6 件。
