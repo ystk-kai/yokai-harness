@@ -27,6 +27,44 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-26
+
+この実行でも Grep ツールと grep コマンドは使えず、全文検索での照合はしていない。照合は `skills/*/SKILL.md` 5 本と `maintenance/yokai-refs-update/SKILL.md` の frontmatter、`skills/ja-writing/SKILL.md`、`skills/ja-slop-review/references/document-types.md`、`scripts/check-freshness.sh`、`~/.claude/settings.json` を Read で確かめた。内訳は FYI 9 件。BREAKING・RECOMMENDED に当たるものは無い (再蒸留の段で BREAKING / RECOMMENDED と見た skill の `model:`・`effort:`・名前衝突の 3 件は、このハーネスに当たらないので FYI に落とした)。yomiyasu の「数え比べに ▲△・午前午後を足す」は 2026-11-25 の RECOMMENDED と同じで、3.4.1 は読み方の細部を直しただけなので新しい行にしない。
+
+### 再蒸留 (claude-code-best-practice) から
+
+v2.1.332 の drift-check (`53e34a1`)。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | skill | skill の `model:` は `/name` で明示起動したときだけ効き、Claude が自動起動した skill ではセッションのモデルのまま (v2.1.330)。`context: fork` 付きなら fork 先 subagent のモデルになる。このハーネスの skill はどれも `model:` を持たないので当たらない。自動発火で別モデルに切り替える skill を作るときの前提 | `best-practice/claude-commands.md` Frontmatter `model` 行、`changelog/best-practice/claude-commands/changelog.md` 2026-11-25 #1 |
+| 未対応 | FYI | skill | skill の `effort:` はそのターンの残りにだけ効き、`CLAUDE_CODE_EFFORT_LEVEL` を上書きしない。このハーネスの skill は `effort:` を持たず、`~/.claude/settings.json` はこの env を立てていない (`effortLevel` を使う) ので当たらない | `best-practice/claude-commands.md` `effort` 行、同 changelog 2026-11-25 #2 |
+| 未対応 | FYI | skill | built-in と同名の skill を作らない。gstack は built-in `/ship` との衝突で `/gstack-ship` へ改名した。公式の名前衝突表に `ship`・`steward`・`ship-local`、v2.1.332 で `computer-use` が予約名に入った。このハーネスの skill 名 6 本はどれとも衝突しない | `changelog/development-workflows/changelog.md` 2026-11-25 #4、`changelog/best-practice/claude-skills/changelog.md` 2026-11-25 #9 |
+| 未対応 | FYI | hook | v2.1.332 で `PreSkillShellCommand` hook event が入ったと concepts run が 1 行記録しただけで、hooks 表には未反映・仕様未確認 | `changelog/best-practice/concepts/changelog.md` 2026-11-25 #23 |
+| 未対応 | FYI | 運用 | `/loop` の上限が 7 日 → 30 日 (README の TIPS のみ)。根拠の版が原典内で食い違い (v2.1.329 / v2.1.330)、skills 表は 3 日のまま ON HOLD | `README.md` TIPS、concepts changelog 2026-11-25 #1 |
+
+### 再蒸留 (awesome-harness-engineering) から
+
+`templates/VERIFICATION_GATES.md` は Read で確かめた。QuoteMem は README の注記だけが根拠。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | 「一度も赤になったことのない gate は仮説」。gate をわざと壊した入力で非 0 終了させて確かめる、exit code を pipe 越しに読まない、0 件の走査や欠落を pass にせず unmeasurable にする。`scripts/check-freshness.sh` は 0 件を ERR、判定不能を NOTE (exit 1) にしており後者 2 点は満たす。赤を見た記録 (fixture) は持たないが、壊れた蒸留版を出す仕組みが要るほどの規模ではないので FYI | `templates/VERIFICATION_GATES.md` §1–§3 (`a243951`) |
+| 未対応 | FYI | 運用 | 検査の除外エントリには理由・期限・人間の承認者を付け、除外を外す変更にも同じ承認を要する。gate や分類器を直したら既存 fixture を再実行して集計を比べ、できなければ「未検証」と報告する。このハーネスに除外リスト型の gate は無い | `templates/VERIFICATION_GATES.md` §4–§5 |
+| 未対応 | FYI | 運用 | 記憶の書き込みに出典 (byte 範囲の引用) を持たせ、更新は上書きせず旧版を閉じ、忘却は prepare/confirm の 2 段で tombstone を残す実装例 (QuoteMem)。auto-memory の運用材料。中身は未確認 | README.md `Memory & State` の QuoteMem (`46f6395`) |
+
+### 再蒸留 (yomiyasu) から
+
+v3.4.1 (`3979c75`)。diff の判定の直しだけで、推敲の規則は変わっていない。
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | skill | `ja-slop-review/SKILL.md` 手順 7 の読み比べの例に、保証の言い方が 1 字も違わないまま、その相手 (旧プランの利用者 → 新プランの利用者)・条件 (条件を満たせば → いつでも)・読点の後ろの中身が替わった形を足す案。原文に戻す側の確かめで直す箇所は増えないが、今の「claim の比較」で覆えているので効き目は小さい | `CHANGELOG.md` § 3.4.1 (issue #75、kind `promise`) |
+
+### 再蒸留 (smarthr-design-system) から
+
+リリースノートのガイドラインが改訂された (カテゴリ 6 → 5 でアクセシビリティ向上は改善へ統合、見出しの「20 文字程度」を撤廃、不具合修正の書き方を追加)。`ja-writing/SKILL.md` と `ja-slop-review/references/document-types.md` は旧ガイドラインの具体値を引いていないので、取り込み候補なし。
+
 ## 2026-11-25
 
 この実行でも Grep ツールと grep コマンドは使えず、全文検索での照合はしていない。照合は `skills/ja-slop-review/SKILL.md` (手順 7) と `~/.claude/CLAUDE.md` を Read で確かめた。内訳は RECOMMENDED 1 件・FYI 7 件。smarthr-design-system (依存更新・CI と、蒸留の範囲外のアクセシビリティ 4-1 の手順追加だけ) は候補なし。
