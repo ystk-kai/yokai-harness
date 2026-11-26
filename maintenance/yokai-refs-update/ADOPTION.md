@@ -27,6 +27,17 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-27
+
+この実行でも Grep ツールと grep コマンドは使えず、照合は `~/.claude/settings.json` を Read で確かめた (PreToolUse hook は commit・Codex 向けプロンプト・ファイル走査の 3 種の固定規則で、目的から方針を導く型の hook は無い)。内訳は FYI 2 件、BREAKING・RECOMMENDED は無い。claude-code-best-practice (11-26 の workflows 表と changelog) と smarthr-design-system (ライティングガイドライン外の誤字修正とサイト・CI の修正) からの候補は無い。
+
+### 再蒸留 (awesome-harness-engineering) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | hook | permission の強制を「方針は目的から LLM で 1 回作る・照合は call ごとに決定論的に行う・モデルの判断は escalation 経路だけ」に分ける型。read-only の参照は照合を通さず、escalation 先は生の tool 出力を見ない。攻撃が通る agent での end-to-end 検証はまだ済んでいないと原典の注記にある。このハーネスの hook は固定規則なので当たらない。設計判断の材料にとどめる | `README.md` Permissions & Authorization 末尾 (arXiv 2611.11305)、`fc2f93f` |
+| 未対応 | FYI | 運用 | sandbox や permission gate では、既に transcript に送られた secret は扱えない。ローカルの Claude Code / Codex / Cursor の session 履歴を gitleaks の規則で事後に走査する scanner がある (network なし・依存ゼロ)。点検手段の候補 | `README.md` Security, Sandbox & Permissions 末尾 (`selan-ai/whatileaked`)、`934f9af` |
+
 ## 2026-11-26
 
 この実行でも Grep ツールと grep コマンドは使えず、全文検索での照合はしていない。照合は `skills/*/SKILL.md` 5 本と `maintenance/yokai-refs-update/SKILL.md` の frontmatter、`skills/ja-writing/SKILL.md`、`skills/ja-slop-review/references/document-types.md`、`scripts/check-freshness.sh`、`~/.claude/settings.json` を Read で確かめた。内訳は FYI 9 件。BREAKING・RECOMMENDED に当たるものは無い (再蒸留の段で BREAKING / RECOMMENDED と見た skill の `model:`・`effort:`・名前衝突の 3 件は、このハーネスに当たらないので FYI に落とした)。yomiyasu の「数え比べに ▲△・午前午後を足す」は 2026-11-25 の RECOMMENDED と同じで、3.4.1 は読み方の細部を直しただけなので新しい行にしない。
