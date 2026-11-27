@@ -1,7 +1,7 @@
 ---
 source: https://github.com/kufu/smarthr-design-system
-distilled_commit: 87678e2d02b2ff4008c6c155f65be5d1ff938fa4
-distilled_at: 2026-11-27
+distilled_commit: 8b6e01a7bde3d0b60ed279bf4b4124e7196b54fa
+distilled_at: 2026-11-28
 ---
 
 # smarthr-design-system 蒸留版 (ライティングガイドライン)
@@ -85,7 +85,7 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 | NotificationBar のエラー | C/error-messages/notificationbar.mdx | OK / NG 例と、原因の型別の文型テンプレート |
 | バックグラウンド処理のエラー | C/error-messages/background-process.mdx | 結果概要とエラー詳細の分担。CSV 取り込み型と一括アップロード型の文型テンプレート |
 | ヘルプページのタイプ | C/help-center/index.mdx | 5 タイプと「どう読まれるか / どう伝えるか」 |
-| ヘルプページの書き方 (チェックリスト) | C/help-center/basic-rule.mdx | 348 行。自己レビュー用チェックリスト + 具体的なヒント + タイプ別ページへのリンク集 |
+| ヘルプページの書き方 (チェックリスト) | C/help-center/basic-rule.mdx | 351 行。自己レビュー用チェックリスト + 具体的なヒント + タイプ別ページへのリンク集 |
 | ヘルプセンターの構造 | C/help-center/help-structure.mdx | 対象者・情報種別でのセクション分割、並び順、重複回避 |
 | ヘルプページの構成要素 | C/help-center/help-page.mdx | タイトル・リード・見出し (深さと一意性)・本文・画像・囲み (ヒント / 注意 / 関連) |
 | 概要 / 操作手順 / 仕様一覧 | C/help-center/overview.mdx, step-by-step.mdx, reference.mdx | タイプ別の構成とライティングパターン |
@@ -100,7 +100,7 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 
 ## 出典 / 議事録の辿り方
 
-- 各規則は `## 規則名` の直前に `{<span id="..." />}` で英語スラッグのアンカーを持ち、索引や他ページからは `/products/contents/<dir>/<page>/#<id>` で参照される。repo 内では `src/content/articles/products/contents/<dir>/<page>.mdx` を grep すればアンカー位置に着く。
+- 各規則は `## 規則名` の直前に `{<span id="..." />}` で英語スラッグのアンカーを持ち、索引や他ページからは `/products/contents/<dir>/<page>/#<id>` で参照される。repo 内では `src/content/articles/products/contents/<dir>/<page>.mdx` を grep すればアンカー位置に着く。ヘルプページ系 (C/help-center/basic-rule.mdx の `####` 節、C/help-center/reference.mdx の「平文が適している場合」) は一部の節だけが同じ形式のアンカーを持ち、ページ間リンク (例: reference.mdx から basic-rule.mdx の表の節へ) に使われる。アンカーの無い節は見出し文で探す。
 - 規則の下位見出しは `### 説明` → (`### 例` / `### 例外` / `### 注意点`) → `### 出典` または `### 議事録`。
   - **出典**: 公開資料 (文化庁の常用漢字表・内閣告示「送り仮名の付け方」、NHK 放送文化研究所の調査、WCAG 解説、日本語スタイルガイド第3版、書籍など)。外部から確認できる。
   - **議事録**: 社内 Slack (`kufuinc.slack.com`) や Notion の URL。**外部からは開けない**ので、決定理由は `### 説明` の本文から読むしかない。議事録 URL の代わりに理由を地の文で書いている項目もある (C/ui-text/app-writing.mdx の一覧の項)。
@@ -109,7 +109,7 @@ SmartHR Design System のうち、**プロダクトのライティングガイ�
 ## 蒸留の範囲外
 
 - **規則ごとの具体的な推奨 / 非推奨の語、OK / NG 例文、エラーメッセージの文型テンプレート全文**: ライセンス指定が無いため転載しない。C/idiomatic-usage/ichiran.mdx を起点に該当ページを直接読む。
-- **ヘルプページのタイプ別ライティングパターンの具体文型**: C/help-center/overview.mdx・step-by-step.mdx 末尾と faq.mdx の単一記事構成内 (52 行目付近) にある「ライティングパターン」節。basic-rule.mdx の「具体的な書き方のヒント」(63 行目以降) も原典で読む。basic-rule.mdx 末尾 (340 行目以降) はタイプ別ページへのリンク集で、パターン本体は各タイプのページにある。
+- **ヘルプページのタイプ別ライティングパターンの具体文型**: C/help-center/overview.mdx・step-by-step.mdx 末尾と faq.mdx の単一記事構成内 (52 行目付近) にある「ライティングパターン」節。basic-rule.mdx の「具体的な書き方のヒント」(63 行目以降) も原典で読む。basic-rule.mdx 末尾 (343 行目以降) はタイプ別ページへのリンク集で、パターン本体は各タイプのページにある。
 - **ライティング以外の領域** (コンポーネント・デザインパターン・デザイントークン・色・タイポ・IA・アクセシビリティ・ユーザビリティ): 同じ `src/content/articles/products/` 配下の components/、design-patterns/、design-tokens/、information-architecture/、usability/ と、`src/content/articles/` 直下の basics/・accessibility/ にある。本蒸留では扱わない。design-patterns/ は 22793ac7 で 1 ファイル構成のパターンも `<slug>/index.mdx` 形式に揃えられたので、`<slug>.mdx` で探すと見つからない。
 - **design-review スキルの手順詳細** (対象の決め方、`--fix` / `--no-existing`、サブエージェントの雛形 references/reviewer-prompt.md、指摘のまとめ方): コードレビューの手順でライティングの規則ではないので要点だけに留めた。plugins/smarthr-design-system/skills/design-review/ を直接読む。
 - **textlint-rule-preset-smarthr の個別ルール内容**: 別 repo (原典外)。この repo で分かるのはバージョン指定と無効化したルール名だけ (.textlintrc)。

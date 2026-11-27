@@ -27,6 +27,24 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-28
+
+この実行でも Grep ツールと grep コマンドは使えず、照合は `~/.claude/settings.json` を Read で確かめた (Stop hook は無く、PreToolUse hook は commit・Codex 向けプロンプト・ファイル走査の 3 種の固定規則)。内訳は FYI 4 件、BREAKING・RECOMMENDED は無い。再蒸留の段で中・低と返った候補は、どれも今の書き方を壊していないので FYI に揃えた。smarthr-design-system (ヘルプページ系の節に名前付きアンカーを足しただけ) からの候補は無い。claude-code-best-practice で bundled skill に `claude-approvals`・`motion`・`whiteboard` が入ったが、このハーネスの skill 名とは衝突しない。
+
+### 再蒸留 (awesome-harness-engineering) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | CLAUDE.md | ratchet principle: 観測した失敗を 1 件ずつ恒久の制約にし、事前に思いついたルールを並べない。`~/.claude/CLAUDE.md` の WSL ファイル検索ルールは実際の停止 3 回を根拠に書かれており、既にこの型。ルールを足すときの基準として控える | `README.md` Foundations (Addy Osmani "Agent Harness Engineering")、`e329723` |
+| 未対応 | FYI | 運用 | 「ハーネスは縮まず移動する」: モデルの向上で古い足場を外すときは、新しく届くようになったタスク向けの足場が要るかも同時に確かめる。棚卸しの観点の候補 | 同上 |
+| 未対応 | FYI | hook | 完了をモデルの申告で決めず、利用者が指定した検査コマンドが現在の workspace で通ったときだけ完了とし、その後の編集で証拠を stale にする型 (OMK の `/goal verify <command>`)。このハーネスは Stop hook を持たないので当たらない。完了 gate を作るときの材料 | `README.md` Demo Harnesses (OMK)、`024155b` |
+
+### 再蒸留 (claude-code-best-practice) から
+
+| 状態 | 深刻度 | 対象 | 内容 | 根拠 |
+|---|---|---|---|---|
+| 未対応 | FYI | 運用 | 原典の drift run が「no new drift」と書いても、その版範囲に変更が無いとは限らない。11-25 の skills run は v2.1.321–332 に新 skill なしと書いたが、11-27 run で v2.1.323+ / v2.1.331+ の skill 3 本が追加された。再蒸留では changelog の宣言でなく表の本体を Read で確かめる | `changelog/best-practice/claude-skills/changelog.md` 2026-11-25・2026-11-27、`best-practice/claude-skills.md` rows 28–30、`5c3a472` |
+
 ## 2026-11-27
 
 この実行でも Grep ツールと grep コマンドは使えず、照合は `~/.claude/settings.json` を Read で確かめた (PreToolUse hook は commit・Codex 向けプロンプト・ファイル走査の 3 種の固定規則で、目的から方針を導く型の hook は無い)。内訳は FYI 2 件、BREAKING・RECOMMENDED は無い。claude-code-best-practice (11-26 の workflows 表と changelog) と smarthr-design-system (ライティングガイドライン外の誤字修正とサイト・CI の修正) からの候補は無い。
