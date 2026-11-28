@@ -27,6 +27,11 @@
   必要になったら、それは台帳ではなく環境側に書くべき項目
 
 ---
+## 2026-11-29
+
+今回は取り込み候補なし。awesome-harness-engineering は Task Runners & Orchestration に Friday (約 20 の coding CLI を共有タスクボードで並走させ、利用上限に当たったタスクを途中経過ごと別 agent に移す desktop app) が 1 件入っただけで、利用上限での移し替えは既収載の Sno Station と同じ型。このハーネスは複数 CLI の並走基盤を持たないので当たらない。claude-code-best-practice は 11-28 の drift check が skills・commands・subagents とも表本体を動かさず (バッジ日付と changelog 追記、DEVELOPMENT WORKFLOWS の ★ 数 2 件のみ)、新しい事実が無い。前回までの未対応項目は下の節のとおり残っている。
+
+---
 ## 2026-11-28
 
 この実行でも Grep ツールと grep コマンドは使えず、照合は `~/.claude/settings.json` を Read で確かめた (Stop hook は無く、PreToolUse hook は commit・Codex 向けプロンプト・ファイル走査の 3 種の固定規則)。内訳は FYI 4 件、BREAKING・RECOMMENDED は無い。再蒸留の段で中・低と返った候補は、どれも今の書き方を壊していないので FYI に揃えた。smarthr-design-system (ヘルプページ系の節に名前付きアンカーを足しただけ) からの候補は無い。claude-code-best-practice で bundled skill に `claude-approvals`・`motion`・`whiteboard` が入ったが、このハーネスの skill 名とは衝突しない。
